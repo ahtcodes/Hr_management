@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create KPI — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h1 class="fw-bold mb-1">Create KPI</h1>
+        <p class="text-muted">
+            Create a performance indicator for an employee.
+        </p>
+    </div>
+
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <!-- Employee -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Employee
+                    </label>
+
+                    <select name="employee_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            Select Employee
+                        </option>
+
+                        {% for employee in employees %}
+
+                        <option value="{{ employee.id }}">
+
+                            {{ employee.full_name }}
+                            — {{ employee.employee_code }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- KPI Title -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        KPI Title
+                    </label>
+
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="e.g. Monthly Sales Target"
+                           required>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Description
+                    </label>
+
+                    <textarea name="description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Describe the KPI..."></textarea>
+
+                </div>
+
+
+                <div class="row">
+
+                    <!-- Target -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Target
+                        </label>
+
+                        <input type="number"
+                               name="target"
+                               class="form-control"
+                               step="0.01"
+                               min="0"
+                               placeholder="100"
+                               required>
+
+                    </div>
+
+
+                    <!-- Unit -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Unit
+                        </label>
+
+                        <input type="text"
+                               name="unit"
+                               class="form-control"
+                               placeholder="e.g. %, Sales, Tasks">
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Initial Status
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="Pending"
+                               disabled>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Dates -->
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Start Date
+                        </label>
+
+                        <input type="date"
+                               name="start_date"
+                               class="form-control">
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            End Date
+                        </label>
+
+                        <input type="date"
+                               name="end_date"
+                               class="form-control">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2 mt-3">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Create KPI
+
+                    </button>
+
+
+                    <a href="{{ url_for('kpi.kpi_list') }}"
+                       class="btn btn-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

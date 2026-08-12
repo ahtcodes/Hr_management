@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Attendance — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Edit Attendance Record</h1>
+            <p class="greeting-sub">Update attendance information.</p>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <form method="POST">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Employee</label>
+                        <select name="employee_id" class="form-control" required>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}" {% if employee.id == record.employee_id %}selected{% endif %}>
+                                {{ employee.employee_code }} - {{ employee.full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-control" required>
+                            <option value="Present" {% if record.status == 'Present' %}selected{% endif %}>Present</option>
+                            <option value="Absent" {% if record.status == 'Absent' %}selected{% endif %}>Absent</option>
+                            <option value="Leave" {% if record.status == 'Leave' %}selected{% endif %}>Leave</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Check In</label>
+                        <input type="time" name="check_in" class="form-control"
+                               value="{{ record.check_in.strftime('%H:%M') if record.check_in else '' }}">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Check Out</label>
+                        <input type="time" name="check_out" class="form-control"
+                               value="{{ record.check_out.strftime('%H:%M') if record.check_out else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary" style="background:var(--warning);border:none;color:var(--foreground);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/>
+                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/>
+                    </svg>
+                    Update Attendance
+                </button>
+                <a href="/attendance" class="btn btn-outline-primary ms-2">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Shifts — PeopleDesk HR
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+
+        <div class="greeting-text">
+            <h1>Manage Shifts</h1>
+            <p class="greeting-sub">
+                Create and manage employee working shifts.
+            </p>
+        </div>
+
+
+        <div>
+            <a href="/admin/add_shift" class="btn btn-primary">
+                + Add Shift
+            </a>
+        </div>
+
+    </div>
+
+
+
+    <div class="content-card">
+
+        <div class="table-wrapper">
+
+            <table class="leave-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Shift Name</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Working Hours</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                {% for shift in shifts %}
+
+                    <tr>
+
+                        <td>
+                            {{ shift.id }}
+                        </td>
+
+
+                        <td>
+                            <span class="status-pill status-approved">
+                                {{ shift.shift_name }}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            {{ shift.start_time.strftime('%H:%M') }}
+                        </td>
+
+
+                        <td>
+                            {{ shift.end_time.strftime('%H:%M') }}
+                        </td>
+
+
+                        <td>
+                            {{ shift.working_hours }} Hours
+                        </td>
+
+
+                        <td>
+
+                            <a href="/admin/edit_shift/{{shift.id}}"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+
+                            <a href="/admin/delete_shift/{{shift.id}}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this shift?')">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No shifts available
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

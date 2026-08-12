@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Notice — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">Create Notice</h1>
+        <p class="text-muted">
+            Create a company announcement, event, birthday wish or holiday notice.
+        </p>
+    </div>
+
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <!-- Title -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Notice Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        placeholder="Enter notice title"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Notice Type -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Notice Type
+                    </label>
+
+                    <select
+                        name="notice_type"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select Notice Type
+                        </option>
+
+                        <option value="Company Announcement">
+                            📢 Company Announcement
+                        </option>
+
+                        <option value="Event">
+                            🎉 Event
+                        </option>
+
+                        <option value="Birthday Wish">
+                            🎂 Birthday Wish
+                        </option>
+
+                        <option value="Holiday Notice">
+                            📅 Holiday Notice
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Write notice details..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Event Date -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Event / Notice Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="event_date"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <!-- Target Audience -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Target Audience
+                    </label>
+
+                    <select
+                        name="target_audience"
+                        class="form-select"
+                    >
+
+                        <option value="All">
+                            All Employees
+                        </option>
+
+                        <option value="HR">
+                            HR
+                        </option>
+
+                        <option value="Managers">
+                            Managers
+                        </option>
+
+                        <option value="Employees">
+                            Employees
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        📢 Publish Notice
+                    </button>
+
+                    <a
+                        href="{{ url_for('notice.notice_list') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

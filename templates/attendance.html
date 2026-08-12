@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}
+Attendance — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Attendance</h1>
+            <p class="greeting-sub">
+                View and manage attendance records — {{ records|length }} record(s).
+            </p>
+        </div>
+
+        {% if current_user.has_role('admin') %}
+        <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary">
+            ✔ Mark Attendance
+        </a>
+        {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                    {{ message }}
+                    <button class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="content-card">
+
+        <div class="table-wrapper">
+
+            <table class="leave-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Shift</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Late</th>
+                        <th>Early Leave</th>
+                        <th>Working Hours</th>
+                        <th>OT Hours</th>
+                        <th>OT Pay</th>
+
+                        {% if current_user.has_role('admin') %}
+                        <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for record in records %}
+
+                    <tr>
+
+                        <td>{{ record.id }}</td>
+
+                        <td>
+                            <strong>
+                                {{ record.employee.employee_code }}
+                            </strong>
+                            <br>
+                            {{ record.employee.full_name }}
+                        </td>
+
+                        <td>
+                            {{ record.date.strftime('%d-%m-%Y') }}
+                        </td>
+
+                        <td>
+
+                            {% if record.status=="Present" %}
+                                <span class="status-pill status-approved">
+                                    Present
+                                </span>
+
+                            {% elif record.status=="Absent" %}
+                                <span class="status-pill status-rejected">
+                                    Absent
+                                </span>
+
+                            {% else %}
+                                <span class="status-pill status-pending">
+                                    Leave
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if record.shift_start %}
+
+                                {{ record.shift_start.strftime('%I:%M %p') }}
+                                -
+                                {{ record.shift_end.strftime('%I:%M %p') }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if record.check_in %}
+                                {{ record.check_in.strftime('%I:%M %p') }}
+                            {% else %}
+                                --
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if record.check_out %}
+                                {{ record.check_out.strftime('%I:%M %p') }}
+                            {% else %}
+                                --
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ "%.2f"|format(record.late_hours or 0) }} hrs
+                        </td>
+
+                        <td>
+                            {{ "%.2f"|format(record.early_leave_hours or 0) }} hrs
+                        </td>
+
+                        <td>
+                            {{ "%.2f"|format(record.working_hours or 0) }} hrs
+                        </td>
+
+                        <td>
+                            {{ "%.2f"|format(record.overtime_hours or 0) }} hrs
+                        </td>
+
+                        <td>
+
+                            {% if record.overtime_pay > 0 %}
+                                <strong>
+                                    Rs. {{ "%.2f"|format(record.overtime_pay) }}
+                                </strong>
+                            {% else %}
+                                --
+                            {% endif %}
+
+                        </td>
+
+                        {% if current_user.has_role('admin') %}
+
+                        <td>
+
+                            <a href="{{ url_for('attendance.edit_attendance', id=record.id) }}"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <a href="{{ url_for('attendance.delete_attendance', id=record.id) }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete attendance?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                        {% endif %}
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

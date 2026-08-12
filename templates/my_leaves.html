@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Leaves — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>My Leave Applications</h1>
+            <p class="greeting-sub">View your leave history and application status.</p>
+        </div>
+        <a href="/apply_leave" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Apply for Leave
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="content-card">
+        <div class="table-wrapper">
+            <table class="leave-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Applied</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ leave.id }}</td>
+                        <td>
+                            {% if leave.employee %}
+                            <div class="employee-cell">
+                                <span class="employee-name">{{ leave.employee.employee_code }}</span>
+                                <span class="employee-role">{{ leave.employee.full_name }}</span>
+                            </div>
+                            {% else %}
+                            Employee #{{ leave.employee_id }}
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.start_date.strftime('%d-%m-%Y') if leave.start_date else 'N/A' }}</td>
+                        <td>{{ leave.end_date.strftime('%d-%m-%Y') if leave.end_date else 'N/A' }}</td>
+                        <td>{{ leave.total_days }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td>
+                            {% if leave.status == "Pending" %}
+                            <span class="status-pill status-pending">Pending</span>
+                            {% elif leave.status == "Approved" %}
+                            <span class="status-pill status-approved">Approved</span>
+                            {% elif leave.status == "Rejected" %}
+                            <span class="status-pill status-rejected">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.remarks if leave.remarks else '--' }}</td>
+                        <td style="font-size:0.8125rem;">{{ leave.applied_date.strftime('%d-%m-%Y %H:%M') if leave.applied_date else 'N/A' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center" style="color: var(--muted-foreground); padding: 2rem;">Abhi tak koi leave apply nahi ki gayi.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+

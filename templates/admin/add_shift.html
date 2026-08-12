@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Shift — PeopleDesk HR
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+
+        <div class="greeting-text">
+            <h1>Add New Shift</h1>
+            <p class="greeting-sub">
+                Create a working shift for employees.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="content-card">
+
+        <form method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Shift Name
+                </label>
+
+                <input 
+                    type="text"
+                    name="shift_name"
+                    class="form-control"
+                    placeholder="Example: Morning Shift"
+                    required>
+
+            </div>
+
+
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Start Time
+                    </label>
+
+                    <input 
+                        type="time"
+                        name="start_time"
+                        id="start_time"
+                        class="form-control"
+                        oninput="calculateEndTime()"
+                        required>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        Working Hours
+                    </label>
+
+                    <input 
+                        type="number"
+                        step="0.5"
+                        name="working_hours"
+                        id="working_hours"
+                        value="8"
+                        class="form-control"
+                        oninput="calculateEndTime()"
+                        required>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        End Time (Auto-calculated)
+                    </label>
+
+                    <input 
+                        type="time"
+                        id="end_time"
+                        name="end_time"
+                        class="form-control"
+                        readonly>
+
+                </div>
+
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary">
+                Save Shift
+            </button>
+
+
+            <a href="/admin/shifts" class="btn btn-secondary">
+                Cancel
+            </a>
+
+
+        </form>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+function calculateEndTime() {
+    const start = document.getElementById('start_time');
+    const hours = document.getElementById('working_hours');
+    const end = document.getElementById('end_time');
+
+    if (!start.value || !hours.value) {
+        end.value = '';
+        return;
+    }
+
+    const [sh, sm] = start.value.split(':').map(Number);
+    const totalMinutes = sh * 60 + sm + parseFloat(hours.value) * 60;
+
+    const endMinutes = totalMinutes % (24 * 60);
+    const eh = String(Math.floor(endMinutes / 60)).padStart(2, '0');
+    const em = String(Math.round(endMinutes % 60)).padStart(2, '0');
+
+    end.value = eh + ':' + em;
+}
+
+// Calculate on page load
+calculateEndTime();
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Holiday — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Edit Holiday
+            </h1>
+
+            <p class="text-muted mb-0">
+                Update holiday information.
+            </p>
+        </div>
+
+        <a href="{{ url_for('holiday.holiday_list') }}"
+           class="btn btn-outline-secondary">
+
+            ← Back to Holidays
+
+        </a>
+
+    </div>
+
+
+    <!-- Form -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <h5 class="fw-bold mb-1">
+                Holiday Information
+            </h5>
+
+            <small class="text-muted">
+                Update the details below.
+            </small>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row g-3">
+
+
+                    <!-- Holiday Name -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Holiday Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            value="{{ holiday.name }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Date -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Holiday Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="date"
+                            class="form-control"
+                            value="{{ holiday.date.strftime('%Y-%m-%d') }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Holiday Type -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Holiday Type
+                        </label>
+
+                        <select
+                            name="holiday_type"
+                            class="form-select"
+                            required
+                        >
+
+                            <option
+                                value="Public"
+                                {% if holiday.holiday_type == "Public" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Public Holiday
+                            </option>
+
+
+                            <option
+                                value="Company"
+                                {% if holiday.holiday_type == "Company" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Company Holiday
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ holiday.status }}"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Optional holiday description..."
+                        >{{ holiday.description or "" }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2 mt-4">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Save Changes
+                    </button>
+
+
+                    <a
+                        href="{{ url_for('holiday.holiday_list') }}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.card {
+    border-radius: 12px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.form-label {
+    margin-bottom: 6px;
+}
+
+</style>
+
+{% endblock %}

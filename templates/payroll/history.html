@@ -1,0 +1,532 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}
+Salary History — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- ==========================
+         Header
+    =========================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Salary History
+            </h1>
+
+            <p class="text-muted mb-0">
+                View complete payroll and salary history of employees.
+            </p>
+        </div>
+
+        {% if current_user.has_role("Super Admin") %}
+        <div>
+            <a href="{{ url_for('payroll.generate_payroll') }}"
+               class="btn btn-primary">
+                + Generate Payroll
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- ==========================
+         Summary Cards
+    =========================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Payroll Records
+                    </small>
+
+                    <h3 class="fw-bold mt-2 mb-0">
+                        {{ payrolls|length }}
+                    </h3>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Basic Salary
+                    </small>
+
+                    <h3 class="fw-bold mt-2 mb-0">
+                        Rs.
+                        {{ "%.2f"|format(
+                            payrolls|sum(attribute="basic_salary")
+                        ) }}
+                    </h3>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Overtime Pay
+                    </small>
+
+                    <h3 class="fw-bold mt-2 mb-0">
+                        Rs.
+                        {{ "%.2f"|format(
+                            payrolls|sum(attribute="overtime_pay")
+                        ) }}
+                    </h3>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Net Salary
+                    </small>
+
+                    <h3 class="fw-bold mt-2 mb-0">
+                        Rs.
+                        {{ "%.2f"|format(
+                            payrolls|sum(attribute="final_salary")
+                        ) }}
+                    </h3>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================
+         Salary History Table
+    =========================== -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Payroll History
+                    </h5>
+
+                    <small class="text-muted">
+                        All generated salary records
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {% if payrolls %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Basic Salary</th>
+                            <th>Allowances</th>
+                            <th>Overtime</th>
+                            <th>Bonus</th>
+                            <th>Deductions</th>
+                            <th>Net Salary</th>
+                            <th>Status</th>
+                            <th>Generated</th>
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for payroll in payrolls %}
+
+                        <tr>
+
+                            <!-- ID -->
+
+                            <td>
+                                <strong>
+                                    #{{ payroll.id }}
+                                </strong>
+                            </td>
+
+
+                            <!-- Employee -->
+
+                            <td>
+
+                                {% if payroll.employee %}
+
+                                    <div class="fw-semibold">
+                                        {{ payroll.employee.full_name }}
+                                    </div>
+
+                                    {% if payroll.employee.email %}
+
+                                        <small class="text-muted">
+                                            {{ payroll.employee.email }}
+                                        </small>
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Employee Deleted
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Month -->
+
+                            <td>
+                                {{ payroll.month }}
+                            </td>
+
+
+                            <!-- Year -->
+
+                            <td>
+                                {{ payroll.year }}
+                            </td>
+
+
+                            <!-- Basic -->
+
+                            <td>
+                                Rs.
+                                {{ "%.2f"|format(
+                                    payroll.basic_salary or 0
+                                ) }}
+                            </td>
+
+
+                            <!-- Allowances -->
+
+                            <td>
+                                Rs.
+                                {{ "%.2f"|format(
+                                    payroll.allowances or 0
+                                ) }}
+                            </td>
+
+
+                            <!-- Overtime -->
+
+                            <td>
+
+                                <div>
+                                    Rs.
+                                    {{ "%.2f"|format(
+                                        payroll.overtime_pay or 0
+                                    ) }}
+                                </div>
+
+                                <small class="text-muted">
+
+                                    {{ "%.2f"|format(
+                                        payroll.overtime_hours or 0
+                                    ) }}
+
+                                    hrs
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- Bonus -->
+
+                            <td>
+                                Rs.
+                                {{ "%.2f"|format(
+                                    payroll.bonus or 0
+                                ) }}
+                            </td>
+
+
+                            <!-- Deductions -->
+
+                            <td class="text-danger">
+
+                                - Rs.
+                                {{ "%.2f"|format(
+                                    payroll.deductions or 0
+                                ) }}
+
+                            </td>
+
+
+                            <!-- Net Salary -->
+
+                            <td>
+
+                                <strong class="text-success">
+
+                                    Rs.
+                                    {{ "%.2f"|format(
+                                        payroll.final_salary or 0
+                                    ) }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if payroll.status == "Paid" %}
+
+                                    <span class="badge bg-success">
+                                        Paid
+                                    </span>
+
+                                {% elif payroll.status == "Pending" %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        {{ payroll.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Created -->
+
+                            <td>
+
+                                {% if payroll.created_at %}
+
+                                    <div>
+                                        {{ payroll.created_at.strftime(
+                                            "%d %b %Y"
+                                        ) }}
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        {{ payroll.created_at.strftime(
+                                            "%I:%M %p"
+                                        ) }}
+
+                                    </small>
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Actions -->
+
+                            <td>
+
+                                <div class="d-flex gap-2">
+
+                                    <!-- View Payroll -->
+
+                                    <a href="{{ url_for(
+                                        'payroll.view_payroll',
+                                        id=payroll.id
+                                    ) }}"
+                                    class="btn btn-sm btn-outline-primary">
+
+                                        View
+
+                                    </a>
+
+
+                                    <!-- Payslip PDF -->
+
+                                    <a href="{{ url_for(
+                                        'payroll.payslip',
+                                        payroll_id=payroll.id
+                                    ) }}"
+                                    class="btn btn-sm btn-outline-success"
+                                    target="_blank">
+
+                                        📄 Payslip
+
+                                    </a>
+
+
+                                    <!-- Delete -->
+
+                                    {% if current_user.has_role("Super Admin") %}
+
+                                    <form method="POST"
+                                          action="{{ url_for(
+                                              'payroll.delete_payroll',
+                                              id=payroll.id
+                                          ) }}"
+                                          onsubmit="return confirm(
+                                              'Are you sure you want to delete this payroll record?'
+                                          );">
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger">
+
+                                            Delete
+
+                                        </button>
+
+                                    </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <!-- Empty State -->
+
+            <div class="text-center py-5">
+
+                <div class="mb-3"
+                     style="font-size: 48px;">
+                    💰
+                </div>
+
+                <h5 class="fw-bold">
+                    No Salary History
+                </h5>
+
+                <p class="text-muted">
+                    No payroll records have been generated yet.
+                </p>
+
+
+                {% if current_user.has_role("Super Admin") %}
+
+                    <a href="{{ url_for('payroll.generate_payroll') }}"
+                       class="btn btn-primary">
+
+                        Generate First Payroll
+
+                    </a>
+
+                {% else %}
+
+                    <p class="text-muted mb-0">
+                        No salary records are available yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================
+     Responsive Styling
+=========================== -->
+
+<style>
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .table th {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    .table td {
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    .badge {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+</style>
+
+{% endblock %}
+```

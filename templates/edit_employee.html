@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Employee — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Edit Employee</h1>
+            <p class="greeting-sub">Update employee information — {{ employee.full_name }} ({{ employee.employee_code }}).</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="content-card">
+        <form method="POST">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Employee Code</label>
+                        <input type="text" name="employee_code" class="form-control" value="{{ employee.employee_code }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ employee.full_name }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ employee.email }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="{{ employee.phone }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" name="department" class="form-control" value="{{ employee.department }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Designation</label>
+                        <input type="text" name="designation" class="form-control" value="{{ employee.designation }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Joining Date</label>
+                        <input type="date" name="joining_date" class="form-control" value="{{ employee.joining_date.strftime('%Y-%m-%d') if employee.joining_date else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Resignation Date</label>
+
+        <input
+            type="date"
+            name="resignation_date"
+            class="form-control"
+            value="{{ employee.resignation_date.strftime('%Y-%m-%d') if employee.resignation_date else '' }}"
+        >
+    </div>
+</div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Basic Salary</label>
+                        <input type="number" name="basic_salary" class="form-control" value="{{ employee.basic_salary }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Overtime Rate</label>
+                        <input type="number" name="overtime_rate" class="form-control" value="{{ employee.overtime_rate }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Location</label>
+
+        <select name="location" class="form-select">
+
+            <option value="Faisalabad">Faisalabad</option>
+
+        </select>
+    </div>
+</div>
+                <div class="col-md-6">
+    <div class="form-group">
+
+        <label class="form-label">
+            Employment Type
+        </label>
+
+        <select
+            name="employment_type"
+            class="form-select"
+        >
+
+            <option value="Full Time"
+            {% if employee.employment_type=="Full Time" %}selected{% endif %}>
+                Full Time
+            </option>
+
+            <option value="Part Time"
+            {% if employee.employment_type=="Part Time" %}selected{% endif %}>
+                Part Time
+            </option>
+
+            <option value="Contract"
+            {% if employee.employment_type=="Contract" %}selected{% endif %}>
+                Contract
+            </option>
+
+            <option value="Intern"
+            {% if employee.employment_type=="Intern" %}selected{% endif %}>
+                Intern
+            </option>
+
+            <option value="Remote"
+            {% if employee.employment_type=="Remote" %}selected{% endif %}>
+                Remote
+            </option>
+
+        </select>
+
+    </div>
+</div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Assign Shift</label>
+                            <select name="shift_id" class="form-select" required>
+
+                                <option value="">Select Shift</option>
+
+                                    {% for shift in shifts %}
+
+                                <option value="{{ shift.id }}">
+                                    {% if employee.shift and employee.shift.id == shift.id %}
+                                     selected
+                                     {% endif %}
+                                            
+                                      {{ shift.shift_name }}
+                                       ({{ shift.start_time.strftime('%I:%M %p') }} -
+                                         {{ shift.end_time.strftime('%I:%M %p') }})
+                                </option>
+
+                                      {% endfor %}
+
+                            </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-control">
+                            <option value="Active" {% if employee.status == 'Active' %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if employee.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                            <option value="Resigned" {% if employee.status == 'Resigned' %}selected{% endif %}>Resigned</option>
+                            <option value="Terminated" {% if employee.status == 'Terminated' %}selected{% endif %}>Terminated</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+
+<h4 class="mb-3">Emergency Contact</h4>
+
+<div class="row g-3">
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <input
+                type="text"
+                name="emergency_contact_name"
+                class="form-control"
+                value="{{ employee.emergency_contact_name or '' }}"
+                placeholder="Enter Contact Name"
+            >
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Relationship</label>
+            <input
+                type="text"
+                name="emergency_contact_relation"
+                class="form-control"
+                value="{{ employee.emergency_contact_relation or '' }}"
+                placeholder="Father / Mother / Brother / Wife"
+            >
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Emergency Phone</label>
+            <input
+                type="text"
+                name="emergency_contact_phone"
+                class="form-control"
+                value="{{ employee.emergency_contact_phone or '' }}"
+                placeholder="03XXXXXXXXX"
+            >
+        </div>
+    </div>
+
+</div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary" style="background:var(--warning);border:none;color:var(--foreground);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Update Employee
+                </button>
+                <a href="/employees" class="btn btn-outline-primary ms-2">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

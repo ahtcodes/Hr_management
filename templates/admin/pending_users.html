@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}
+Pending Employee Requests
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Pending Employee Requests</h2>
+
+        <a href="/admin/dashboard" class="btn btn-secondary">
+            Dashboard
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th width="220">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for user in users %}
+
+                    <tr>
+
+                        <td>{{ user.id }}</td>
+
+                        <td>{{ user.username }}</td>
+
+                        <td>{{ user.email }}</td>
+
+                        <td>
+
+                            <span class="badge bg-warning">
+                                {{ user.status }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <a href="/admin/approve/{{ user.id }}"
+                               class="btn btn-success btn-sm">
+                               Approve
+                            </a>
+
+                            <a href="/admin/reject/{{ user.id }}"
+                               class="btn btn-danger btn-sm">
+                               Reject
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center">
+                            No Pending Requests
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

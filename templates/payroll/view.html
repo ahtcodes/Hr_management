@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}
+Payroll Details — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Payroll Details</h2>
+        <p class="text-muted mb-0">
+            {{ payroll.employee.full_name }}
+            ({{ payroll.employee.employee_code }})
+            — {{ payroll.month }} {{ payroll.year }}
+        </p>
+    </div>
+
+```html
+{% if current_user.has_role("Super Admin") %}
+
+<a href="{{ url_for('payroll.payroll_list') }}"
+   class="btn btn-outline-secondary">
+    ← Back to Payroll
+</a>
+
+{% else %}
+
+<a href="{{ url_for('payroll.salary_history') }}"
+   class="btn btn-outline-secondary">
+    ← Back to Salary History
+</a>
+
+{% endif %}
+```
+
+</div>
+
+
+<!-- =========================
+     Salary Information
+========================= -->
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Salary Information</h5>
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th width="50%">Basic Salary</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.basic_salary or 0) }} / month
+                </td>
+            </tr>
+
+            <tr>
+                <th>Daily Rate</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.daily_rate or 0) }} / day
+                </td>
+            </tr>
+
+            <tr>
+                <th>Hourly Rate</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.hourly_rate or 0) }} / hour
+                </td>
+            </tr>
+
+            <tr>
+                <th>Working Days</th>
+                <td>
+                    {{ payroll.working_days }} days
+                </td>
+            </tr>
+
+            <tr>
+                <th>Present Days</th>
+                <td>
+                    {{ payroll.present_days }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Absent Days</th>
+                <td>
+                    {{ payroll.absent_days }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Leave Days</th>
+                <td>
+                    {{ payroll.leave_days }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Total Working Hours</th>
+                <td>
+                    {{ "%.2f"|format(payroll.total_working_hours or 0) }} hrs
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<!-- =========================
+     Earnings
+========================= -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+        <h5 class="mb-0">Earnings</h5>
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th width="50%">Basic Earned</th>
+                <td>
+                    Rs. {{ "%.2f"|format(
+                        (payroll.daily_rate or 0) *
+                        (payroll.present_days or 0)
+                    ) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Allowances</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.allowances or 0) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Overtime Hours</th>
+                <td>
+                    {{ "%.2f"|format(payroll.overtime_hours or 0) }} hrs
+                </td>
+            </tr>
+
+            <tr>
+                <th>Overtime Pay</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.overtime_pay or 0) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Bonus</th>
+                <td>
+                    Rs. {{ "%.2f"|format(payroll.bonus or 0) }}
+                </td>
+            </tr>
+
+            <tr class="table-light">
+                <th>Gross Salary</th>
+                <td>
+                    <strong>
+                        Rs. {{ "%.2f"|format(
+                            (
+                                (payroll.daily_rate or 0) *
+                                (payroll.present_days or 0)
+                            )
+                            + (payroll.allowances or 0)
+                            + (payroll.overtime_pay or 0)
+                            + (payroll.bonus or 0)
+                        ) }}
+                    </strong>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<!-- =========================
+     Deductions
+========================= -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+        <h5 class="mb-0">Deductions</h5>
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th width="50%">Late / Early Deduction</th>
+                <td class="text-danger">
+                    - Rs. {{ "%.2f"|format(
+                        payroll.late_deduction or 0
+                    ) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Absence Deduction</th>
+                <td class="text-danger">
+                    - Rs. {{ "%.2f"|format(
+                        payroll.absence_deduction or 0
+                    ) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>Other Deductions</th>
+                <td class="text-danger">
+                    - Rs. 0.00
+                </td>
+            </tr>
+
+            <tr>
+                <th>Tax</th>
+                <td class="text-danger">
+                    - Rs. {{ "%.2f"|format(payroll.tax or 0) }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>5% Security</th>
+                <td class="text-danger">
+                    - Rs. {{ "%.2f"|format(
+                        payroll.security_deduction or 0
+                    ) }}
+                </td>
+            </tr>
+
+            <tr class="table-light">
+                <th>Total Deductions</th>
+                <td class="text-danger">
+                    <strong>
+                        - Rs. {{ "%.2f"|format(
+                            payroll.deductions or 0
+                        ) }}
+                    </strong>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<!-- =========================
+     Final Salary
+========================= -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+        <h5 class="mb-0">Final Salary</h5>
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-bordered mb-0">
+
+            <tr>
+                <th width="50%">Net Salary</th>
+                <td>
+                    <strong>
+                        Rs. {{ "%.2f"|format(
+                            payroll.net_salary or 0
+                        ) }}
+                    </strong>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Final Salary</th>
+                <td>
+                    <strong class="text-success">
+                        Rs. {{ "%.2f"|format(
+                            payroll.final_salary or 0
+                        ) }}
+                    </strong>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>
+                    {% if payroll.status == "Paid" %}
+
+                        <span class="badge bg-success">
+                            Paid
+                        </span>
+
+                    {% elif payroll.status == "Approved" %}
+
+                        <span class="badge bg-success">
+                            Approved
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-warning text-dark">
+                            {{ payroll.status }}
+                        </span>
+
+                    {% endif %}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<!-- =========================
+     Attendance Summary
+========================= -->
+
+<h4 class="mt-4 mb-3">Attendance Summary</h4>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-2 col-6">
+        <div class="card text-center p-3">
+            <strong class="text-success">
+                Present
+            </strong>
+            <h4>
+                {{ summary.on_time }}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="card text-center p-3">
+            <strong class="text-warning">
+                Late
+            </strong>
+            <h4>
+                {{ summary.late }}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="card text-center p-3">
+            <strong class="text-info">
+                Early Leave
+            </strong>
+            <h4>
+                {{ summary.early_leave }}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="card text-center p-3">
+            <strong class="text-secondary">
+                On Leave
+            </strong>
+            <h4>
+                {{ summary.leave }}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="card text-center p-3">
+            <strong class="text-danger">
+                Absent
+            </strong>
+            <h4>
+                {{ summary.absent }}
+            </h4>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     Daily Attendance
+========================= -->
+
+<h4 class="mt-4 mb-3">
+    Daily Attendance Breakdown
+</h4>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Status</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Working Hrs</th>
+                <th>Late Hrs</th>
+                <th>Early Leave Hrs</th>
+                <th>OT Hrs</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for b in breakdown %}
+
+            <tr>
+
+                <td>{{ b.date }}</td>
+
+                <td>{{ b.day }}</td>
+
+                <td>
+
+                    {% if b.status == "Present" and b.late_hours > 0 %}
+
+                        <span class="badge bg-warning text-dark">
+                            Late
+                        </span>
+
+                    {% elif b.status == "Present" and b.early_leave_hours > 0 %}
+
+                        <span class="badge bg-info">
+                            Early Leave
+                        </span>
+
+                    {% elif b.status == "Present" %}
+
+                        <span class="badge bg-success">
+                            Present
+                        </span>
+
+                    {% elif b.status == "On Leave" %}
+
+                        <span class="badge bg-secondary">
+                            On Leave
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+                            Absent
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ b.check_in or "—" }}
+                </td>
+
+                <td>
+                    {{ b.check_out or "—" }}
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(b.working_hours or 0) }}
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(b.late_hours or 0) }}
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(b.early_leave_hours or 0) }}
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(b.overtime_hours or 0) }}
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+                <td colspan="9" class="text-center">
+                    No attendance records found.
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

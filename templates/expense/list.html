@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}
+Expense Management — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold">Expense Management</h1>
+            <p class="text-muted">
+                View and manage expense requests.
+            </p>
+        </div>
+
+        <a href="{{ url_for('expense.create_expense') }}"
+           class="btn btn-primary">
+            + New Expense
+        </a>
+
+    </div>
+
+
+    {% if expenses %}
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+
+                            <th>Employee</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Reimbursement</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in expenses %}
+
+                        <tr>
+
+                            <td>
+                                {{ item.employee.full_name
+                                   if item.employee and item.employee.full_name
+                                   else item.employee_id }}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {{ item.title }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item.category }}
+                            </td>
+
+                            <td>
+                                Rs. {{ "%.2f"|format(item.amount) }}
+                            </td>
+
+                            <td>
+                                {{ item.expense_date.strftime("%d-%m-%Y") }}
+                            </td>
+
+                            <td>
+
+                                {% if item.status == "Pending" %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% elif item.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+
+                                {% elif item.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        {{ item.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if item.reimbursement_status == "Reimbursed" %}
+
+                                    <span class="badge bg-success">
+                                        Reimbursed
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if current_user.has_role("Super Admin") %}
+
+                                    {% if item.status == "Pending" %}
+
+                                    <div class="d-flex gap-1">
+
+                                        <form method="POST"
+                                              action="{{ url_for('expense.approve_expense', id=item.id) }}">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-success">
+                                                Approve
+                                            </button>
+
+                                        </form>
+
+
+                                        <form method="POST"
+                                              action="{{ url_for('expense.reject_expense', id=item.id) }}">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-danger">
+                                                Reject
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                    {% elif item.status == "Approved"
+                                          and item.reimbursement_status != "Reimbursed" %}
+
+                                    <form method="POST"
+                                          action="{{ url_for('expense.reimburse_expense', id=item.id) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-primary">
+                                            Reimburse
+                                        </button>
+
+                                    </form>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        View Only
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body text-center py-5">
+
+            <div style="font-size: 50px;">
+                💰
+            </div>
+
+            <h3 class="mt-3">
+                No Expense Requests
+            </h3>
+
+            <p class="text-muted">
+                No expense requests have been submitted yet.
+            </p>
+
+            <a href="{{ url_for('expense.create_expense') }}"
+               class="btn btn-primary">
+                Create Expense Request
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

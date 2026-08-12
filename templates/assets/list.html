@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assets Management — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>Assets Management</h1>
+            <p class="text-muted">
+                Manage company assets and employee assignments.
+            </p>
+        </div>
+
+        <a href="{{ url_for('asset.create_asset') }}"
+           class="btn btn-primary">
+            + Add Asset
+        </a>
+
+    </div>
+
+
+    <!-- Flash Messages -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- Assets Table -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Asset Code</th>
+                            <th>Type</th>
+                            <th>Asset Name</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th>Serial Number</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% if assets %}
+
+                            {% for asset in assets %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ asset.asset_code }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ asset.asset_type }}
+                                </td>
+
+                                <td>
+                                    {{ asset.asset_name }}
+                                </td>
+
+                                <td>
+                                    {{ asset.brand or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ asset.model or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ asset.serial_number or "-" }}
+                                </td>
+
+                                <td>
+
+                                    {% if asset.status == "Available" %}
+
+                                        <span class="badge bg-success">
+                                            Available
+                                        </span>
+
+                                    {% elif asset.status == "Assigned" %}
+
+                                        <span class="badge bg-primary">
+                                            Assigned
+                                        </span>
+
+                                    {% elif asset.status == "Maintenance" %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Maintenance
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+                                            {{ asset.status }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    <form
+                                        action="{{ url_for('asset.delete_asset', id=asset.id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Delete this asset?');"
+                                        style="display:inline;"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-danger"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td
+                                    colspan="8"
+                                    class="text-center text-muted py-5"
+                                >
+
+                                    No assets found.
+
+                                    <br>
+
+                                    <a
+                                        href="{{ url_for('asset.create_asset') }}"
+                                        class="btn btn-primary btn-sm mt-3"
+                                    >
+                                        Add First Asset
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

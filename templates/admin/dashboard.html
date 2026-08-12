@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<div class="dashboard-banner">
+
+    <div class="banner-left">
+
+        <h2>👋 Welcome Back, Admin</h2>
+
+        <p>
+            Manage employees, attendance, payroll and leave requests
+            from one centralized dashboard.
+        </p>
+
+    </div>
+
+    <div class="banner-right">
+
+        <div class="date-box">
+            📅 {{ moment().format('DD MMM YYYY') if moment else 'Today' }}
+        </div>
+
+    </div>
+    <div class="date-box">
+    📅 {{ today.strftime("%A, %d %B %Y") }}
+</div>
+
+</div>
+
+    <!-- Stats Cards -->
+    <div class="row dashboard-stats g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card text-white h-100" style="background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%);">
+                <div class="card-body">
+                    <h5>Total Employees</h5>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <h1>{{ total_employees }}</h1>
+                        <span class="stat-delta up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                                <polyline points="16 7 22 7 22 13"/>
+                            </svg>
+                            Workforce
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card text-white h-100" style="background: var(--success);">
+                <div class="card-body">
+                    <h5>Present Today</h5>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <h1>{{ today_present }}</h1>
+                        <span class="stat-delta up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                                <polyline points="16 7 22 7 22 13"/>
+                            </svg>
+                            {% if total_employees > 0 %}{{ "%.1f"|format(today_present / total_employees * 100) }}%{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card text-white h-100" style="background: var(--warning); color: var(--foreground) !important;">
+                <div class="card-body">
+                    <h5>On Leave</h5>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <h1>{{ on_leave }}</h1>
+                        <span class="stat-delta down">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+                                <polyline points="16 17 22 17 22 11"/>
+                            </svg>
+                            Away
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card text-white h-100" style="background: var(--destructive);">
+                <div class="card-body">
+                    <h5>Absent Today</h5>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <h1>{{ absent_today }}</h1>
+                        <span class="stat-delta down">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+                                <polyline points="16 17 22 17 22 11"/>
+                            </svg>
+                            Missing
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent Employees -->
+    <div class="leave-card-modern">
+        <div class="leave-header">
+            <h3>Recent Employees</h3>
+            <a href="/employees">View all</a>
+        </div>
+        <div class="table-wrapper">
+            <table class="leave-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for employee in recent_employees %}
+                    <tr>
+                        <td>{{ employee.employee_code }}</td>
+                        <td>
+                            <div class="employee-cell">
+                                <span class="employee-name">{{ employee.full_name }}</span>
+                            </div>
+                        </td>
+                        <td>{{ employee.department }}</td>
+                        <td>{{ employee.designation }}</td>
+                        <td>
+                            <span class="status-pill status-approved">{{ employee.status }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="leave-card-modern mt-4">
+
+    <div class="leave-header">
+        <h3>
+            Pending Registration Requests
+            <span class="badge bg-warning text-dark">
+                {{ pending_requests }}
+            </span>
+        </h3>
+    </div>
+
+    {% if pending_users %}
+
+    <div class="table-wrapper">
+
+        <table class="leave-table">
+
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th width="220">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for user in pending_users %}
+
+            <tr>
+
+                <td>{{ user.username }}</td>
+
+                <td>{{ user.email }}</td>
+
+                <td>{{ user.role }}</td>
+
+                <td>
+                    <span class="status-pill status-pending">
+                        {{ user.status }}
+                    </span>
+                </td>
+
+                <td>
+
+                    <a href="{{ url_for('admin.approve_user', user_id=user.id) }}"
+                       class="btn btn-success btn-sm">
+                        Approve
+                    </a>
+
+                    <a href="{{ url_for('admin.reject_user', user_id=user.id) }}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Reject this employee?')">
+                        Reject
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-success mb-0">
+        No pending registration requests.
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- Today's Attendance -->
+<div class="leave-card-modern mt-4">
+
+    <div class="leave-header">
+        <h3>Today's Attendance</h3>
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="leave-table">
+
+            <thead>
+
+                <tr>
+                    <th>Employee</th>
+                    <th>Status</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for record in today_records %}
+
+                <tr>
+
+                    <td>{{ record.employee.full_name }}</td>
+
+                    <td>{{ record.status }}</td>
+
+                    <td>
+
+                        {% if record.check_in %}
+                            {{ record.check_in.strftime("%I:%M %p") }}
+                        {% else %}
+                            --
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if record.check_out %}
+                            {{ record.check_out.strftime("%I:%M %p") }}
+                        {% else %}
+                            --
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if record.check_out %}
+
+                            <a href="{{ url_for('admin.reopen_attendance', id=record.id) }}"
+                               class="btn btn-warning btn-sm"
+                               onclick="return confirm('Reopen this attendance?')">
+
+                                Reopen Checkout
+
+                            </a>
+
+                        {% else %}
+
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+    <div class="text-center mt-3">
+        <a href="/employees" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem;">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            View Employees List
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

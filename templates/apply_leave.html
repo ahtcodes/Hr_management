@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}
+Leave Management — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="leave-page">
+
+    <!-- Header -->
+    <div class="leave-header">
+        <h1>Leave Management</h1>
+        <p>Apply for leave, check your balance, and review your leave history.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="leave-tabs">
+
+        <a href="{{ url_for('leave.apply_leave') }}"
+           class="leave-tab active">
+            Apply Leave
+        </a>
+
+        <a href="{{ url_for('leave.leave_balance') }}"
+           class="leave-tab">
+            Leave Balance
+        </a>
+
+        <a href="{{ url_for('leave.leave_history') }}"
+           class="leave-tab">
+            Leave History
+        </a>
+
+    </div>
+
+    <!-- Apply Leave Card -->
+    <div class="leave-card">
+
+        <h2>Apply for Leave</h2>
+        <p class="card-subtitle">
+            Submit your leave application by filling in the details below.
+        </p>
+
+        <form method="POST">
+
+            <!-- Leave Type -->
+            <div class="form-group">
+                <label for="leave_type">Leave Type</label>
+
+                <select name="leave_type" id="leave_type" required>
+                    <option value="">Select Leave Type</option>
+                    <option value="Annual Leave">Annual Leave</option>
+                    <option value="Sick Leave">Sick Leave</option>
+                    <option value="Casual Leave">Casual Leave</option>
+                </select>
+            </div>
+
+            <!-- Dates -->
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="start_date">Start Date</label>
+
+                    <input
+                        type="date"
+                        name="start_date"
+                        id="start_date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+
+                    <input
+                        type="date"
+                        name="end_date"
+                        id="end_date"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <!-- Reason -->
+            <div class="form-group">
+                <label for="reason">Reason</label>
+
+                <textarea
+                    name="reason"
+                    id="reason"
+                    rows="5"
+                    placeholder="Enter reason for leave..."
+                    required
+                ></textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-actions">
+                <button type="submit" class="btn-apply">
+                    Apply for Leave
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.leave-page {
+    padding: 5px 0 40px;
+}
+
+/* Header */
+
+.leave-header {
+    margin-bottom: 35px;
+}
+
+.leave-header h1 {
+    margin: 0;
+    font-size: 44px;
+    font-weight: 700;
+    color: #071d3b;
+}
+
+.leave-header p {
+    margin-top: 14px;
+    font-size: 20px;
+    color: #60738c;
+}
+
+
+/* Tabs */
+
+.leave-tabs {
+    display: flex;
+    gap: 40px;
+    border-bottom: 1px solid #dfe3e8;
+    margin-bottom: 30px;
+    padding-left: 5px;
+}
+
+.leave-tab {
+    text-decoration: none;
+    color: #60738c;
+    font-size: 23px;
+    font-weight: 600;
+    padding: 0 5px 17px;
+    position: relative;
+}
+
+.leave-tab:hover {
+    color: #4338ca;
+}
+
+.leave-tab.active {
+    color: #4338ca;
+}
+
+.leave-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: #4f46e5;
+}
+
+
+/* Card */
+
+.leave-card {
+    background: #ffffff;
+    border: 1px solid #dfe3e8;
+    border-radius: 24px;
+    padding: 35px 48px 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.leave-card h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #071d3b;
+}
+
+.card-subtitle {
+    color: #60738c;
+    font-size: 16px;
+    margin-top: 8px;
+    margin-bottom: 30px;
+}
+
+
+/* Form */
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #41566f;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d5dce5;
+    border-radius: 10px;
+    padding: 13px 15px;
+    font-size: 16px;
+    color: #071d3b;
+    background: #fff;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-group input,
+.form-group select {
+    height: 48px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
+}
+
+
+/* Button */
+
+.form-actions {
+    margin-top: 10px;
+}
+
+.btn-apply {
+    border: none;
+    background: #4f46e5;
+    color: white;
+    padding: 13px 25px;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-apply:hover {
+    background: #4338ca;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .leave-header h2 {
+        font-size: 34px;
+    }
+
+    .leave-header p {
+        font-size: 16px;
+    }
+
+    .leave-tabs {
+        gap: 20px;
+        overflow-x: auto;
+    }
+
+    .leave-tab {
+        font-size: 17px;
+        white-space: nowrap;
+    }
+
+    .leave-card {
+        padding: 25px 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+</style>
+
+{% endblock %}

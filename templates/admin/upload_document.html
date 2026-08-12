@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}
+Upload Document — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>Upload Document</h1>
+            <p class="text-muted">
+                Upload employee or company documents.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('admin.documents') }}"
+            class="btn btn-secondary"
+        >
+            Back to Documents
+        </a>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <!-- Employee -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Employee
+                    </label>
+
+                    <select
+                        name="employee_id"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            Company Policy / General Document
+                        </option>
+
+                        {% for employee in employees %}
+
+                        <option value="{{ employee.id }}">
+                            {{ employee.full_name }}
+                            — {{ employee.employee_code }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <small class="text-muted">
+                        Employee is optional for company policies.
+                    </small>
+
+                </div>
+
+
+                <!-- Title -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Document Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        placeholder="e.g. Employment Contract"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Document Type -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Document Type
+                    </label>
+
+                    <select
+                        name="document_type"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select Document Type
+                        </option>
+
+                        <option value="Contract">
+                            Contract
+                        </option>
+
+                        <option value="Offer Letter">
+                            Offer Letter
+                        </option>
+
+                        <option value="Appointment Letter">
+                            Appointment Letter
+                        </option>
+
+                        <option value="Experience Letter">
+                            Experience Letter
+                        </option>
+
+                        <option value="Company Policy">
+                            Company Policy
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- File -->
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Document File
+                    </label>
+
+                    <input
+                        type="file"
+                        name="document_file"
+                        class="form-control"
+                        accept=".pdf,.doc,.docx"
+                        required
+                    >
+
+                    <small class="text-muted">
+                        Allowed formats: PDF, DOC, DOCX
+                    </small>
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Upload Document
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

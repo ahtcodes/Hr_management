@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Live Attendance{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Today's Employee Attendance</h2>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Employee</th>
+                <th>Shift</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Working Hours</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for record in records %}
+
+        <tr>
+
+            <td>{{ record.employee.full_name }}</td>
+
+            <td>
+                {% if record.employee.shift %}
+                    {{ record.employee.shift.shift_name }}
+                    <br>
+                    <small>
+                        {{ record.employee.shift.start_time.strftime("%I:%M %p") }}
+                        -
+                        {{ record.employee.shift.end_time.strftime("%I:%M %p") }}
+                    </small>
+                {% else %}
+                    --
+                {% endif %}
+            </td>
+
+            <td>
+                {% if record.check_in %}
+                    {{ record.check_in.strftime("%I:%M %p") }}
+                {% else %}
+                    --
+                {% endif %}
+            </td>
+
+            <td>
+                {% if record.check_out %}
+                    {{ record.check_out.strftime("%I:%M %p") }}
+                {% else %}
+                    --
+                {% endif %}
+            </td>
+
+            <td>
+
+                {% if record.status == "Present" %}
+                    <span class="badge bg-success">
+                        Present
+                    </span>
+
+                {% elif record.status == "Absent" %}
+                    <span class="badge bg-danger">
+                        Absent
+                    </span>
+
+                {% elif record.status == "Leave" %}
+                    <span class="badge bg-warning text-dark">
+                        Leave
+                    </span>
+
+                {% else %}
+                    {{ record.status }}
+                {% endif %}
+
+            </td>
+
+<td>
+                {% if record.working_hours and record.working_hours > 0 %}
+                    {{ record.working_hours }} Hours
+                {% elif record.employee.shift %}
+                    {{ record.employee.shift.working_hours }} Hours
+                    <small class="text-muted">(scheduled)</small>
+                {% else %}
+                    0 Hours
+                {% endif %}
+            </td>
+
+            <td>
+
+                {% if record.check_out %}
+
+                    <a href="{{ url_for('admin.reopen_attendance', id=record.id) }}"
+                       class="btn btn-warning btn-sm"
+                       onclick="return confirm('Reopen this attendance?')">
+
+                        Reopen Checkout
+
+                    </a>
+
+                {% else %}
+
+                    <span class="badge bg-success">
+                        Working
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

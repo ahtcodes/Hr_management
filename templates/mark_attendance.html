@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mark Attendance — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Mark Attendance</h1>
+            <p class="greeting-sub">Record attendance for employees.</p>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <form action="/mark_attendance" method="POST">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Employee</label>
+                        <select name="employee_id" id="employeeSelect" class="form-control" required onchange="updateOvertimeRate()">
+                            <option value="">Select Employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}" data-overtime="{{ employee.overtime_rate }}">
+                                {{ employee.employee_code }} - {{ employee.full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-control" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Leave">Leave</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Check In</label>
+                        <input type="time" name="check_in" id="checkIn" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Check Out</label>
+                        <input type="time" name="check_out" id="checkOut" class="form-control" onchange="calcOvertimePay()">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Overtime Rate (Per Hour)</label>
+                        <input type="text" id="overtimeRateDisplay" class="form-control" readonly placeholder="Select employee first">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Overtime Pay (Estimated)</label>
+                        <input type="text" id="overtimePayDisplay" class="form-control" readonly value="--">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        <polyline points="16 8 18 10 22 6"/>
+                    </svg>
+                    Save Attendance
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+// Auto-fill check-in with current time
+window.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('checkIn').value = hours + ':' + minutes;
+});
+
+function updateOvertimeRate() {
+    const select = document.getElementById('employeeSelect');
+    const selectedOption = select.options[select.selectedIndex];
+    const rate = selectedOption ? selectedOption.getAttribute('data-overtime') : 0;
+    document.getElementById('overtimeRateDisplay').value = rate > 0 ? 'Rs. ' + rate + ' / hour' : 'No overtime rate set';
+    calcOvertimePay();
+}
+
+function calcOvertimePay() {
+    const select = document.getElementById('employeeSelect');
+    const selectedOption = select.options[select.selectedIndex];
+    const rate = parseFloat(selectedOption ? selectedOption.getAttribute('data-overtime') : 0) || 0;
+
+    const checkIn = document.getElementById('checkIn').value;
+    const checkOut = document.getElementById('checkOut').value;
+
+    if (checkIn && checkOut && rate > 0) {
+        const [inH, inM] = checkIn.split(':').map(Number);
+        const [outH, outM] = checkOut.split(':').map(Number);
+        const inMinutes = inH * 60 + inM;
+        const outMinutes = outH * 60 + outM;
+        let diffMinutes = outMinutes - inMinutes;
+        if (diffMinutes < 0) diffMinutes += 24 * 60;
+
+        const totalHours = diffMinutes / 60;
+        const overtimeHours = Math.max(0, totalHours - 8);
+        const overtimePay = overtimeHours * rate;
+
+        document.getElementById('overtimePayDisplay').value = overtimePay > 0
+            ? 'Rs. ' + overtimePay.toFixed(2) + ' (' + overtimeHours.toFixed(1) + ' hrs overtime)'
+            : 'No overtime (under 8 hrs)';
+    } else {
+        document.getElementById('overtimePayDisplay').value = '--';
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}
+KPI Tracking — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                KPI Tracking
+            </h1>
+
+            <p class="text-muted mb-0">
+                Track employee performance indicators and achievements.
+            </p>
+        </div>
+
+        {% if current_user.has_role("Super Admin")
+              or current_user.has_role("Department Manager") %}
+
+        <a href="{{ url_for('kpi.create_kpi') }}"
+           class="btn btn-primary">
+            + Create KPI
+        </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Flash Messages -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                    {{ message }}
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- KPI Table -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            {% if current_user.has_role("Super Admin")
+                                  or current_user.has_role("Department Manager") %}
+
+                            <th>Employee</th>
+
+                            {% endif %}
+
+                            <th>KPI</th>
+
+                            <th>Target</th>
+
+                            <th>Achieved</th>
+
+                            <th>Unit</th>
+
+                            <th>Progress</th>
+
+                            <th>Status</th>
+
+                            <th>Period</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in kpis %}
+
+                        {% set target = item.target or 0 %}
+                        {% set achieved = item.achieved or 0 %}
+
+                        {% if target > 0 %}
+
+                            {% set progress =
+                                ((achieved / target) * 100)
+                                |round(0)
+                            %}
+
+                        {% else %}
+
+                            {% set progress = 0 %}
+
+                        {% endif %}
+
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            {% if current_user.has_role("Super Admin")
+                                  or current_user.has_role("Department Manager") %}
+
+                            <td>
+
+                                <strong>
+                                    {{ item.employee.full_name }}
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    {{ item.employee.employee_code }}
+                                </small>
+
+                            </td>
+
+                            {% endif %}
+
+
+                            <td>
+
+                                <strong>
+                                    {{ item.title }}
+                                </strong>
+
+                                {% if item.description %}
+
+                                <br>
+
+                                <small class="text-muted">
+                                    {{ item.description }}
+                                </small>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ target }}
+                            </td>
+
+
+                            <td>
+                                {{ achieved }}
+                            </td>
+
+
+                            <td>
+                                {{ item.unit or "-" }}
+                            </td>
+
+
+                            <!-- Progress -->
+
+                            <td style="min-width: 150px;">
+
+                                <div class="progress"
+                                     style="height: 8px;">
+
+                                    <div class="progress-bar"
+                                         role="progressbar"
+                                         style="width: {{ [progress, 100]|min }}%;">
+                                    </div>
+
+                                </div>
+
+                                <small>
+                                    {{ progress }}%
+                                </small>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if item.status == "Completed" %}
+
+                                    <span class="badge bg-success">
+                                        Completed
+                                    </span>
+
+                                {% elif item.status == "In Progress" %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        In Progress
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Period -->
+
+                            <td>
+
+                                {% if item.start_date %}
+
+                                    {{ item.start_date }}
+
+                                    <br>
+
+                                    {% if item.end_date %}
+                                        <small class="text-muted">
+                                            to {{ item.end_date }}
+                                        </small>
+                                    {% endif %}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Action -->
+
+                            <td>
+
+                                <a href="{{ url_for(
+                                    'kpi.update_kpi',
+                                    id=item.id
+                                ) }}"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Update
+
+                                </a>
+
+
+                                {% if current_user.has_role("Super Admin") %}
+
+                                <form method="POST"
+                                      action="{{ url_for(
+                                          'kpi.delete_kpi',
+                                          id=item.id
+                                      ) }}"
+                                      style="display:inline;">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete this KPI?');">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="10"
+                                class="text-center py-5">
+
+                                <h5 class="text-muted">
+                                    No KPIs found
+                                </h5>
+
+                                <p class="text-muted mb-0">
+                                    Create a KPI to start tracking performance.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

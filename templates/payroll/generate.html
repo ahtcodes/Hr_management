@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Generate Payroll (Automatic)</h2>
+
+    <a href="{{ url_for('payroll.payroll_list') }}"
+       class="btn btn-outline-primary">
+        ← Back to Payrolls
+    </a>
+</div>
+
+<form method="POST">
+
+    <!-- Employee -->
+    <div class="mb-3">
+        <label class="form-label">Employee</label>
+
+        <select name="employee_id"
+                class="form-control"
+                required>
+
+            <option value="">-- Select Employee --</option>
+
+            {% for e in employees %}
+            <option value="{{ e.id }}">
+                {{ e.full_name }}
+                ({{ e.employee_code }})
+                — Rs. {{ e.basic_salary }}
+            </option>
+            {% endfor %}
+
+        </select>
+    </div>
+
+
+    <!-- Month -->
+    <div class="mb-3">
+        <label class="form-label">Month</label>
+
+        <select name="month"
+                class="form-control"
+                required>
+
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August" selected>August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+
+        </select>
+    </div>
+
+
+    <!-- Year -->
+    <div class="mb-3">
+        <label class="form-label">Year</label>
+
+        <input
+            type="number"
+            name="year"
+            class="form-control"
+            value="{{ now_year }}"
+            required>
+    </div>
+
+
+    <!-- Allowances -->
+    <div class="mb-3">
+        <label class="form-label">
+            Allowances
+        </label>
+
+        <input
+            type="number"
+            name="allowances"
+            id="allowances"
+            class="form-control"
+            value="0"
+            min="0"
+            step="0.01"
+            placeholder="Enter allowances">
+    </div>
+
+
+    <!-- Bonus -->
+    <div class="mb-3">
+        <label class="form-label">
+            Bonus
+        </label>
+
+        <input
+            type="number"
+            name="bonus"
+            id="bonus"
+            class="form-control"
+            value="0"
+            min="0"
+            step="0.01"
+            placeholder="Enter bonus">
+    </div>
+
+
+    <!-- Tax -->
+    <div class="mb-3">
+        <label class="form-label">
+            Tax
+        </label>
+
+        <input
+            type="number"
+            name="tax"
+            id="tax"
+            class="form-control"
+            value="0"
+            min="0"
+            step="0.01"
+            placeholder="Enter tax">
+    </div>
+
+
+    <!-- Security -->
+    <div class="mb-3">
+        <label class="form-label">
+            Security Deduction
+        </label>
+
+        <input
+            type="text"
+            class="form-control"
+            value="5% of Basic Salary"
+            readonly>
+    </div>
+
+
+    <!-- Submit -->
+    <button type="submit"
+            class="btn btn-primary">
+        Generate Payroll Automatically
+    </button>
+
+</form>
+
+{% endblock %}

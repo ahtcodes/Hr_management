@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Expense Request — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">New Expense Request</h1>
+        <p class="text-muted">
+            Submit an expense request for approval.
+        </p>
+    </div>
+
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <!-- Expense Title -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Expense Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        placeholder="e.g. Office Travel"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Category -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Expense Category
+                    </label>
+
+                    <select
+                        name="category"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option value="Travel">
+                            ✈️ Travel
+                        </option>
+
+                        <option value="Food">
+                            🍔 Food
+                        </option>
+
+                        <option value="Transport">
+                            🚗 Transport
+                        </option>
+
+                        <option value="Office Supplies">
+                            🗂️ Office Supplies
+                        </option>
+
+                        <option value="Medical">
+                            🏥 Medical
+                        </option>
+
+                        <option value="Other">
+                            📦 Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Amount (Rs.)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="amount"
+                        class="form-control"
+                        min="0"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Date -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Expense Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="expense_date"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Explain the expense..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        💰 Submit Expense
+                    </button>
+
+                    <a
+                        href="{{ url_for('expense.expense_list') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

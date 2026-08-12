@@ -1,0 +1,113 @@
+```html
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Payroll Management</h2>
+
+        <a href="{{ url_for('payroll.generate_payroll') }}"
+           class="btn btn-success">
+            + Generate Payroll
+        </a>
+    </div>
+
+    <table class="table table-bordered mt-3">
+
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Basic Salary</th>
+                <th>Working Hrs</th>
+                <th>Net Salary</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for p in payrolls %}
+
+            <tr>
+
+                <td>{{ p.employee.full_name }}</td>
+
+                <td>{{ p.month }}</td>
+
+                <td>{{ p.year }}</td>
+
+                <td>
+                    Rs. {{ "%.2f"|format(p.basic_salary) }}
+                </td>
+
+                <td>
+                    {{ "%.2f"|format(p.total_working_hours) }} hrs
+                </td>
+
+                <td>
+                    <strong>
+                        Rs. {{ "%.2f"|format(p.net_salary) }}
+                    </strong>
+                </td>
+
+                <td>
+                    <span class="badge bg-warning text-dark">
+                        {{ p.status }}
+                    </span>
+                </td>
+
+                <td>
+
+                    <!-- View Payroll -->
+                    <a href="{{ url_for('payroll.view_payroll', id=p.id) }}"
+                       class="btn btn-info btn-sm">
+                        View
+                    </a>
+
+                    <!-- Download Payslip PDF -->
+                    <a href="{{ url_for('payroll.payslip', payroll_id=p.id) }}"
+                       class="btn btn-primary btn-sm"
+                       target="_blank">
+                        📄 Payslip
+                    </a>
+
+                    <!-- Delete Payroll -->
+                    <form method="POST"
+                          action="{{ url_for('payroll.delete_payroll', id=p.id) }}"
+                          style="display:inline;"
+                          onsubmit="return confirm('Delete payroll for {{ p.employee.full_name }}?');">
+
+                        <button type="submit"
+                                class="btn btn-danger btn-sm">
+                            🗑 Delete
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+                <td colspan="8" class="text-center">
+                    No Payroll Found
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+```

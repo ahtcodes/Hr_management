@@ -1,0 +1,42 @@
+{{ extends "base.html" %}
+{% block title %}
+Dashboard
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h5>Total Employees</h5>
+                    <h1>{{ total_employees }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h5>Today Present</h5>
+                    <h1>{{ today_present }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h5>On Leave</h5>
+                    <h1>{{ on_leave }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body">
+                    <h5>Absent</h5>
+                    <h1>{{ absent_today }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

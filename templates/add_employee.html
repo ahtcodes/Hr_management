@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Employee — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Add Employee</h1>
+            <p class="greeting-sub">Register a new employee in the system.</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="content-card">
+        <form action="/add_employee" method="POST" enctype="multipart/form-data">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Employee Code</label>
+                        <input type="text" name="employee_code" class="form-control" placeholder="Enter Employee Code" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" placeholder="Enter Full Name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Enter Email Address" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" name="department" class="form-control" placeholder="Enter Department" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Designation</label>
+                        <input type="text" name="designation" class="form-control" placeholder="Enter Designation" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Joining Date</label>
+                        <input type="date" name="joining_date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Resignation Date</label>
+
+        <input
+            type="date"
+            name="resignation_date"
+            class="form-control"
+        >
+    </div>
+</div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Basic Salary</label>
+                        <input type="number" name="basic_salary" class="form-control" placeholder="Enter Basic Salary" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Overtime Rate (Per Hour)</label>
+                        <input type="number" name="overtime_rate" class="form-control" placeholder="Enter Overtime Rate" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Location</label>
+
+        <select name="location" class="form-select">
+
+            <option value="Faisalabad">Faisalabad</option>
+
+        </select>
+    </div>
+</div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Employment Type</label>
+
+        <select
+            name="employment_type"
+            class="form-select"
+            required
+        >
+            <option value="">Select Employment Type</option>
+            <option value="Full Time">Full Time</option>
+            <option value="Part Time">Part Time</option>
+            <option value="Contract">Contract</option>
+            <option value="Intern">Intern</option>
+            <option value="Remote">Remote</option>
+        </select>
+
+    </div>
+</div>
+               <div class="col-md-6">
+                   <div class="form-group">
+                     <label class="form-label">Assign Shift</label>
+
+                         <select name="shift_id" class="form-select" required>
+
+                          <option value="">Select Shift</option>
+
+            {% for shift in shifts %}
+                <option value="{{ shift.id }}">
+                    {{ shift.shift_name }}
+                    ({{ shift.start_time.strftime('%I:%M %p') }} -
+                    {{ shift.end_time.strftime('%I:%M %p') }})
+                </option>
+            {% endfor %}
+
+        </select>
+
+    </div>
+                </div>
+                <div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label">Status</label>
+
+        <select name="status" class="form-select">
+            <option value="Active" selected>Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Resigned">Resigned</option>
+            <option value="Terminated">Terminated</option>
+        </select>
+
+    </div>
+</div>
+            </div>
+            <hr class="my-4">
+
+<h4 class="mb-3">Emergency Contact</h4>
+
+<div class="row g-3">
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <input
+                type="text"
+                name="emergency_contact_name"
+                class="form-control"
+                placeholder="Enter Contact Name"
+            >
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Relationship</label>
+            <select
+                name="emergency_contact_relation"
+                class="form-select"
+            >
+                <option value="">Select Relationship</option>
+                <option value="Father">Father</option>
+                <option value="Mother">Mother</option>
+                <option value="Brother">Brother</option>
+                <option value="Sister">Sister</option>
+                <option value="Husband">Husband</option>
+                <option value="Wife">Wife</option>
+                <option value="Guardian">Guardian</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label">Emergency Phone</label>
+            <input
+                type="text"
+                name="emergency_contact_phone"
+                class="form-control"
+                placeholder="03XXXXXXXXX"
+            >
+        </div>
+    </div>
+
+</div>
+<hr class="my-4">
+
+<h4 class="mb-3">Employee Documents</h4>
+
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <label class="form-label">Profile Photo</label>
+        <input
+            type="file"
+            name="profile_photo"
+            class="form-control"
+            accept="image/*"
+        >
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">CNIC Copy</label>
+        <input
+            type="file"
+            name="cnic_file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png"
+        >
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">CV / Resume</label>
+        <input
+            type="file"
+            name="cv_file"
+            class="form-control"
+            accept=".pdf,.doc,.docx"
+        >
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Certificates</label>
+        <input
+            type="file"
+            name="certificate_file"
+            class="form-control"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+        >
+    </div>
+
+</div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    Save Employee
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

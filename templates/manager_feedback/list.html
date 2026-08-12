@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manager Feedback — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>Manager Feedback</h1>
+            <p class="text-muted">
+                Employee performance feedback and ratings.
+            </p>
+        </div>
+
+        {% if current_user.has_role("Super Admin") %}
+        <a href="{{ url_for('manager_feedback.create_feedback') }}"
+           class="btn btn-primary">
+            + Add Feedback
+        </a>
+        {% endif %}
+
+    </div>
+
+
+    {% if feedbacks %}
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Rating</th>
+                    <th>Feedback</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for item in feedbacks %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ item.employee.full_name }}
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+                            {{ item.employee.employee_code }}
+                        </small>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-primary">
+                            {{ item.rating }}/5
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ item.feedback }}
+                    </td>
+
+                    <td>
+                        {{ item.created_at.strftime("%d-%m-%Y") }}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info">
+        No manager feedback available.
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

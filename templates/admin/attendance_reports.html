@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Attendance Reports</h1>
+            <p class="text-muted">
+                Employee attendance history and working hours
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin.dashboard') }}"
+           class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+
+    <!-- ==========================
+         FILTERS
+    =========================== -->
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <form method="GET"
+                  action="{{ url_for('admin.attendance_reports') }}">
+
+                <div class="row g-3">
+
+                    <!-- From Date -->
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            From Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="from_date"
+                            class="form-control"
+                            value="{{ from_date or '' }}"
+                        >
+                    </div>
+
+
+                    <!-- To Date -->
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            To Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="to_date"
+                            class="form-control"
+                            value="{{ to_date or '' }}"
+                        >
+                    </div>
+
+
+                    <!-- Employee -->
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            Employee
+                        </label>
+
+                        <select
+                            name="employee_id"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Employees
+                            </option>
+
+                            {% for employee in employees %}
+
+                            <option
+                                value="{{ employee.id }}"
+                                {% if selected_employee == employee.id|string %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ employee.full_name }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="col-md-3 d-flex align-items-end">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary me-2"
+                        >
+                            Filter
+                        </button>
+
+                        <a
+                            href="{{ url_for('admin.attendance_reports') }}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- ==========================
+         REPORT TABLE
+    =========================== -->
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                            <th>Working Hours</th>
+                            <th>Late Hours</th>
+                            <th>Early Leave</th>
+                            <th>Overtime</th>
+                            <th>Overtime Pay</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in records %}
+
+                        <tr>
+
+                            <td>
+                                {{ record.employee.full_name }}
+                            </td>
+
+                            <td>
+                                {{ record.date.strftime('%d-%m-%Y') if record.date else '-' }}
+                            </td>
+
+                            <td>
+                                {{ record.check_in.strftime('%I:%M %p') if record.check_in else '-' }}
+                            </td>
+
+                            <td>
+                                {{ record.check_out.strftime('%I:%M %p') if record.check_out else '-' }}
+                            </td>
+
+                            <td>
+
+                                {% if record.status == "Present" %}
+
+                                    <span class="badge bg-success">
+                                        Present
+                                    </span>
+
+                                {% elif record.status == "Absent" %}
+
+                                    <span class="badge bg-danger">
+                                        Absent
+                                    </span>
+
+                                {% elif record.status == "Leave" %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Leave
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        {{ record.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(record.working_hours or 0) }}
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(record.late_hours or 0) }}
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(record.early_leave_hours or 0) }}
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(record.overtime_hours or 0) }}
+                            </td>
+
+                            <td>
+                                Rs. {{ "%.2f"|format(record.overtime_pay or 0) }}
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="text-center py-4"
+                            >
+                                No attendance records found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

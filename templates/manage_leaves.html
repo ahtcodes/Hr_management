@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Leaves — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="greeting-row">
+        <div class="greeting-text">
+            <h1>Manage Leave Applications</h1>
+            <p class="greeting-sub">Approve or reject leave requests from employees.</p>
+        </div>
+    </div>
+    <div class="leave-tabs">
+
+        <a href="{{ url_for('leave.manage_leaves') }}"
+        class="leave-tab active">
+            Manage Leaves
+        </a>
+
+        <a href="{{ url_for('leave.leave_balance') }}"
+            class="leave-tab">
+                Leave Balance
+        </a>
+
+            <a href="{{ url_for('leave.leave_history') }}"
+            class="leave-tab">
+                Leave History
+            </a>
+
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Pending Leaves -->
+    <div class="leave-card-modern">
+        <div class="leave-header">
+            <h3>Pending Leaves ({{ pending_leaves|length }})</h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="leave-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start - End</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Applied</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in pending_leaves %}
+                    <tr>
+                        <td>{{ leave.id }}</td>
+                        <td>
+                            {% if leave.employee %}
+                            <div class="employee-cell">
+                                <span class="employee-name">{{ leave.employee.employee_code }}</span>
+                                <span class="employee-role">{{ leave.employee.full_name }}</span>
+                            </div>
+                            {% else %}
+                            Employee #{{ leave.employee_id }}
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.start_date.strftime('%d-%m-%Y') }} to {{ leave.end_date.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ leave.total_days }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td style="font-size:0.8125rem;">{{ leave.applied_date.strftime('%d-%m-%Y %H:%M') if leave.applied_date else 'N/A' }}</td>
+                        <td>
+                            <a href="/approve_leave/{{ leave.id }}" class="btn btn-sm" style="background:var(--success);border:none;color:white;"
+                               onclick="return confirm('Is leave ko approve karna chahte hain? Attendance auto-mark ho jayegi.')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                Approve
+                            </a>
+                            <a href="/reject_leave/{{ leave.id }}" class="btn btn-sm" style="background:var(--destructive);border:none;color:white;"
+                               onclick="return confirm('Is leave ko reject karna chahte hain?')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                Reject
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center" style="color: var(--muted-foreground); padding: 2rem;">Koi pending leave nahi hai.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Processed Leaves -->
+    <div class="leave-card-modern" style="margin-top: 1.5rem;">
+        <div class="leave-header">
+            <h3>Processed Leaves (Approved / Rejected)</h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="leave-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start - End</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in processed_leaves %}
+                    <tr>
+                        <td>{{ leave.id }}</td>
+                        <td>
+                            {% if leave.employee %}
+                            <div class="employee-cell">
+                                <span class="employee-name">{{ leave.employee.employee_code }}</span>
+                                <span class="employee-role">{{ leave.employee.full_name }}</span>
+                            </div>
+                            {% else %}
+                            Employee #{{ leave.employee_id }}
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.start_date.strftime('%d-%m-%Y') }} to {{ leave.end_date.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ leave.total_days }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td>
+                            {% if leave.status == "Approved" %}
+                            <span class="status-pill status-approved">Approved</span>
+                            {% elif leave.status == "Rejected" %}
+                            <span class="status-pill status-rejected">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.remarks if leave.remarks else '--' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center" style="color: var(--muted-foreground); padding: 2rem;">Koi processed leave nahi hai.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<style>
+
+.leave-tabs {
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid #dfe3e8;
+    margin: 25px 0 30px;
+}
+
+.leave-tab {
+    text-decoration: none;
+    color: #60738c;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0 5px 13px;
+    position: relative;
+}
+
+.leave-tab:hover {
+    color: #4338ca;
+}
+
+.leave-tab.active {
+    color: #4338ca;
+}
+
+.leave-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: #4f46e5;
+}
+
+</style>
+
+{% endblock %}
+

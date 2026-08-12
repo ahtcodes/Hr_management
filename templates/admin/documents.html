@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}
+Document Management — PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>Document Management</h1>
+            <p class="text-muted">
+                Manage employee and company documents.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('admin.upload_document') }}"
+            class="btn btn-primary"
+        >
+            + Upload Document
+        </a>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            {% if documents %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Employee</th>
+                            <th>File</th>
+                            <th>Uploaded</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for document in documents %}
+
+                        <tr>
+
+                            <td>
+                                {{ document.title }}
+                            </td>
+
+                            <td>
+                                {{ document.document_type }}
+                            </td>
+
+                            <td>
+
+                                {% if document.employee %}
+                                    {{ document.employee.full_name }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Company / General
+                                    </span>
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ document.file_name }}
+                            </td>
+
+                            <td>
+                                {{ document.uploaded_at.strftime('%d-%m-%Y %I:%M %p') }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h4>No Documents Found</h4>
+
+                <p class="text-muted">
+                    No documents have been uploaded yet.
+                </p>
+
+                <a
+                    href="{{ url_for('admin.upload_document') }}"
+                    class="btn btn-primary"
+                >
+                    Upload First Document
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
