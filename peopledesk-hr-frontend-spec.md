@@ -41,7 +41,7 @@ All colors are **oklch** CSS variables. Never hardcode hex/`text-white` in compo
 
 ### Light theme tokens (`:root`)
 
-```css
+
 --radius: 0.9375rem;              /* 15px */
 --background:        oklch(0.972 0.005 255);   /* soft grey-blue #f4f6f9 feel */
 --foreground:        oklch(0.24 0.03 265);
@@ -70,7 +70,7 @@ All colors are **oklch** CSS variables. Never hardcode hex/`text-white` in compo
 --shadow-card:       0 5px 15px oklch(0.2 0.03 265 / 0.12);
 --shadow-card-hover: 0 12px 28px oklch(0.2 0.03 265 / 0.18);
 --shadow-auth:       0 15px 50px oklch(0.2 0.03 265 / 0.25);
-```
+
 
 A `.dark` variant exists with a near-black `oklch(0.129 0.042 264.695)` background
 and light foreground; mirror every token above.
@@ -85,7 +85,7 @@ and light foreground; mirror every token above.
 
 ### Reusable utilities
 
-```css
+
 @utility stat-card {              /* white card */
   border: none;
   border-radius: var(--radius-lg);      /* 15px */
@@ -103,7 +103,7 @@ and light foreground; mirror every token above.
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-```
+
 
 Radius scale: `--radius-sm/md/lg/xl/2xl/3xl/4xl` = radius −4, −2, +0, +4, +8, +12, +16 px.
 

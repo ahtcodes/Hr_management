@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assign Role | PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+
+        <h3 class="fw-bold mb-1">
+            Assign Role
+        </h3>
+
+        <p class="text-muted">
+            Change role for {{ user.username }}.
+        </p>
+
+    </div>
+
+
+    <div class="card border-0">
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        User
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ user.username }}"
+                        disabled
+                    >
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Select Role
+                    </label>
+
+                    <select
+                        name="role_id"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select a role
+                        </option>
+
+                        {% for role in roles %}
+
+                        <option
+                            value="{{ role.id }}"
+                            {% if user.role_id == role.id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ role.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Save Role
+                </button>
+
+                <a
+                    href="{{ url_for('admin.users') }}"
+                    class="btn btn-light"
+                >
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

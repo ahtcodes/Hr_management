@@ -20,7 +20,7 @@ evaluation = Blueprint(
 @login_required
 def evaluation_list():
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
 
         evaluations = Evaluation.query.order_by(
             Evaluation.created_at.desc()
@@ -53,7 +53,7 @@ def evaluation_list():
 @login_required
 def create_evaluation():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.filter_by(
@@ -106,7 +106,7 @@ def view_evaluation(id):
 
     evaluation = Evaluation.query.get_or_404(id)
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
         pass
 
     else:

@@ -18,7 +18,7 @@ def asset_list():
 
     # Super Admin + Employee can VIEW assets
     if not (
-        current_user.has_role("Super Admin")
+        current_user.has_any_role("Super Admin","HR Manager")
         or current_user.has_role("Employee")
     ):
         abort(403)
@@ -40,7 +40,7 @@ def asset_list():
 @login_required
 def create_asset():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     if request.method == "POST":
@@ -99,7 +99,7 @@ def create_asset():
 @login_required
 def delete_asset(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     asset_data = Asset.query.get_or_404(id)

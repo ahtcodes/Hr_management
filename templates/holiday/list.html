@@ -24,7 +24,7 @@ Holiday Management — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin","HR Manage") %}
 
         <a href="{{ url_for('holiday.add_holiday') }}"
            class="btn btn-primary">
@@ -160,7 +160,7 @@ Holiday Management — PeopleDesk HR
 
                             <th>Status</th>
 
-                            {% if current_user.has_role("Super Admin") %}
+                            {% if current_user.has_any_role("Super Admin","HR Manage") %}
                             <th>Action</th>
                             {% endif %}
 
@@ -276,7 +276,7 @@ Holiday Management — PeopleDesk HR
 
                             <!-- Actions -->
 
-                            {% if current_user.has_role("Super Admin") %}
+                            {% if current_user.has_any_role("Super Admin", "HR Manager") %}
 
                             <td>
 
@@ -345,7 +345,7 @@ Holiday Management — PeopleDesk HR
                     No company or public holidays have been added yet.
                 </p>
 
-                {% if current_user.has_role("Super Admin") %}
+                {% if current_user.has_any_role("Super Admin", "HR Manager") %}
 
                 <a href="{{ url_for('holiday.add_holiday') }}"
                    class="btn btn-primary">

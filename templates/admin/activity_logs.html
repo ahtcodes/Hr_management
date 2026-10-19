@@ -51,15 +51,21 @@ Activity Logs — PeopleDesk HR
 
                     </thead>
 
+
                     <tbody>
 
                         {% for log in logs %}
 
                         <tr>
 
+                            <!-- # -->
+
                             <td>
                                 {{ loop.index }}
                             </td>
+
+
+                            <!-- USER -->
 
                             <td>
 
@@ -85,9 +91,15 @@ Activity Logs — PeopleDesk HR
 
                             </td>
 
+
+                            <!-- ACTION -->
+
                             <td>
                                 {{ log.action }}
                             </td>
+
+
+                            <!-- MODULE -->
 
                             <td>
 
@@ -107,13 +119,25 @@ Activity Logs — PeopleDesk HR
 
                             </td>
 
+
+                            <!-- IP ADDRESS -->
+
                             <td>
                                 {{ log.ip_address or "—" }}
                             </td>
 
+
+                            <!-- DATE & TIME -->
+
                             <td>
 
-                                {% if log.created_at %}
+                                {% if log.created_at_local %}
+
+                                    {{ log.created_at_local.strftime(
+                                        "%d %b %Y, %I:%M %p"
+                                    ) }}
+
+                                {% elif log.created_at %}
 
                                     {{ log.created_at.strftime(
                                         "%d %b %Y, %I:%M %p"
@@ -126,6 +150,7 @@ Activity Logs — PeopleDesk HR
                                 {% endif %}
 
                             </td>
+
 
                         </tr>
 

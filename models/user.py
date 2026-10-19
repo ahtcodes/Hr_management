@@ -72,11 +72,23 @@ class User(UserMixin, db.Model):
         if user_role == required_role:
             return True
 
-            # Super Admin ko admin-level access
         if user_role == "super admin" and required_role == "admin":
             return True
-            
+
         return False
+
+    def has_any_role(self, *role_names):
+        if not self.role:
+            return False
+
+        user_role = self.role.name.strip().lower()
+
+        allowed_roles = [
+            role.strip().lower()
+            for role in role_names
+        ]
+
+        return user_role in allowed_roles
 
     @property
     def is_admin(self):

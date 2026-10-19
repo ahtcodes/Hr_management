@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Role | PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="mb-4">
+
+        <h3 class="fw-bold mb-1">
+            Create New Role
+        </h3>
+
+        <p class="text-muted mb-0">
+            Create a custom role for your HRMS.
+        </p>
+
+    </div>
+
+
+    <!-- =========================================
+         FORM
+    ========================================== -->
+
+    <div class="card border-0">
+
+        <div class="card-body p-4">
+
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_role') }}"
+            >
+
+                <!-- Role Name -->
+
+                <div class="mb-4">
+
+                    <label
+                        for="name"
+                        class="form-label fw-semibold"
+                    >
+                        Role Name
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        placeholder="e.g. Payroll Manager"
+                        required
+                    >
+
+                    <div class="form-text">
+                        Enter a unique role name.
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="mb-4">
+
+                    <label
+                        for="description"
+                        class="form-label fw-semibold"
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Describe what this role is responsible for..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Create Role
+                    </button>
+
+                    <a
+                        href="{{ url_for('admin.roles') }}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

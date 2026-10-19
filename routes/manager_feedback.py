@@ -20,7 +20,7 @@ manager_feedback = Blueprint(
 @login_required
 def feedback_list():
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
 
         feedbacks = ManagerFeedback.query.order_by(
             ManagerFeedback.created_at.desc()
@@ -53,7 +53,7 @@ def feedback_list():
 @login_required
 def create_feedback():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.filter_by(

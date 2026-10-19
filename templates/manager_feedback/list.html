@@ -17,7 +17,7 @@ Manager Feedback — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin""HR Manager") %}
         <a href="{{ url_for('manager_feedback.create_feedback') }}"
            class="btn btn-primary">
             + Add Feedback

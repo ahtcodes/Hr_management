@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
         {% block title %}
@@ -14,13 +16,1778 @@
         {% endblock %}
     </title>
 
+
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
+
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}">
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+<style>
+
+/* =========================================================
+   PEOPLE DESK HRMS — PREMIUM APPLICATION UI
+========================================================= */
+
+:root {
+
+    --sidebar-width: 268px;
+
+    --sidebar-bg: #0b1630;
+    --sidebar-bg-2: #101d3a;
+
+    --sidebar-text: #92a1ba;
+    --sidebar-muted: #53637e;
+    --sidebar-active: #4f8df7;
+
+    --app-bg: #f4f7fb;
+
+    --surface: #ffffff;
+    --surface-soft: #f8fafc;
+
+    --text-main: #172033;
+    --text-secondary: #667085;
+    --text-muted: #98a2b3;
+
+    --border-soft: #e7ebf0;
+    --border: #dfe5ec;
+
+    --primary-blue: #2563eb;
+    --primary-dark: #1e3a8a;
+    --primary-soft: #eef4ff;
+
+    --danger: #dc2626;
+    --success: #15803d;
+
+    --shadow-xs:
+        0 2px 8px rgba(15, 23, 42, .04);
+
+    --shadow-sm:
+        0 6px 20px rgba(15, 23, 42, .06);
+
+    --shadow-md:
+        0 12px 30px rgba(15, 23, 42, .08);
+
+    --shadow-lg:
+        0 20px 50px rgba(15, 23, 42, .12);
+
+    --radius-sm: 7px;
+    --radius-md: 10px;
+    --radius-lg: 13px;
+}
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+*,
+*::before,
+*::after {
+
+    box-sizing: border-box;
+}
+
+
+html {
+
+    min-height: 100%;
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    background: var(--app-bg);
+
+    color: var(--text-main);
+
+    font-family:
+        'Plus Jakarta Sans',
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+a {
+
+    text-decoration: none;
+}
+
+
+button,
+input,
+select,
+textarea {
+
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: var(--sidebar-width);
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0b1630 0%,
+            #101d3a 48%,
+            #0b152b 100%
+        );
+
+    color: #ffffff;
+
+    border-right:
+        1px solid rgba(255,255,255,.055);
+
+    box-shadow:
+        10px 0 40px rgba(2,8,23,.16);
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    z-index: 1200;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(255,255,255,.15)
+        transparent;
+}
+
+
+.sidebar::-webkit-scrollbar {
+
+    width: 5px;
+}
+
+
+.sidebar::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+
+.sidebar::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255,255,255,.14);
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   SIDEBAR DECORATION
+========================================================= */
+
+.sidebar::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    top: -120px;
+    left: -90px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(59,130,246,.20),
+            transparent 68%
+        );
+
+    pointer-events: none;
+}
+
+
+.sidebar::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    right: -120px;
+    bottom: 80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(56,189,248,.07),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+
+.sidebar-header {
+
+    position: relative;
+
+    z-index: 2;
+
+    padding:
+        24px 18px 20px;
+
+    text-align: left;
+
+    background: transparent;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+}
+
+
+.logo-circle {
+
+    width: 47px;
+    height: 47px;
+
+    margin:
+        0 0 13px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #3b82f6,
+            #2563eb
+        );
+
+    color: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    letter-spacing: -.3px;
+
+    border:
+        1px solid rgba(255,255,255,.14);
+
+    box-shadow:
+        0 10px 28px rgba(37,99,235,.27);
+}
+
+
+.sidebar-header h2 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    letter-spacing: -.2px;
+
+    line-height: 1.2;
+}
+
+
+.dashboard-title {
+
+    display: inline-flex;
+
+    margin-top: 7px;
+
+    padding: 4px 8px;
+
+    border-radius: 5px;
+
+    background:
+        rgba(59,130,246,.10);
+
+    border:
+        1px solid rgba(96,165,250,.08);
+
+    color: #8fb9ff;
+
+    font-size: 8px !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: .10em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   SIDEBAR MENU
+========================================================= */
+
+.sidebar-menu {
+
+    position: relative;
+
+    z-index: 3;
+
+    flex: 1;
+
+    margin: 0;
+
+    padding:
+        17px 11px 14px;
+
+    list-style: none;
+
+    background: transparent;
+}
+
+
+.sidebar-menu li {
+
+    margin: 4px 0;
+}
+
+
+.sidebar-menu li a {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-height: 41px;
+
+    padding:
+        7px 11px;
+
+    border-radius: 10px;
+
+    color:
+        var(--sidebar-text) !important;
+
+    background: transparent;
+
+    font-size: 10px !important;
+
+    font-weight: 600 !important;
+
+    line-height: 1.2;
+
+    text-decoration: none;
+
+    transition:
+        color .18s ease,
+        background .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR ICON
+========================================================= */
+
+.sidebar-menu li a > span:first-child {
+
+    width: 30px;
+    height: 30px;
+
+    min-width: 30px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    color: #74839d;
+
+    font-size: 12px;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.sidebar-menu li a:hover {
+
+    background:
+        rgba(255,255,255,.055);
+
+    color: #ffffff !important;
+
+    transform:
+        translateX(3px);
+}
+
+
+.sidebar-menu li a:hover > span:first-child {
+
+    background:
+        rgba(59,130,246,.13);
+
+    color: #7db0ff;
+
+    transform:
+        scale(1.02);
+}
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
+
+.sidebar-menu li a.active {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(59,130,246,.20),
+            rgba(59,130,246,.055)
+        );
+
+    color: #ffffff !important;
+
+    box-shadow:
+        inset 3px 0 0 #4f8df7,
+        0 7px 20px rgba(37,99,235,.07);
+}
+
+
+.sidebar-menu li a.active > span:first-child {
+
+    background:
+        rgba(59,130,246,.19);
+
+    color: #79aaff;
+}
+
+
+.sidebar-menu li a.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 9px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #60a5fa;
+
+    box-shadow:
+        0 0 0 4px rgba(96,165,250,.07);
+}
+
+
+/* =========================================================
+   PROFILE MENU LINK
+========================================================= */
+
+.profile-menu-link::after {
+
+    content: "›";
+
+    margin-left: auto;
+
+    color: #61718c;
+
+    font-size: 18px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.sidebar-footer {
+
+    position: relative;
+
+    z-index: 4;
+
+    margin:
+        0 11px 12px;
+
+    padding: 10px;
+
+    border:
+        1px solid rgba(255,255,255,.075);
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.065),
+            rgba(255,255,255,.025)
+        );
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.12);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.sidebar-profile-photo {
+
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    color: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 5px 15px rgba(37,99,235,.20);
+}
+
+
+.sidebar-profile-photo img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* =========================================================
+   USER INFO
+========================================================= */
+
+.user-info {
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.user-info h6 {
+
+    margin: 0;
+
+    color: #ffffff !important;
+
+    font-size: 10px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.user-info span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #71809a !important;
+
+    font-size: 8px !important;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content {
+
+    min-height: 100vh;
+
+    margin-left:
+        var(--sidebar-width);
+
+    padding: 26px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f7f9fc 0%,
+            #f4f7fb 100%
+        );
+
+    transition:
+        margin-left .25s ease;
+}
+
+
+/* =========================================================
+   CONTENT CARD
+========================================================= */
+
+.content-card,
+.leave-card-modern,
+.dashboard-panel,
+.card {
+
+    border:
+        1px solid var(--border-soft);
+
+    box-shadow:
+        var(--shadow-sm);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn {
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.btn:hover {
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.form-control,
+.form-select {
+
+    border-radius: 9px;
+
+    border:
+        1px solid var(--border);
+
+    background: #ffffff;
+
+    color: var(--text-main);
+}
+
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: #8ea7d1;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.08);
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+.mobile-menu-button {
+
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    margin-bottom: 15px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid #dfe5ec;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #344054;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    box-shadow:
+        var(--shadow-xs);
+}
+
+
+.mobile-menu-button:hover {
+
+    background: #f7f9fb;
+}
+
+
+/* =========================================================
+   SIDEBAR OVERLAY
+========================================================= */
+
+.sidebar-overlay {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(15,23,42,.48);
+
+    backdrop-filter:
+        blur(2px);
+
+    z-index: 1100;
+}
+
+
+/* =========================================================
+   RESPONSIVE 1200
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    :root {
+
+        --sidebar-width: 250px;
+    }
+
+    .sidebar {
+
+        width: 250px;
+    }
+
+    .main-content {
+
+        margin-left: 250px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 900
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+
+        width: 275px;
+
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform .28s cubic-bezier(.4,0,.2,1);
+    }
+
+
+    .sidebar.sidebar-open {
+
+        transform:
+            translateX(0);
+    }
+
+
+    .sidebar-overlay.overlay-visible {
+
+        display: block;
+    }
+
+
+    .main-content {
+
+        margin-left: 0;
+
+        padding:
+            20px 15px;
+    }
+
+
+    .mobile-menu-button {
+
+        display: inline-flex;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 576
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .main-content {
+
+        padding:
+            15px 12px;
+    }
+
+
+    .sidebar {
+
+        width: 285px;
+    }
+
+
+    .sidebar-header {
+
+        padding:
+            20px 17px;
+    }
+
+
+    .sidebar-menu {
+
+        padding:
+            14px 9px;
+    }
+
+
+    .sidebar-footer {
+
+        margin:
+            0 9px 10px;
+    }
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+.dark body {
+
+    background:
+        #0f172a;
+
+    color:
+        #e5e7eb;
+}
+
+
+.dark .main-content {
+
+    background:
+        linear-gradient(
+            180deg,
+            #0f172a 0%,
+            #111827 100%
+        );
+}
+
+
+.dark .content-card,
+.dark .leave-card-modern,
+.dark .dashboard-panel,
+.dark .card {
+
+    background:
+        #111827;
+
+    border-color:
+        #243044;
+}
+
+
+.dark .form-control,
+.dark .form-select {
+
+    background:
+        #111827;
+
+    color:
+        #e5e7eb;
+
+    border-color:
+        #2d3a4e;
+}
+
+
+.dark .mobile-menu-button {
+
+    background:
+        #111827;
+
+    color:
+        #e5e7eb;
+
+    border-color:
+        #2d3a4e;
+}
+
+
+/* =========================================================
+   PEOPLEdesk AI FLOATING BUTTON
+========================================================= */
+
+.ai-floating-button {
+
+    position: fixed;
+
+    right: 25px;
+
+    bottom: 25px;
+
+    width: 60px;
+    height: 60px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #3b82f6,
+            #1d4ed8
+        );
+
+    color: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 25px;
+
+    z-index: 9998;
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,.35),
+        0 0 0 1px rgba(255,255,255,.15);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.ai-floating-button:hover {
+
+    transform:
+        translateY(-4px)
+        scale(1.03);
+
+    box-shadow:
+        0 15px 38px rgba(37,99,235,.45);
+}
+
+
+.ai-floating-button:active {
+
+    transform:
+        translateY(-1px)
+        scale(.97);
+}
+
+
+.ai-floating-button i {
+
+    font-size: 25px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   ONLINE DOT
+========================================================= */
+
+.ai-pulse {
+
+    position: absolute;
+
+    top: 3px;
+
+    right: 3px;
+
+    width: 12px;
+
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    border: 2px solid #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(34,197,94,.18);
+}
+
+
+/* =========================================================
+   AI CHAT WINDOW
+========================================================= */
+
+.ai-floating-window {
+
+    position: fixed;
+
+    right: 25px;
+
+    bottom: 95px;
+
+    width: 390px;
+
+    height: 550px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #dbe3ee;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    z-index: 9999;
+
+    display: none;
+
+    flex-direction: column;
+
+    box-shadow:
+        0 20px 60px rgba(15,23,42,.22);
+}
+
+
+.ai-floating-window.open {
+
+    display: flex;
+
+    animation:
+        aiWindowOpen .2s ease;
+}
+
+
+@keyframes aiWindowOpen {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(15px)
+            scale(.97);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   AI HEADER
+========================================================= */
+
+.ai-floating-header {
+
+    height: 68px;
+
+    flex-shrink: 0;
+
+    padding:
+        12px 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #172554
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.ai-floating-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.ai-floating-avatar {
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(96,165,250,.16);
+
+    border:
+        1px solid rgba(96,165,250,.25);
+
+    color: #60a5fa;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+
+.ai-title {
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+.ai-online {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    margin-top: 2px;
+}
+
+
+.ai-online span {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+
+.ai-close-btn {
+
+    width: 32px;
+    height: 32px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+.ai-close-btn:hover {
+
+    background:
+        rgba(255,255,255,.08);
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   AI MESSAGES
+========================================================= */
+
+.ai-floating-messages {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.ai-floating-messages::-webkit-scrollbar {
+
+    width: 5px;
+}
+
+
+.ai-floating-messages::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   WELCOME MESSAGE
+========================================================= */
+
+.ai-welcome-message {
+
+    text-align: center;
+
+    margin: auto;
+
+    max-width: 270px;
+}
+
+
+.ai-welcome-icon {
+
+    width: 50px;
+    height: 50px;
+
+    margin:
+        0 auto 10px;
+
+    border-radius: 15px;
+
+    background: #dbeafe;
+
+    color: #2563eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 23px;
+}
+
+
+.ai-welcome-title {
+
+    color: #0f172a;
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+
+.ai-welcome-text {
+
+    margin-top: 6px;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   AI MESSAGE
+========================================================= */
+
+.ai-message {
+
+    display: flex;
+
+    margin-bottom: 3px;
+}
+
+
+.ai-message.user {
+
+    justify-content: flex-end;
+}
+
+
+.ai-message.assistant {
+
+    justify-content: flex-start;
+}
+
+
+.ai-message-bubble {
+
+    max-width: 82%;
+
+    padding:
+        9px 11px;
+
+    border-radius: 11px;
+
+    font-size: 12px;
+
+    line-height: 1.55;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+}
+
+
+.ai-message.user
+.ai-message-bubble {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    border-bottom-right-radius: 3px;
+}
+
+
+.ai-message.assistant
+.ai-message-bubble {
+
+    background: #ffffff;
+
+    color: #334155;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-bottom-left-radius: 3px;
+}
+
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+.ai-typing {
+
+    display: flex;
+
+    gap: 4px;
+
+    padding:
+        5px 2px;
+}
+
+
+.ai-typing span {
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #64748b;
+
+    animation:
+        aiTyping 1.2s infinite;
+}
+
+
+.ai-typing span:nth-child(2) {
+
+    animation-delay: .15s;
+}
+
+
+.ai-typing span:nth-child(3) {
+
+    animation-delay: .30s;
+}
+
+
+@keyframes aiTyping {
+
+    0%,
+    60%,
+    100% {
+
+        opacity: .3;
+
+        transform:
+            translateY(0);
+    }
+
+    30% {
+
+        opacity: 1;
+
+        transform:
+            translateY(-3px);
+    }
+}
+
+
+/* =========================================================
+   QUICK QUESTIONS
+========================================================= */
+
+.ai-quick-questions {
+
+    display: flex;
+
+    gap: 6px;
+
+    overflow-x: auto;
+
+    padding:
+        8px 10px;
+
+    background: #ffffff;
+
+    border-top:
+        1px solid #e2e8f0;
+}
+
+
+.ai-quick-questions::-webkit-scrollbar {
+
+    height: 0;
+}
+
+
+.ai-question-btn {
+
+    flex-shrink: 0;
+
+    border:
+        1px solid #dbe3ee;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+    border-radius: 8px;
+
+    padding:
+        6px 9px;
+
+    font-size: 10px;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.ai-question-btn:hover {
+
+    border-color: #93c5fd;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   AI INPUT
+========================================================= */
+
+.ai-floating-input {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 7px;
+
+    padding: 10px;
+
+    background: #ffffff;
+
+    border-top:
+        1px solid #e2e8f0;
+}
+
+
+#aiFloatingInput {
+
+    flex: 1;
+
+    resize: none;
+
+    min-height: 40px;
+
+    max-height: 100px;
+
+    border:
+        1px solid #dbe3ee;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-size: 12px;
+
+    color: #1e293b;
+
+    background: #f8fafc;
+}
+
+
+#aiFloatingInput:focus {
+
+    border-color: #60a5fa;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(59,130,246,.08);
+}
+
+
+#aiFloatingInput::placeholder {
+
+    color: #94a3b8;
+}
+
+
+#aiFloatingSend {
+
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: .2s ease;
+}
+
+
+#aiFloatingSend:hover {
+
+    background: #1d4ed8;
+}
+
+
+#aiFloatingSend:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MOBILE AI
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .ai-floating-button {
+
+        right: 18px;
+
+        bottom: 18px;
+
+        width: 55px;
+
+        height: 55px;
+
+        font-size: 22px;
+    }
+
+
+    .ai-floating-button i {
+
+        font-size: 22px;
+    }
+
+
+    .ai-floating-window {
+
+        right: 12px;
+
+        left: 12px;
+
+        bottom: 82px;
+
+        width: auto;
+
+        height: 70vh;
+
+        max-height: 600px;
+
+        border-radius: 14px;
+    }
+}
+
+</style>
 
 </head>
 
@@ -28,16 +1795,25 @@
 <body>
 
 
-<!-- ===========================
+<!-- =========================================================
      SIDEBAR
-============================ -->
+========================================================= -->
 
-<div class="sidebar">
+<div
+    class="sidebar"
+    id="mainSidebar"
+>
 
 
-    <!-- Sidebar Header -->
+    <!-- =====================================================
+         SIDEBAR HEADER
+    ====================================================== -->
 
     <div class="sidebar-header">
+
+        <div class="logo-circle">
+            PD
+        </div>
 
         <h2>
             PeopleDesk HR
@@ -46,7 +1822,7 @@
 
         {% if current_user.is_authenticated %}
 
-            {% if current_user.has_role('Super Admin') %}
+            {% if current_user.has_role("Super Admin") %}
 
                 <span class="dashboard-title">
                     Administrator
@@ -65,265 +1841,684 @@
     </div>
 
 
-
-    <!-- Sidebar Menu -->
+    <!-- =====================================================
+         SIDEBAR MENU
+    ====================================================== -->
 
     <ul class="sidebar-menu">
 
 
-        <!-- ==========================
-             ADMIN / SUPER ADMIN
-        =========================== -->
+        <!-- =================================================
+             SUPER ADMIN
+        ================================================== -->
 
         {% if current_user.is_authenticated
-              and current_user.has_role('Super Admin') %}
+              and current_user.has_any_role('Super Admin') %}
 
 
-        <li>
-            <a href="/admin/dashboard">
-                🏠 Dashboard
-            </a>
-        </li>
+            <!-- Dashboard -->
+
+            <li>
+
+                <a href="/admin/dashboard">
+
+                    <span>🏠</span>
+
+                    Dashboard
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/employees">
-                👥 Employees
-            </a>
-        </li>
+            <!-- Employees -->
+
+            <li>
+
+                <a href="/employees">
+
+                    <span>👥</span>
+
+                    Employees
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/add_employee">
-                Add Employee
-            </a>
-        </li>
+            <!-- Add Employee -->
+
+            <li>
+
+                <a href="/add_employee">
+
+                    <span>➕</span>
+
+                    Add Employee
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/manage_leaves">
-                📄 Manage Leaves
-            </a>
-        </li>
+            <!-- Manage Leaves -->
+
+            <li>
+
+                <a href="/manage_leaves">
+
+                    <span>📄</span>
+
+                    Manage Leaves
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="{{ url_for('admin.live_attendance') }}">
-                📍 Live Attendance
-            </a>
-        </li>
+            <!-- Live Attendance -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.live_attendance') }}"
+                >
+
+                    <span>📍</span>
+
+                    Live Attendance
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="{{ url_for('admin.attendance_reports') }}">
-                📊 Attendance Reports
-            </a>
-        </li>
+            <!-- Attendance Reports -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.attendance_reports') }}"
+                >
+
+                    <span>📊</span>
+
+                    Attendance Reports
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="{{ url_for('admin.biometric') }}">
-                🔐 Biometric Integration
-            </a>
-        </li>
-        
+            <!-- Biometric -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.biometric') }}"
+                >
+
+                    <span>🔐</span>
+
+                    Biometric Integration
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/admin/shifts">
-                🕘 Shifts
-            </a>
-        </li>
+            <!-- Shifts -->
 
-        <li>
-            <a href="{{ url_for('goal.goal_list') }}">
-                🎯 Goals
-            </a>
-        </li>
+            <li>
 
+                <a href="/admin/shifts">
 
-        <!-- ==========================
-             HOLIDAY MANAGEMENT
-        =========================== -->
+                    <span>🕘</span>
 
-        <li>
-            <a href="{{ url_for('holiday.holiday_list') }}">
-                📅 Holiday Management
-            </a>
-        </li>
+                    Shifts
+
+                </a>
+
+            </li>
 
 
-        <!-- ==========================
-             PAYROLL
-        =========================== -->
+            <!-- Goals -->
 
-        <li>
-            <a href="{{ url_for('payroll.payroll_list') }}">
-                💰 Payroll
-            </a>
-        </li>
+            <li>
 
-        <li>
-            <a href="{{ url_for('asset.asset_list') }}">
-                💻 Assets Management
-            </a>
-        </li>
+                <a
+                    href="{{ url_for('goal.goal_list') }}"
+                >
 
-        <li>
-            <a href="{{ url_for('notice.notice_list') }}">
-                📢 Notices & Announcements
-            </a>
-        </li>
+                    <span>🎯</span>
 
-        <li>
-            <a href="{{ url_for('manager_feedback.feedback_list') }}">
-                💬 Manager Feedback
-            </a>
-        </li>
+                    Goals
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="{{ url_for('payroll.salary_history') }}">
-                💵 Salary History
-            </a>
-        </li>
+            <!-- Holiday Management -->
 
-            {% if current_user.is_authenticated and current_user.role and current_user.role.name == "Super Admin" %}
+            <li>
 
-                <li>
-                    <a href="{{ url_for('expense.expense_list') }}">
-                        💰 Expense Management
-                    </a>
-                </li>
+                <a
+                    href="{{ url_for('holiday.holiday_list') }}"
+                >
 
-                <li>
-                    <a href="{{ url_for('admin.activity_logs') }}">
-                        🔐 Activity Logs
-                    </a>
-                </li>
+                    <span>📅</span>
 
-                <li>
-                    <a href="{{ url_for('admin.login_history') }}">
-                        🔐 Login History
-                    </a>
-                </li>
+                    Holiday Management
 
-            {% endif %}
+                </a>
+
+            </li>
+
+
+            <!-- Payroll -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('payroll.payroll_list') }}"
+                >
+
+                    <span>💰</span>
+
+                    Payroll
+
+                </a>
+
+            </li>
+
+
+            <!-- Assets -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('asset.asset_list') }}"
+                >
+
+                    <span>💻</span>
+
+                    Assets Management
+
+                </a>
+
+            </li>
+
+
+            <!-- Notices -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('notice.notice_list') }}"
+                >
+
+                    <span>📢</span>
+
+                    Notices & Announcements
+
+                </a>
+
+            </li>
+
+
+            <!-- Manager Feedback -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('manager_feedback.feedback_list') }}"
+                >
+
+                    <span>💬</span>
+
+                    Manager Feedback
+
+                </a>
+
+            </li>
+
+
+            <!-- Roles & Permissions -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.roles') }}"
+                >
+
+                    <span>🛡️</span>
+
+                    Roles & Permissions
+
+                </a>
+
+            </li>
+
+
+            <!-- Permission Management -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.permissions') }}"
+                >
+
+                    <span>🔑</span>
+
+                    Permission Management
+
+                </a>
+
+            </li>
+
+
+            <!-- Salary History -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('payroll.salary_history') }}"
+                >
+
+                    <span>💵</span>
+
+                    Salary History
+
+                </a>
+
+            </li>
+
+
+            <!-- Expense Management -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('expense.expense_list') }}"
+                >
+
+                    <span>💰</span>
+
+                    Expense Management
+
+                </a>
+
+            </li>
+
+
+            <!-- Activity Logs -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.activity_logs') }}"
+                >
+
+                    <span>🔐</span>
+
+                    Activity Logs
+
+                </a>
+
+            </li>
+
+
+            <!-- Login History -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('admin.login_history') }}"
+                >
+
+                    <span>🔐</span>
+
+                    Login History
+
+                </a>
+
+            </li>
 
 
         {% endif %}
 
 
+        <!-- =================================================
+             DEPARTMENT MANAGER
+        ================================================== -->
 
-        <!-- ==========================
+        {% if current_user.is_authenticated
+              and current_user.has_role("Department Manager") %}
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('employee.department_dashboard') }}"
+                >
+
+                    <span>🏠</span>
+
+                    Department Dashboard
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('employee.department_employees') }}"
+                >
+
+                    <span>👥</span>
+
+                    My Department Employees
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('employee.department_attendance') }}"
+                >
+
+                    <span>📅</span>
+
+                    Department Attendance
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('employee.department_leaves') }}"
+                >
+
+                    <span>📝</span>
+
+                    Department Leaves
+
+                </a>
+
+            </li>
+
+
+        {% endif %}
+
+
+        <!-- =================================================
              EMPLOYEE
-        =========================== -->
+        ================================================== -->
 
         {% if current_user.is_authenticated
-              and not current_user.has_role('Super Admin') %}
+              and not current_user.has_any_role('Super Admin') %}
 
 
-        <li>
-            <a href="/employee/dashboard">
-                🏠 Dashboard
-            </a>
-        </li>
+            <!-- Dashboard -->
 
-        <li>
-            <a href="/attendance">
-                📅 Attendance
-            </a>
-        </li>
+            <li>
 
-        <li>
-            <a href="{{ url_for('asset.asset_list') }}">
-                💻 Assets
-            </a>
-        </li>
+                <a href="/employee/dashboard">
 
-        <li>
-            <a href="{{ url_for('notice.notice_list') }}">
-                📢 Notices & Announcements
-            </a>
-        </li>
+                    <span>🏠</span>
 
-        <li>
-            <a href="{{ url_for('payroll.salary_history') }}">
-                💵 Salary History
-            </a>
-        </li>
+                    Dashboard
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/apply_leave">
-                📝 Apply Leave
-            </a>
-        </li>
+            <!-- My Profile -->
 
-        <li>
-            <a href="{{ url_for('kpi.kpi_list') }}">
-                🎯 KPI Tracking
-            </a>
-        </li>
+            <li>
 
-            {% if current_user.is_authenticated and current_user.role and current_user.role.name != "Super Admin" %}
+                <a
+                    href="{{ url_for('employee.employee_profile') }}"
+                    class="profile-menu-link"
+                >
 
-                <li>
-                    <a href="{{ url_for('expense.expense_list') }}">
-                        💰 My Expenses
-                    </a>
-                </li>
+                    <span>👤</span>
 
-            {% endif %}
+                    My Profile
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="{{ url_for('employee.today_attendance') }}">
-                📍 Mark Attendance
-            </a>
-        </li>
+            <!-- Attendance -->
 
-        <li>
-            <a href="{{ url_for('holiday.holiday_list') }}">
-                📅 Holiday Calendar
-            </a>
-        </li>
+            <li>
 
-        <li>
-            <a href="{{ url_for('goal.goal_list') }}">
-                🎯 My Goals
-            </a>
-        </li>
+                <a href="/attendance">
 
-        <li>
-            <a href="{{ url_for('manager_feedback.feedback_list') }}">
-                💬 My Feedback
-            </a>
-        </li>
+                    <span>📅</span>
+
+                    Attendance
+
+                </a>
+
+            </li>
 
 
-        <li>
-            <a href="/my_leaves">
-                📂 My Leaves
-            </a>
-        </li>
+            <!-- Assets -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('asset.asset_list') }}"
+                >
+
+                    <span>💻</span>
+
+                    Assets
+
+                </a>
+
+            </li>
+
+
+            <!-- Notices -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('notice.notice_list') }}"
+                >
+
+                    <span>📢</span>
+
+                    Notices & Announcements
+
+                </a>
+
+            </li>
+
+
+            <!-- Salary History -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('payroll.salary_history') }}"
+                >
+
+                    <span>💵</span>
+
+                    Salary History
+
+                </a>
+
+            </li>
+
+
+            <!-- Apply Leave -->
+
+            <li>
+
+                <a href="/apply_leave">
+
+                    <span>📝</span>
+
+                    Apply Leave
+
+                </a>
+
+            </li>
+
+
+            <!-- KPI -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('kpi.kpi_list') }}"
+                >
+
+                    <span>🎯</span>
+
+                    KPI Tracking
+
+                </a>
+
+            </li>
+
+
+            <!-- My Expenses -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('expense.expense_list') }}"
+                >
+
+                    <span>💰</span>
+
+                    My Expenses
+
+                </a>
+
+            </li>
+
+
+            <!-- Mark Attendance -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('employee.today_attendance') }}"
+                >
+
+                    <span>📍</span>
+
+                    Mark Attendance
+
+                </a>
+
+            </li>
+
+
+            <!-- Holiday -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('holiday.holiday_list') }}"
+                >
+
+                    <span>📅</span>
+
+                    Holiday Calendar
+
+                </a>
+
+            </li>
+
+
+            <!-- My Goals -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('goal.goal_list') }}"
+                >
+
+                    <span>🎯</span>
+
+                    My Goals
+
+                </a>
+
+            </li>
+
+
+            <!-- My Feedback -->
+
+            <li>
+
+                <a
+                    href="{{ url_for('manager_feedback.feedback_list') }}"
+                >
+
+                    <span>💬</span>
+
+                    My Feedback
+
+                </a>
+
+            </li>
+
+
+            <!-- My Leaves -->
+
+            <li>
+
+                <a href="/my_leaves">
+
+                    <span>📂</span>
+
+                    My Leaves
+
+                </a>
+
+            </li>
 
 
         {% endif %}
 
 
-
-        <!-- ==========================
+        <!-- =================================================
              LOGOUT
-        =========================== -->
+        ================================================== -->
 
         {% if current_user.is_authenticated %}
 
-        <li>
-            <a href="/logout">
-                🚪 Logout
-            </a>
-        </li>
+            <li>
+
+                <a href="/logout">
+
+                    <span>🚪</span>
+
+                    Logout
+
+                </a>
+
+            </li>
 
         {% endif %}
 
@@ -331,103 +2526,1118 @@
     </ul>
 
 
+    <!-- =====================================================
+         SIDEBAR USER FOOTER
+    ====================================================== -->
 
-    <!-- ==========================
-         SIDEBAR FOOTER
-    =========================== -->
-            <div class="sidebar-footer">
+    <div class="sidebar-footer">
 
-                {% if current_user.is_authenticated %}
 
-                    <div class="user-avatar">
-                        {{ current_user.username[0]|upper }}
-                    </div>
+        {% if current_user.is_authenticated %}
 
-                    <div class="user-info">
 
-                        <h6>
-                            {{ current_user.username }}
-                        </h6>
+            <!-- PROFILE PHOTO -->
 
-                        <span>
-                            {{ current_user.role.name if current_user.role else "Employee" }}
-                        </span>
+            {% if current_user.employee
+                  and current_user.employee.profile_photo %}
 
-                    </div>
 
-                {% endif %}
+                <div class="sidebar-profile-photo">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename=current_user.employee.profile_photo
+                        ) }}"
+                        alt="Profile Photo"
+                    >
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="sidebar-profile-photo">
+
+                    {{
+                        current_user.username[0]|upper
+                        if current_user.username
+                        else "U"
+                    }}
+
+                </div>
+
+
+            {% endif %}
+
+
+            <!-- USER INFO -->
+
+            <div class="user-info">
+
+                <h6>
+
+                    {{ current_user.username }}
+
+                </h6>
+
+                <span>
+
+                    {{
+                        current_user.role.name
+                        if current_user.role
+                        else "Employee"
+                    }}
+
+                </span>
 
             </div>
 
 
+        {% endif %}
+
+
+    </div>
+
+
 </div>
 
 
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
 
-<!-- ===========================
-     PAGE CONTENT
-============================ -->
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+></div>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
 
 <div class="main-content">
 
+
+    <!-- MOBILE MENU -->
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open navigation"
+    >
+
+        <i class="bi bi-list"></i>
+
+    </button>
+
+
+    <!-- PAGE CONTENT -->
+
     {% block content %}
+
     {% endblock %}
+
 
 </div>
 
 
+<!-- =========================================================
+     PEOPLEdesk AI
+========================================================= -->
 
-<!-- ================================
-     SCRIPTS
-================================ -->
+{% if current_user.is_authenticated and current_user.has_any_role(
+    "Super Admin",
+    "Admin",
+    "HR Manager"
+) %}
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+
+<div id="peopleDeskAI">
+
+
+    <!-- =====================================================
+         AI CHAT WINDOW
+    ====================================================== -->
+
+    <div
+        id="aiChatWindow"
+        class="ai-floating-window"
+    >
+
+
+        <!-- HEADER -->
+
+        <div class="ai-floating-header">
+
+
+            <div class="ai-floating-title">
+
+
+                <div class="ai-floating-avatar">
+
+                    <i class="bi bi-robot"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="ai-title">
+
+                        PeopleDesk AI
+
+                    </div>
+
+
+                    <div class="ai-online">
+
+                        <span></span>
+
+                        Online
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                type="button"
+                id="aiCloseBtn"
+                class="ai-close-btn"
+                title="Close"
+            >
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+        </div>
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        <div
+            id="aiFloatingMessages"
+            class="ai-floating-messages"
+        >
+
+
+            <div class="ai-welcome-message">
+
+
+                <div class="ai-welcome-icon">
+
+                    <i class="bi bi-stars"></i>
+
+                </div>
+
+
+                <div class="ai-welcome-title">
+
+                    How can I help you?
+
+                </div>
+
+
+                <div class="ai-welcome-text">
+
+                    Ask me about employees,
+                    attendance, leaves,
+                    departments or HR data.
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             QUICK QUESTIONS
+        ================================================== -->
+
+        <div
+            id="aiQuickQuestions"
+            class="ai-quick-questions"
+        >
+
+
+            <button
+                type="button"
+                class="ai-question-btn"
+                data-question="How many employees are currently active?"
+            >
+
+                Active employees
+
+            </button>
+
+
+            <button
+                type="button"
+                class="ai-question-btn"
+                data-question="Give me an overview of our HR data."
+            >
+
+                HR overview
+
+            </button>
+
+
+            <button
+                type="button"
+                class="ai-question-btn"
+                data-question="How many departments are there?"
+            >
+
+                Departments
+
+            </button>
+
+
+        </div>
+
+
+        <!-- =================================================
+             INPUT
+        ================================================== -->
+
+        <div class="ai-floating-input">
+
+
+            <textarea
+                id="aiFloatingInput"
+                rows="1"
+                maxlength="4000"
+                placeholder="Ask PeopleDesk AI..."
+            ></textarea>
+
+
+            <button
+                type="button"
+                id="aiFloatingSend"
+                title="Send"
+            >
+
+                <i class="bi bi-send-fill"></i>
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         FLOATING AI BUTTON
+    ====================================================== -->
+
+    <button
+        type="button"
+        id="aiFloatingButton"
+        class="ai-floating-button"
+        title="PeopleDesk AI Assistant"
+        aria-label="Open PeopleDesk AI"
+    >
+
+        <i class="bi bi-robot"></i>
+
+        <span class="ai-pulse"></span>
+
+    </button>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   PEOPLEdesk AI
+========================================================= */
+
+(function () {
+
+    "use strict";
+
+
+    const button =
+        document.getElementById(
+            "aiFloatingButton"
+        );
+
+
+    const windowBox =
+        document.getElementById(
+            "aiChatWindow"
+        );
+
+
+    const closeButton =
+        document.getElementById(
+            "aiCloseBtn"
+        );
+
+
+    const input =
+        document.getElementById(
+            "aiFloatingInput"
+        );
+
+
+    const sendButton =
+        document.getElementById(
+            "aiFloatingSend"
+        );
+
+
+    const messages =
+        document.getElementById(
+            "aiFloatingMessages"
+        );
+
+
+    if (
+        !button ||
+        !windowBox ||
+        !closeButton ||
+        !input ||
+        !sendButton ||
+        !messages
+    ) {
+
+        return;
+    }
+
+
+    let sending = false;
+
+
+    /* =====================================================
+       OPEN AI
+    ===================================================== */
+
+    button.addEventListener(
+        "click",
+        function () {
+
+            windowBox.classList.toggle(
+                "open"
+            );
+
+
+            if (
+                windowBox.classList.contains(
+                    "open"
+                )
+            ) {
+
+                setTimeout(
+                    function () {
+
+                        input.focus();
+
+                    },
+                    100
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CLOSE AI
+    ===================================================== */
+
+    closeButton.addEventListener(
+        "click",
+        function () {
+
+            windowBox.classList.remove(
+                "open"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
+    function escapeHtml(text) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.textContent =
+            text;
+
+        return div.innerHTML;
+    }
+
+
+    /* =====================================================
+       SCROLL
+    ===================================================== */
+
+    function scrollBottom() {
+
+        messages.scrollTop =
+            messages.scrollHeight;
+    }
+
+
+    /* =====================================================
+       ADD MESSAGE
+    ===================================================== */
+
+    function addMessage(
+        text,
+        type
+    ) {
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.className =
+            "ai-message " + type;
+
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+        bubble.className =
+            "ai-message-bubble";
+
+
+        bubble.innerHTML =
+            escapeHtml(text);
+
+
+        row.appendChild(
+            bubble
+        );
+
+
+        messages.appendChild(
+            row
+        );
+
+
+        scrollBottom();
+    }
+
+
+    /* =====================================================
+       TYPING INDICATOR
+    ===================================================== */
+
+    function showTyping() {
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.id =
+            "aiTypingIndicator";
+
+        row.className =
+            "ai-message assistant";
+
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+        bubble.className =
+            "ai-message-bubble";
+
+
+        bubble.innerHTML = `
+
+            <div class="ai-typing">
+
+                <span></span>
+
+                <span></span>
+
+                <span></span>
+
+            </div>
+
+        `;
+
+
+        row.appendChild(
+            bubble
+        );
+
+
+        messages.appendChild(
+            row
+        );
+
+
+        scrollBottom();
+    }
+
+
+    /* =====================================================
+       REMOVE TYPING
+    ===================================================== */
+
+    function removeTyping() {
+
+        const typing =
+            document.getElementById(
+                "aiTypingIndicator"
+            );
+
+
+        if (typing) {
+
+            typing.remove();
+
+        }
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+    ===================================================== */
+
+    async function sendMessage(
+        customMessage = null
+    ) {
+
+        if (sending) {
+
+            return;
+        }
+
+
+        const text =
+            customMessage !== null
+                ? customMessage.trim()
+                : input.value.trim();
+
+
+        if (!text) {
+
+            return;
+        }
+
+
+        sending = true;
+
+        sendButton.disabled = true;
+
+
+        /* Remove welcome */
+
+        const welcome =
+            messages.querySelector(
+                ".ai-welcome-message"
+            );
+
+
+        if (welcome) {
+
+            welcome.remove();
+
+        }
+
+
+        /* User message */
+
+        addMessage(
+            text,
+            "user"
+        );
+
+
+        input.value = "";
+
+        resizeInput();
+
+
+        showTyping();
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "{{ url_for('ai_assistant.chat') }}",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message: text
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            removeTyping();
+
+
+            if (
+                response.ok &&
+                data.success
+            ) {
+
+                addMessage(
+                    data.message,
+                    "assistant"
+                );
+
+            }
+            else {
+
+                addMessage(
+                    data.message ||
+                    "AI Assistant response nahi de saka.",
+                    "assistant"
+                );
+
+            }
+
+
+        }
+        catch (error) {
+
+
+            removeTyping();
+
+
+            addMessage(
+                "Server se connection nahi ho saka.",
+                "assistant"
+            );
+
+
+            console.error(
+                "PeopleDesk AI:",
+                error
+            );
+
+        }
+        finally {
+
+
+            sending = false;
+
+            sendButton.disabled = false;
+
+            input.focus();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SEND BUTTON
+    ===================================================== */
+
+    sendButton.addEventListener(
+        "click",
+        function () {
+
+            sendMessage();
+
+        }
+    );
+
+
+    /* =====================================================
+       ENTER KEY
+    ===================================================== */
+
+    input.addEventListener(
+        "keydown",
+        function (event) {
+
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       AUTO RESIZE
+    ===================================================== */
+
+    function resizeInput() {
+
+        input.style.height =
+            "auto";
+
+
+        input.style.height =
+            Math.min(
+                input.scrollHeight,
+                100
+            ) + "px";
+
+    }
+
+
+    input.addEventListener(
+        "input",
+        resizeInput
+    );
+
+
+    /* =====================================================
+       QUICK QUESTIONS
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".ai-question-btn"
+        )
+        .forEach(
+            function (btn) {
+
+
+                btn.addEventListener(
+                    "click",
+                    function () {
+
+                        sendMessage(
+                            this.dataset.question
+                        );
+
+                    }
+                );
+
+
+            }
+        );
+
+
+    /* =====================================================
+       ESC KEY CLOSE
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+
+            if (
+                event.key === "Escape" &&
+                windowBox.classList.contains("open")
+            ) {
+
+                windowBox.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
+
+
+})();
+
 </script>
 
+{% endif %}
+
+
+<!-- =========================================================
+     BOOTSTRAP JS
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<!-- =========================================================
+     APPLICATION JAVASCRIPT
+========================================================= -->
 
 <script>
 
 (function () {
 
-    const themeToggle =
-        document.getElementById("themeToggle");
-
-    const html =
-        document.documentElement;
+    "use strict";
 
 
-    const savedTheme =
-        localStorage.getItem("theme");
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const sidebar =
+        document.getElementById(
+            "mainSidebar"
+        );
 
 
-    if (savedTheme === "dark") {
+    const overlay =
+        document.getElementById(
+            "sidebarOverlay"
+        );
 
-        html.classList.add("dark");
+
+    const menuButton =
+        document.getElementById(
+            "mobileMenuButton"
+        );
+
+
+    /* =====================================================
+       CLOSE SIDEBAR
+    ===================================================== */
+
+    function closeSidebar() {
+
+        if (sidebar) {
+
+            sidebar.classList.remove(
+                "sidebar-open"
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "overlay-visible"
+            );
+
+        }
 
     }
 
 
-    if (themeToggle) {
+    /* =====================================================
+       OPEN MOBILE SIDEBAR
+    ===================================================== */
 
-        themeToggle.addEventListener(
+    if (menuButton) {
+
+        menuButton.addEventListener(
             "click",
             function () {
 
-                html.classList.toggle("dark");
+
+                if (
+                    !sidebar ||
+                    !overlay
+                ) {
+
+                    return;
+                }
 
 
-                localStorage.setItem(
-                    "theme",
-                    html.classList.contains("dark")
-                        ? "dark"
-                        : "light"
+                sidebar.classList.add(
+                    "sidebar-open"
+                );
+
+
+                overlay.classList.add(
+                    "overlay-visible"
                 );
 
             }
         );
 
     }
+
+
+    /* =====================================================
+       OVERLAY CLICK
+    ===================================================== */
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    /* =====================================================
+       SIDEBAR LINKS
+    ===================================================== */
+
+    const sidebarLinks =
+        document.querySelectorAll(
+            ".sidebar-menu a"
+        );
+
+
+    sidebarLinks.forEach(
+        function (link) {
+
+
+            link.addEventListener(
+                "click",
+                function () {
+
+
+                    if (
+                        window.innerWidth <= 900
+                    ) {
+
+                        closeSidebar();
+
+                    }
+
+                }
+            );
+
+
+        }
+    );
+
+
+    /* =====================================================
+       ACTIVE SIDEBAR LINK
+    ===================================================== */
+
+    const currentPath =
+        window.location.pathname;
+
+
+    sidebarLinks.forEach(
+        function (link) {
+
+
+            const href =
+                link.getAttribute(
+                    "href"
+                );
+
+
+            if (
+                !href ||
+                href === "#" ||
+                href.startsWith(
+                    "javascript:"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+
+                const linkUrl =
+                    new URL(
+                        href,
+                        window.location.origin
+                    );
+
+
+                if (
+                    linkUrl.pathname ===
+                    currentPath
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+            }
+            catch (error) {
+
+                /* Ignore invalid URLs */
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       THEME
+    ===================================================== */
+
+    const savedTheme =
+        localStorage.getItem(
+            "theme"
+        );
+
+
+    if (
+        savedTheme === "dark"
+    ) {
+
+        document.documentElement.classList.add(
+            "dark"
+        );
+
+    }
+
 
 })();
 

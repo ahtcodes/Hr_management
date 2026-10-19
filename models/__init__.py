@@ -8,3 +8,4 @@ from models.role import Permission
 from .document import Document
 from models.activity_log import ActivityLog
 from models.login_history import LoginHistory
+from models.chat import Conversation, Message

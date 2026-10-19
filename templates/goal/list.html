@@ -17,7 +17,7 @@ Goals — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin","HR Manage") %}
         <a href="{{ url_for('goal.create_goal') }}"
            class="btn btn-primary">
             + Create Goal

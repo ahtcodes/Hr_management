@@ -1,0 +1,830 @@
+{% extends "base.html" %}
+
+{% block title %}
+Chat with {{ other_user.username }} - PeopleDesk HR
+{% endblock %}
+
+
+{% block content %}
+
+<div class="conversation-page">
+
+    <!-- =====================================================
+         CHAT HEADER
+    ====================================================== -->
+
+    <div class="conversation-header">
+
+        <a
+            href="{{ url_for('chat.chat_home') }}"
+            class="back-button"
+        >
+            ←
+        </a>
+
+
+        <div class="conversation-avatar">
+
+            {% if other_user.employee
+                  and other_user.employee.profile_photo %}
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename=other_user.employee.profile_photo
+                    ) }}"
+                    alt="Profile"
+                >
+
+            {% else %}
+
+                {{
+                    (
+                        other_user.employee.full_name
+                        if other_user.employee
+                        else other_user.username
+                    )[0]|upper
+                }}
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="conversation-user-info">
+
+            <strong>
+
+                {{
+                    other_user.employee.full_name
+                    if other_user.employee
+                    else other_user.username
+                }}
+
+            </strong>
+
+            <span>
+                {{ other_user.username }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MESSAGES
+    ====================================================== -->
+
+    <div
+        class="conversation-messages"
+        id="conversationMessages"
+    >
+
+        {% for message in messages %}
+
+            <div
+                class="
+                    message-row
+                    {% if message.sender_id == current_user.id %}
+                        message-row-me
+                    {% else %}
+                        message-row-other
+                    {% endif %}
+                "
+            >
+
+                <div
+                    class="
+                        message-bubble
+                        {% if message.sender_id == current_user.id %}
+                            message-me
+                        {% else %}
+                            message-other
+                        {% endif %}
+                    "
+                >
+
+                    <div class="message-text">
+                        {{ message.message }}
+                    </div>
+
+                    <div class="message-time">
+
+                        {{ message.created_at.strftime("%I:%M %p") }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =====================================================
+         MESSAGE INPUT
+    ====================================================== -->
+
+    <div class="conversation-input-area">
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Type your message..."
+            autocomplete="off"
+        >
+
+
+        <button
+            type="button"
+            id="sendMessageButton"
+        >
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   CONVERSATION PAGE
+========================================================= */
+
+.conversation-page {
+
+    height:
+        calc(100vh - 52px);
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border:
+        1px solid #e7ebf0;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.06);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.conversation-header {
+
+    min-height: 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding:
+        12px 16px;
+
+    border-bottom:
+        1px solid #e7ebf0;
+
+    background:
+        #ffffff;
+}
+
+
+.back-button {
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    color: #344054;
+
+    background:
+        #f4f6f8;
+
+    font-size: 19px;
+
+    transition:
+        background .18s ease;
+}
+
+
+.back-button:hover {
+
+    background:
+        #e8edf3;
+
+    color:
+        #172033;
+}
+
+
+.conversation-avatar {
+
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    background:
+        #2563eb;
+
+    color:
+        #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.conversation-avatar img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.conversation-user-info {
+
+    min-width: 0;
+}
+
+
+.conversation-user-info strong {
+
+    display: block;
+
+    color:
+        #172033;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+}
+
+
+.conversation-user-info span {
+
+    display: block;
+
+    margin-top:
+        3px;
+
+    color:
+        #98a2b3;
+
+    font-size:
+        9px;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.conversation-messages {
+
+    flex: 1;
+
+    padding:
+        20px;
+
+    overflow-y: auto;
+
+    background:
+        #f7f9fc;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        8px;
+}
+
+
+.message-row {
+
+    display:
+        flex;
+
+    width:
+        100%;
+}
+
+
+.message-row-me {
+
+    justify-content:
+        flex-end;
+}
+
+
+.message-row-other {
+
+    justify-content:
+        flex-start;
+}
+
+
+.message-bubble {
+
+    max-width:
+        70%;
+
+    padding:
+        9px 12px;
+
+    border-radius:
+        11px;
+
+    font-size:
+        11px;
+
+    line-height:
+        1.5;
+
+    word-break:
+        break-word;
+}
+
+
+.message-me {
+
+    background:
+        #2563eb;
+
+    color:
+        #ffffff;
+
+    border-bottom-right-radius:
+        3px;
+}
+
+
+.message-other {
+
+    background:
+        #ffffff;
+
+    color:
+        #344054;
+
+    border:
+        1px solid #e4e8ee;
+
+    border-bottom-left-radius:
+        3px;
+}
+
+
+.message-text {
+
+    white-space:
+        pre-wrap;
+}
+
+
+.message-time {
+
+    margin-top:
+        4px;
+
+    font-size:
+        8px;
+
+    opacity:
+        .65;
+
+    text-align:
+        right;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.conversation-input-area {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        11px;
+
+    border-top:
+        1px solid #e7ebf0;
+
+    background:
+        #ffffff;
+}
+
+
+#messageInput {
+
+    flex:
+        1;
+
+    height:
+        42px;
+
+    padding:
+        0 13px;
+
+    border:
+        1px solid #dfe5ec;
+
+    border-radius:
+        9px;
+
+    outline:
+        none;
+
+    font-size:
+        11px;
+}
+
+
+#messageInput:focus {
+
+    border-color:
+        #8ea7d1;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.08);
+}
+
+
+#sendMessageButton {
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    background:
+        #2563eb;
+
+    color:
+        #ffffff;
+
+    cursor:
+        pointer;
+
+    font-size:
+        16px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+}
+
+
+#sendMessageButton:hover {
+
+    background:
+        #1d4ed8;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .conversation-page {
+
+        height:
+            calc(100vh - 80px);
+
+        border-radius:
+            10px;
+    }
+
+
+    .conversation-messages {
+
+        padding:
+            13px;
+    }
+
+
+    .message-bubble {
+
+        max-width:
+            82%;
+    }
+
+}
+
+</style>
+
+
+<!-- ========================================================
+     SOCKET.IO
+======================================================== -->
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =================================================
+           SOCKET CONNECTION
+        ================================================= */
+
+        const socket =
+            io();
+
+
+        const conversationId =
+            {{ conversation.id }};
+
+
+        const currentUserId =
+            {{ current_user.id }};
+
+
+        const messagesContainer =
+            document.getElementById(
+                "conversationMessages"
+            );
+
+
+        const messageInput =
+            document.getElementById(
+                "messageInput"
+            );
+
+
+        const sendButton =
+            document.getElementById(
+                "sendMessageButton"
+            );
+
+
+        /* =================================================
+           SCROLL TO BOTTOM
+        ================================================= */
+
+         function scrollToBottom() {
+
+            messagesContainer.scrollTop =
+                messagesContainer.scrollHeight;
+
+        }
+
+
+        scrollToBottom();
+
+
+        /* =================================================
+           JOIN CHAT ROOM
+        ================================================= */
+
+        socket.emit(
+            "join_chat",
+            {
+                conversation_id:
+                    conversationId
+            }
+        );
+
+
+        /* =================================================
+           SEND MESSAGE
+        ================================================= */
+
+        function sendMessage() {
+
+            const message =
+                messageInput.value.trim();
+
+
+            if (!message) {
+                return;
+            }
+
+
+            socket.emit(
+                "send_message",
+                {
+
+                    conversation_id:
+                        conversationId,
+
+                    message:
+                        message
+
+                }
+            );
+
+
+            messageInput.value = "";
+
+            messageInput.focus();
+
+        }
+
+
+        /* =================================================
+           SEND BUTTON
+        ================================================= */
+
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+        /* =================================================
+           ENTER KEY
+        ================================================= */
+
+        messageInput.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           RECEIVE MESSAGE
+        ================================================= */
+
+        socket.on(
+            "new_message",
+            function (data) {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                if (
+                    data.sender_id ===
+                    currentUserId
+                ) {
+
+                    row.className =
+                        "message-row message-row-me";
+
+                } else {
+
+                    row.className =
+                        "message-row message-row-other";
+
+                }
+
+
+                const bubble =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                if (
+                    data.sender_id ===
+                    currentUserId
+                ) {
+
+                    bubble.className =
+                        "message-bubble message-me";
+
+                } else {
+
+                    bubble.className =
+                        "message-bubble message-other";
+
+                }
+
+
+                const text =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                text.className =
+                    "message-text";
+
+
+                text.textContent =
+                    data.message;
+
+
+                const time =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                time.className =
+                    "message-time";
+
+
+                time.textContent =
+                    data.created_at;
+
+
+                bubble.appendChild(
+                    text
+                );
+
+                bubble.appendChild(
+                    time
+                );
+
+
+                row.appendChild(
+                    bubble
+                );
+
+
+                messagesContainer.appendChild(
+                    row
+                );
+
+
+                scrollToBottom();
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

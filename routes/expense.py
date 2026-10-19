@@ -156,7 +156,7 @@ def create_expense():
 @login_required
 def approve_expense(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     expense_data = Expense.query.get_or_404(id)
@@ -188,7 +188,7 @@ def approve_expense(id):
 @login_required
 def reject_expense(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     expense_data = Expense.query.get_or_404(id)
@@ -218,7 +218,7 @@ def reject_expense(id):
 @login_required
 def reimburse_expense(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     expense_data = Expense.query.get_or_404(id)

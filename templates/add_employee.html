@@ -1,278 +1,1646 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}
-Add Employee — PeopleDesk HR
-{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+    <title>Add Employee — PeopleDesk HR</title>
 
-<div class="container">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-    <div class="greeting-row">
-        <div class="greeting-text">
-            <h1>Add Employee</h1>
-            <p class="greeting-sub">Register a new employee in the system.</p>
-        </div>
-    </div>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    <div class="content-card">
-        <form action="/add_employee" method="POST" enctype="multipart/form-data">
+        body {
+            margin: 0;
+            background: #f5f7fa;
+            color: #1f2937;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Employee Code</label>
-                        <input type="text" name="employee_code" class="form-control" placeholder="Enter Employee Code" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" name="full_name" class="form-control" placeholder="Enter Full Name" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter Email Address" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone" class="form-control" placeholder="Enter Phone Number" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Department</label>
-                        <input type="text" name="department" class="form-control" placeholder="Enter Department" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Designation</label>
-                        <input type="text" name="designation" class="form-control" placeholder="Enter Designation" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Joining Date</label>
-                        <input type="date" name="joining_date" class="form-control" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-    <div class="form-group">
-        <label class="form-label">Resignation Date</label>
+        .employee-page {
+            min-height: 100vh;
+        }
 
-        <input
-            type="date"
-            name="resignation_date"
-            class="form-control"
-        >
-    </div>
-</div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Basic Salary</label>
-                        <input type="number" name="basic_salary" class="form-control" placeholder="Enter Basic Salary" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="form-label">Overtime Rate (Per Hour)</label>
-                        <input type="number" name="overtime_rate" class="form-control" placeholder="Enter Overtime Rate" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-    <div class="form-group">
-        <label class="form-label">Location</label>
+        /* =========================================
+           TOP NAVIGATION
+        ========================================= */
 
-        <select name="location" class="form-select">
+        .topbar {
+            height: 72px;
+            background: #ffffff;
+            border-bottom: 1px solid #e7ebf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-            <option value="Faisalabad">Faisalabad</option>
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        </select>
-    </div>
-</div>
-                <div class="col-md-6">
-    <div class="form-group">
-        <label class="form-label">Employment Type</label>
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            background: #111827;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
 
-        <select
-            name="employment_type"
-            class="form-select"
-            required
-        >
-            <option value="">Select Employment Type</option>
-            <option value="Full Time">Full Time</option>
-            <option value="Part Time">Part Time</option>
-            <option value="Contract">Contract</option>
-            <option value="Intern">Intern</option>
-            <option value="Remote">Remote</option>
-        </select>
+        .brand-text strong {
+            display: block;
+            font-size: 17px;
+            color: #111827;
+        }
 
-    </div>
-</div>
-               <div class="col-md-6">
-                   <div class="form-group">
-                     <label class="form-label">Assign Shift</label>
+        .brand-text span {
+            display: block;
+            font-size: 11px;
+            color: #8a94a6;
+            margin-top: 2px;
+        }
 
-                         <select name="shift_id" class="form-select" required>
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-                          <option value="">Select Shift</option>
+        .admin-badge {
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-            {% for shift in shifts %}
-                <option value="{{ shift.id }}">
-                    {{ shift.shift_name }}
-                    ({{ shift.start_time.strftime('%I:%M %p') }} -
-                    {{ shift.end_time.strftime('%I:%M %p') }})
-                </option>
-            {% endfor %}
+        .back-btn {
+            border: 1px solid #dfe3e8;
+            background: #fff;
+            color: #374151;
+            text-decoration: none;
+            padding: 9px 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s ease;
+        }
 
-        </select>
+        .back-btn:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
 
-    </div>
-                </div>
-                <div class="col-md-6">
-    <div class="form-group">
-        <label class="form-label">Status</label>
+        /* =========================================
+           MAIN
+        ========================================= */
 
-        <select name="status" class="form-select">
-            <option value="Active" selected>Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="Resigned">Resigned</option>
-            <option value="Terminated">Terminated</option>
-        </select>
+        .main-container {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 32px 22px 60px;
+        }
 
-    </div>
-</div>
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 26px;
+            gap: 20px;
+        }
+
+        .heading-left h1 {
+            font-size: 30px;
+            margin: 0;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: -0.4px;
+        }
+
+        .heading-left p {
+            margin: 7px 0 0;
+            color: #7b8494;
+            font-size: 14px;
+        }
+
+        .heading-meta {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           FLASH
+        ========================================= */
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        /* =========================================
+           FORM CARD
+        ========================================= */
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #e8ebef;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.035);
+        }
+
+        .section-head {
+            padding: 20px 24px;
+            border-bottom: 1px solid #edf0f3;
+            background: #fcfcfd;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .section-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #f1f3f5;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-title h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .section-title p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: #8a94a6;
+        }
+
+        .section-body {
+            padding: 24px;
+        }
+
+        /* =========================================
+           FORM
+        ========================================= */
+
+        .form-label {
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+            border: 1px solid #dfe4ea;
+            border-radius: 9px;
+            font-size: 13px;
+            color: #1f2937;
+            padding: 10px 13px;
+            background: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: #a8b0bd;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #9ca3af;
+            box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.12);
+        }
+
+        .form-text {
+            color: #98a1af;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        /* =========================================
+           AUTO EMPLOYEE CODE
+        ========================================= */
+
+        .employee-code-box {
+            position: relative;
+        }
+
+        .employee-code-box .form-control {
+            background: #f6f7f8;
+            color: #111827;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding-right: 120px;
+        }
+
+        .auto-label {
+            position: absolute;
+            right: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e9ecef;
+            color: #495057;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+        }
+
+        /* =========================================
+           PROFILE BOX
+        ========================================= */
+
+        .profile-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 17px;
+            border: 1px dashed #d7dce2;
+            border-radius: 11px;
+            background: #fafbfc;
+            margin-bottom: 22px;
+        }
+
+        .profile-preview {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: #eef0f3;
+            border: 1px solid #dfe3e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .profile-placeholder {
+            color: #8a94a6;
+        }
+
+        .profile-details h4 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .profile-details p {
+            margin: 4px 0 10px;
+            color: #8a94a6;
+            font-size: 11px;
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+            background: #ffffff;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .upload-label:hover {
+            background: #f5f6f8;
+        }
+
+        /* =========================================
+           FILE CARDS
+        ========================================= */
+
+        .file-card {
+            border: 1px dashed #d7dce2;
+            border-radius: 10px;
+            padding: 16px;
+            background: #fafbfc;
+        }
+
+        .file-card-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 11px;
+        }
+
+        .file-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background: #eceff2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5b6472;
+        }
+
+        .file-card-title span {
+            font-size: 12px;
+            font-weight: 700;
+            color: #3f4651;
+        }
+
+        .file-card input {
+            font-size: 11px;
+            min-height: 41px;
+        }
+
+        /* =========================================
+           SALARY PREFIX
+        ========================================= */
+
+        .input-prefix {
+            display: flex;
+        }
+
+        .prefix {
+            min-width: 47px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border: 1px solid #dfe4ea;
+            border-right: none;
+            border-radius: 9px 0 0 9px;
+            font-size: 12px;
+            color: #5f6875;
+            font-weight: 600;
+        }
+
+        .input-prefix .form-control {
+            border-radius: 0 9px 9px 0;
+        }
+
+        /* =========================================
+           INFO BOX
+        ========================================= */
+
+        .info-box {
+            border: 1px solid #e3e6ea;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 14px 15px;
+            font-size: 12px;
+            color: #5f6875;
+            line-height: 1.6;
+        }
+
+        /* =========================================
+           ACTION BAR
+        ========================================= */
+
+        .action-bar {
+            background: #ffffff;
+            border: 1px solid #e8ebef;
+            border-radius: 15px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.035);
+        }
+
+        .action-note {
+            color: #8791a0;
+            font-size: 11px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            min-height: 43px;
+            padding: 10px 20px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .btn-cancel {
+            background: #ffffff;
+            border-color: #dfe3e8;
+            color: #4b5563;
+        }
+
+        .btn-cancel:hover {
+            background: #f6f7f8;
+            color: #111827;
+        }
+
+        .btn-save {
+            background: #111827;
+            color: #ffffff;
+            border-color: #111827;
+        }
+
+        .btn-save:hover {
+            background: #27303d;
+            border-color: #27303d;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 768px) {
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .admin-badge {
+                display: none;
+            }
+
+            .main-container {
+                padding: 22px 14px 40px;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .heading-left h1 {
+                font-size: 25px;
+            }
+
+            .section-body {
+                padding: 18px;
+            }
+
+            .section-head {
+                padding: 17px 18px;
+            }
+
+            .profile-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .action-buttons a,
+            .action-buttons button {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="employee-page">
+
+
+    <!-- =========================================
+         TOP BAR
+    ========================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                PD
             </div>
-            <hr class="my-4">
 
-<h4 class="mb-3">Emergency Contact</h4>
-
-<div class="row g-3">
-
-    <div class="col-md-4">
-        <div class="form-group">
-            <label class="form-label">Contact Name</label>
-            <input
-                type="text"
-                name="emergency_contact_name"
-                class="form-control"
-                placeholder="Enter Contact Name"
-            >
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="form-group">
-            <label class="form-label">Relationship</label>
-            <select
-                name="emergency_contact_relation"
-                class="form-select"
-            >
-                <option value="">Select Relationship</option>
-                <option value="Father">Father</option>
-                <option value="Mother">Mother</option>
-                <option value="Brother">Brother</option>
-                <option value="Sister">Sister</option>
-                <option value="Husband">Husband</option>
-                <option value="Wife">Wife</option>
-                <option value="Guardian">Guardian</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="form-group">
-            <label class="form-label">Emergency Phone</label>
-            <input
-                type="text"
-                name="emergency_contact_phone"
-                class="form-control"
-                placeholder="03XXXXXXXXX"
-            >
-        </div>
-    </div>
-
-</div>
-<hr class="my-4">
-
-<h4 class="mb-3">Employee Documents</h4>
-
-<div class="row g-3">
-
-    <div class="col-md-6">
-        <label class="form-label">Profile Photo</label>
-        <input
-            type="file"
-            name="profile_photo"
-            class="form-control"
-            accept="image/*"
-        >
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">CNIC Copy</label>
-        <input
-            type="file"
-            name="cnic_file"
-            class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png"
-        >
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">CV / Resume</label>
-        <input
-            type="file"
-            name="cv_file"
-            class="form-control"
-            accept=".pdf,.doc,.docx"
-        >
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">Certificates</label>
-        <input
-            type="file"
-            name="certificate_file"
-            class="form-control"
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-        >
-    </div>
-
-</div>
-
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    Save Employee
-                </button>
+            <div class="brand-text">
+                <strong>PeopleDesk HR</strong>
+                <span>Human Resource Management</span>
             </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <div class="admin-badge">
+                Super Admin
+            </div>
+
+            <a
+                href="{{ url_for('employee.employees') }}"
+                class="back-btn"
+            >
+                ← Employees
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-container">
+
+
+        <!-- Page Heading -->
+
+        <div class="page-heading">
+
+            <div class="heading-left">
+
+                <h1>Add New Employee</h1>
+
+                <p>
+                    Create an employee profile, employment record,
+                    salary details and account.
+                </p>
+
+            </div>
+
+            <div class="heading-meta">
+                All required fields are marked with *
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             FLASH MESSAGES
+        ========================================== -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div
+                        class="alert alert-{{ category }} alert-dismissible fade show"
+                        role="alert"
+                    >
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                        ></button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- =========================================
+             FORM
+        ========================================== -->
+
+        <form
+            method="POST"
+            action="{{ url_for('employee.add_employee') }}"
+            enctype="multipart/form-data"
+            id="employeeForm"
+        >
+
+
+            <!-- =====================================
+                 BASIC INFORMATION
+            ====================================== -->
+
+            <section class="section-card">
+
+                <div class="section-head">
+
+                    <div class="section-icon">
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 21a8 8 0 0 1 16 0"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="section-title">
+
+                        <h3>Basic Information</h3>
+
+                        <p>
+                            Personal information and employee identification.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-body">
+
+
+                    <!-- Profile -->
+
+                    <div class="profile-box">
+
+                        <div class="profile-preview">
+
+                            <img
+                                id="profilePreview"
+                                alt="Profile Preview"
+                            >
+
+                            <div
+                                class="profile-placeholder"
+                                id="profilePlaceholder"
+                            >
+
+                                <svg width="28" height="28"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.5"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round">
+
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M4 21a8 8 0 0 1 16 0"></path>
+
+                                </svg>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-details">
+
+                            <h4>Employee Profile Photo</h4>
+
+                            <p>
+                                JPG, JPEG or PNG. Recommended square image.
+                            </p>
+
+                            <label
+                                for="profilePhoto"
+                                class="upload-label"
+                            >
+                                Choose Photo
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="file"
+                            id="profilePhoto"
+                            name="profile_photo"
+                            accept="image/*"
+                            hidden
+                        >
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- Employee Code -->
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="form-label">
+                                Employee Code
+                            </label>
+
+                            <div class="employee-code-box">
+
+                                <input
+                                    type="text"
+                                    name="employee_code"
+                                    class="form-control"
+                                    value="{{ next_employee_code }}"
+                                    readonly
+                                >
+
+                                <span class="auto-label">
+                                    Auto
+                                </span>
+
+                            </div>
+
+                            <div class="form-text">
+                                Generated automatically by the system.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Full Name -->
+
+                        <div class="col-lg-8 col-md-6">
+
+                            <label class="form-label">
+                                Full Name
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="full_name"
+                                class="form-control"
+                                placeholder="Enter full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Email Address
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="employee@company.com"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                class="form-control"
+                                placeholder="03XX-XXXXXXX"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 EMPLOYMENT INFORMATION
+            ====================================== -->
+
+            <section class="section-card">
+
+                <div class="section-head">
+
+                    <div class="section-icon">
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <rect x="3" y="7" width="18" height="13"
+                                  rx="2"></rect>
+
+                            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+
+                            <path d="M3 12h18"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="section-title">
+
+                        <h3>Employment Information</h3>
+
+                        <p>
+                            Department, designation, joining date and work setup.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-body">
+
+                    <div class="row g-4">
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Department
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="department"
+                                class="form-control"
+                                placeholder="e.g. Information Technology"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Designation
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="designation"
+                                class="form-control"
+                                placeholder="e.g. Software Engineer"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Joining Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                name="joining_date"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Employment Type
+                            </label>
+
+                            <select
+                                name="employment_type"
+                                class="form-select"
+                            >
+
+                                <option value="Full Time">
+                                    Full Time
+                                </option>
+
+                                <option value="Part Time">
+                                    Part Time
+                                </option>
+
+                                <option value="Contract">
+                                    Contract
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
+                            <select
+                                name="status"
+                                class="form-select"
+                            >
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Shift
+                                <span class="required">*</span>
+                            </label>
+
+                            <select
+                                name="shift_id"
+                                class="form-select"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Shift
+                                </option>
+
+                                {% for shift in shifts %}
+
+                                    <option value="{{ shift.id }}">
+
+                                        {{ shift.name }}
+
+                                        {% if shift.start_time and shift.end_time %}
+
+                                            —
+                                            {{ shift.start_time.strftime('%I:%M %p') }}
+                                            -
+                                            {{ shift.end_time.strftime('%I:%M %p') }}
+
+                                        {% endif %}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Branch / Location
+                            </label>
+
+                            <input
+                                type="text"
+                                name="location"
+                                class="form-control"
+                                value="Faisalabad"
+                                placeholder="Enter branch or location"
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Resignation Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="resignation_date"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 SALARY INFORMATION
+            ====================================== -->
+
+            <section class="section-card">
+
+                <div class="section-head">
+
+                    <div class="section-icon">
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="section-title">
+
+                        <h3>Salary Information</h3>
+
+                        <p>
+                            Basic salary and overtime settings.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-body">
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Basic Salary
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="input-prefix">
+
+                                <span class="prefix">
+                                    Rs.
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="basic_salary"
+                                    class="form-control"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="50000"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Overtime Rate
+                            </label>
+
+                            <div class="input-prefix">
+
+                                <span class="prefix">
+                                    Rs.
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="overtime_rate"
+                                    class="form-control"
+                                    min="0"
+                                    step="0.01"
+                                    value="0"
+                                    placeholder="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 EMERGENCY CONTACT
+            ====================================== -->
+
+            <section class="section-card">
+
+                <div class="section-head">
+
+                    <div class="section-icon">
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M3 5h18"></path>
+                            <path d="M3 12h18"></path>
+                            <path d="M3 19h18"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="section-title">
+
+                        <h3>Emergency Contact</h3>
+
+                        <p>
+                            Contact information for emergency situations.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-body">
+
+                    <div class="row g-4">
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Contact Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="emergency_contact_name"
+                                class="form-control"
+                                placeholder="Enter contact name"
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Relationship
+                            </label>
+
+                            <input
+                                type="text"
+                                name="emergency_contact_relation"
+                                class="form-control"
+                                placeholder="e.g. Father"
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Contact Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                name="emergency_contact_phone"
+                                class="form-control"
+                                placeholder="03XX-XXXXXXX"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 DOCUMENTS
+            ====================================== -->
+
+            <section class="section-card">
+
+                <div class="section-head">
+
+                    <div class="section-icon">
+
+                        <svg width="19" height="19"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                            <polyline points="14 2 14 8 20 8"></polyline>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="section-title">
+
+                        <h3>Employee Documents</h3>
+
+                        <p>
+                            Upload employee identification and supporting documents.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-body">
+
+
+                    <div class="row g-4">
+
+
+                        <!-- CNIC -->
+
+                        <div class="col-md-6">
+
+                            <div class="file-card">
+
+                                <div class="file-card-title">
+
+                                    <div class="file-icon">
+
+                                        <svg width="15" height="15"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.7"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+
+                                        </svg>
+
+                                    </div>
+
+                                    <span>CNIC / Identity Document</span>
+
+                                </div>
+
+
+                                <input
+                                    type="file"
+                                    name="cnic_file"
+                                    class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CV -->
+
+                        <div class="col-md-6">
+
+                            <div class="file-card">
+
+                                <div class="file-card-title">
+
+                                    <div class="file-icon">
+
+                                        <svg width="15" height="15"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.7"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+
+                                            <path d="M4 4h16v16H4z"></path>
+                                            <path d="M8 8h8"></path>
+                                            <path d="M8 12h8"></path>
+                                            <path d="M8 16h5"></path>
+
+                                        </svg>
+
+                                    </div>
+
+                                    <span>CV / Resume</span>
+
+                                </div>
+
+
+                                <input
+                                    type="file"
+                                    name="cv_file"
+                                    class="form-control"
+                                    accept=".pdf,.doc,.docx"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Certificate -->
+
+                        <div class="col-md-6">
+
+                            <div class="file-card">
+
+                                <div class="file-card-title">
+
+                                    <div class="file-icon">
+
+                                        <svg width="15" height="15"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.7"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+
+                                            <circle cx="12" cy="8" r="5"></circle>
+                                            <path d="M8.5 12.5 7 22l5-3 5 3-1.5-9.5"></path>
+
+                                        </svg>
+
+                                    </div>
+
+                                    <span>Certificate</span>
+
+                                </div>
+
+
+                                <input
+                                    type="file"
+                                    name="certificate_file"
+                                    class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Profile hidden input handled above -->
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <strong>Document Security</strong><br>
+
+                                Uploaded files are associated with the employee
+                                profile and can be managed from the employee
+                                documents section.
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 FINAL ACTIONS
+            ====================================== -->
+
+            <div class="action-bar">
+
+                <div class="action-note">
+
+                    Employee account will be created with the default system
+                    settings.
+
+                </div>
+
+
+                <div class="action-buttons">
+
+                    <a
+                        href="{{ url_for('employee.employees') }}"
+                        class="btn-cancel"
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                        id="submitBtn"
+                    >
+
+                        <span id="submitText">
+                            Add Employee
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
 
         </form>
-    </div>
+
+    </main>
 
 </div>
 
-{% endblock %}
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+    // ========================================
+    // Profile Image Preview
+    // ========================================
+
+    const profileInput =
+        document.getElementById("profilePhoto");
+
+    const profilePreview =
+        document.getElementById("profilePreview");
+
+    const profilePlaceholder =
+        document.getElementById("profilePlaceholder");
+
+
+    if (profileInput) {
+
+        profileInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                profilePreview.style.display = "none";
+                profilePlaceholder.style.display = "flex";
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                profilePreview.src = event.target.result;
+
+                profilePreview.style.display = "block";
+
+                profilePlaceholder.style.display = "none";
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    }
+
+
+    // ========================================
+    // Submit Loading State
+    // ========================================
+
+    const employeeForm =
+        document.getElementById("employeeForm");
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+    const submitText =
+        document.getElementById("submitText");
+
+
+    if (employeeForm) {
+
+        employeeForm.addEventListener("submit", function () {
+
+            submitBtn.disabled = true;
+
+            submitText.textContent =
+                "Creating Employee...";
+
+        });
+
+    }
+
+</script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>

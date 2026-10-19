@@ -6,327 +6,2217 @@ Admin Dashboard — PeopleDesk HR
 
 {% block content %}
 
-<div class="container">
-<div class="dashboard-banner">
+<style>
 
-    <div class="banner-left">
+/* =========================================================
+   ADMIN DASHBOARD — PREMIUM ENTERPRISE UI
+   ========================================================= */
 
-        <h2>👋 Welcome Back, Admin</h2>
+.dashboard-page {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 28px 20px 50px;
+}
 
-        <p>
-            Manage employees, attendance, payroll and leave requests
-            from one centralized dashboard.
-        </p>
 
-    </div>
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
 
-    <div class="banner-right">
+.dashboard-top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
 
-        <div class="date-box">
-            📅 {{ moment().format('DD MMM YYYY') if moment else 'Today' }}
-        </div>
+.dashboard-heading {
+    min-width: 0;
+}
 
-    </div>
-    <div class="date-box">
-    📅 {{ today.strftime("%A, %d %B %Y") }}
-</div>
+.dashboard-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
 
-</div>
+    margin-bottom: 8px;
 
-    <!-- Stats Cards -->
-    <div class="row dashboard-stats g-3 mb-4">
+    color: var(--muted-foreground);
+    font-size: 10px;
+    font-weight: 800;
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card text-white h-100" style="background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%);">
-                <div class="card-body">
-                    <h5>Total Employees</h5>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <h1>{{ total_employees }}</h1>
-                        <span class="stat-delta up">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-                                <polyline points="16 7 22 7 22 13"/>
-                            </svg>
-                            Workforce
-                        </span>
-                    </div>
-                </div>
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.dashboard-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+    background: var(--primary);
+}
+
+.dashboard-heading h1 {
+    margin: 0;
+
+    font-family: var(--font-heading);
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 700;
+
+    letter-spacing: -.7px;
+    color: var(--foreground);
+}
+
+.dashboard-heading p {
+    margin: 7px 0 0;
+
+    color: var(--muted-foreground);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HEADER ACTION AREA
+   ========================================================= */
+
+.dashboard-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.dashboard-date {
+    min-height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: var(--card);
+
+    color: var(--muted-foreground);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    box-shadow: var(--shadow-xs);
+}
+
+.dashboard-date svg {
+    color: var(--primary);
+}
+
+.dashboard-add {
+    min-height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    background: var(--primary);
+    border: 1px solid var(--primary);
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+.dashboard-add:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   KPI GRID
+   ========================================================= */
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 145px;
+
+    padding: 18px;
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -35px;
+    bottom: -45px;
+
+    border-radius: 50%;
+
+    background: var(--primary-light);
+
+    pointer-events: none;
+}
+
+.kpi-card-success::after {
+    background: #ecfdf3;
+}
+
+.kpi-card-warning::after {
+    background: #fff7ed;
+}
+
+.kpi-card-danger::after {
+    background: #fef2f2;
+}
+
+.kpi-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.kpi-icon {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.kpi-success .kpi-icon {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.kpi-warning .kpi-icon {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.kpi-danger .kpi-icon {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.kpi-label {
+    color: var(--muted-foreground);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.kpi-number {
+    margin-top: 16px;
+
+    color: var(--foreground);
+
+    font-family: var(--font-heading);
+    font-size: 29px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+.kpi-footer {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 9px;
+
+    color: var(--muted-foreground);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.kpi-trend {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 19px;
+    height: 19px;
+
+    border-radius: 5px;
+
+    background: var(--secondary);
+    color: var(--muted-foreground);
+}
+
+.kpi-trend-up {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.kpi-trend-away {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.kpi-trend-missing {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.dashboard-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, .85fr);
+
+    gap: 18px;
+
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.dashboard-panel {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 17px 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-heading h3 {
+    margin: 0;
+
+    font-family: var(--font-heading);
+
+    color: var(--foreground);
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.panel-heading p {
+    margin: 4px 0 0;
+
+    color: var(--muted-foreground);
+
+    font-size: 10px;
+}
+
+.panel-link {
+    color: var(--primary);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+.panel-link:hover {
+    text-decoration: underline;
+}
+
+.panel-body {
+    padding: 0;
+}
+
+
+/* =========================================================
+   RECENT EMPLOYEES TABLE
+   ========================================================= */
+
+.dashboard-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.dashboard-table {
+    width: 100%;
+
+    min-width: 650px;
+
+    border-collapse: collapse;
+}
+
+.dashboard-table thead th {
+    padding: 11px 17px;
+
+    background: var(--secondary);
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--muted-foreground);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .06em;
+
+    white-space: nowrap;
+    text-align: left;
+}
+
+.dashboard-table tbody td {
+    padding: 13px 17px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--foreground);
+
+    font-size: 11px;
+
+    vertical-align: middle;
+}
+
+.dashboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dashboard-table tbody tr {
+    transition: background .15s ease;
+}
+
+.dashboard-table tbody tr:hover {
+    background: var(--primary-light);
+}
+
+.employee-mini {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.employee-mini-avatar {
+    width: 31px;
+    height: 31px;
+
+    min-width: 31px;
+
+    border-radius: 50%;
+
+    background: #edf2fb;
+    color: var(--primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.employee-mini-name strong {
+    display: block;
+
+    color: var(--foreground);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.employee-mini-name span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--muted-foreground);
+
+    font-size: 9px;
+}
+
+.code-badge {
+    display: inline-flex;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+.status-active {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.status-inactive {
+    background: #f3f4f6;
+    color: #667085;
+}
+
+.status-resigned {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+.status-terminated {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.status-pending {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.dashboard-empty {
+    padding: 35px 20px;
+
+    text-align: center;
+}
+
+.dashboard-empty-icon {
+    width: 44px;
+    height: 44px;
+
+    margin: 0 auto 10px;
+
+    border-radius: 50%;
+
+    background: var(--secondary);
+    color: var(--muted-foreground);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-empty strong {
+    display: block;
+
+    color: var(--foreground);
+
+    font-size: 12px;
+}
+
+.dashboard-empty span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted-foreground);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-actions {
+    padding: 16px;
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 11px 9px;
+
+    border-bottom: 1px solid var(--border);
+
+    text-decoration: none;
+
+    color: var(--foreground);
+
+    transition: background .15s ease;
+}
+
+.quick-action:last-child {
+    border-bottom: none;
+}
+
+.quick-action:hover {
+    background: var(--primary-light);
+    color: var(--foreground);
+}
+
+.quick-action-icon {
+    width: 33px;
+    height: 33px;
+
+    min-width: 33px;
+
+    border-radius: 8px;
+
+    background: var(--secondary);
+    color: var(--muted-foreground);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-content strong {
+    display: block;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.quick-action-content span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--muted-foreground);
+
+    font-size: 8px;
+}
+
+.quick-action-arrow {
+    margin-left: auto;
+
+    color: #98a2b3;
+}
+
+
+/* =========================================================
+   PENDING REQUESTS
+   ========================================================= */
+
+.pending-count {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 23px;
+    height: 21px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background: #fff7ed;
+    color: #b45309;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.pending-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dashboard-small-btn {
+    min-height: 29px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+}
+
+.dashboard-approve {
+    background: #ecfdf3;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
+.dashboard-approve:hover {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.dashboard-reject {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.dashboard-reject:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   ATTENDANCE
+   ========================================================= */
+
+.attendance-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.attendance-present {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.attendance-absent {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.attendance-leave {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+.attendance-time {
+    color: var(--muted-foreground);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.reopen-btn {
+    min-height: 29px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+
+    color: #c2410c;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.reopen-btn:hover {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.active-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    background: #ecfdf3;
+    color: #15803d;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FULL-WIDTH PANELS
+   ========================================================= */
+
+.dashboard-full-panel {
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   BOTTOM NAV BUTTON
+   ========================================================= */
+
+.dashboard-footer-action {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 22px;
+}
+
+.view-employees-btn {
+    min-height: 43px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 16px;
+
+    border-radius: 9px;
+
+    background: var(--primary);
+    border: 1px solid var(--primary);
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+.view-employees-btn:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .dashboard-page {
+        padding: 20px 13px 35px;
+    }
+
+    .dashboard-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-meta {
+        width: 100%;
+    }
+
+    .dashboard-date,
+    .dashboard-add {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .panel-link {
+        align-self: flex-start;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .dashboard-heading h1 {
+        font-size: 25px;
+    }
+
+    .dashboard-date,
+    .dashboard-add {
+        width: 100%;
+        flex: none;
+    }
+
+    .dashboard-meta {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pending-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dashboard-small-btn {
+        width: 100%;
+    }
+}
+
+</style>
+
+
+<div class="dashboard-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="dashboard-top">
+
+        <div class="dashboard-heading">
+
+            <div class="dashboard-eyebrow">
+
+                <span class="dashboard-eyebrow-dot"></span>
+
+                PEOPLE DESK HR · ADMIN CONSOLE
+
             </div>
+
+            <h1>
+                Welcome back, Admin
+            </h1>
+
+            <p>
+                Monitor workforce activity, employee requests and
+                today's attendance from one workspace.
+            </p>
+
         </div>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card text-white h-100" style="background: var(--success);">
-                <div class="card-body">
-                    <h5>Present Today</h5>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <h1>{{ today_present }}</h1>
-                        <span class="stat-delta up">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-                                <polyline points="16 7 22 7 22 13"/>
-                            </svg>
-                            {% if total_employees > 0 %}{{ "%.1f"|format(today_present / total_employees * 100) }}%{% endif %}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card text-white h-100" style="background: var(--warning); color: var(--foreground) !important;">
-                <div class="card-body">
-                    <h5>On Leave</h5>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <h1>{{ on_leave }}</h1>
-                        <span class="stat-delta down">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
-                                <polyline points="16 17 22 17 22 11"/>
-                            </svg>
-                            Away
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="dashboard-meta">
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card text-white h-100" style="background: var(--destructive);">
-                <div class="card-body">
-                    <h5>Absent Today</h5>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <h1>{{ absent_today }}</h1>
-                        <span class="stat-delta down">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
-                                <polyline points="16 17 22 17 22 11"/>
-                            </svg>
-                            Missing
-                        </span>
-                    </div>
-                </div>
+            <div class="dashboard-date">
+
+                <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <rect x="3" y="4" width="18" height="17" rx="2"/>
+                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+
+                {{ today.strftime("%A, %d %B %Y") }}
+
             </div>
+
+
+            <a
+                href="{{ url_for('employee.add_employee') }}"
+                class="dashboard-add"
+            >
+
+                <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+
+                Add Employee
+
+            </a>
+
         </div>
 
     </div>
 
-    <!-- Recent Employees -->
-    <div class="leave-card-modern">
-        <div class="leave-header">
-            <h3>Recent Employees</h3>
-            <a href="/employees">View all</a>
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <div class="kpi-grid">
+
+
+        <!-- Employees -->
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Total Employees
+                </span>
+
+                <div class="kpi-icon">
+
+                    <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M3 21a6 6 0 0 1 12 0"/>
+                        <path d="M16 11a4 4 0 0 1 5 4"/>
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <div class="kpi-number">
+                {{ total_employees }}
+            </div>
+
+            <div class="kpi-footer">
+
+                <span class="kpi-trend kpi-trend-up">
+
+                    <svg
+                        width="11"
+                        height="11"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <polyline points="18 8 12 2 6 8"/>
+                        <polyline points="12 2 12 22"/>
+                    </svg>
+
+                </span>
+
+                Current workforce
+
+            </div>
+
         </div>
-        <div class="table-wrapper">
-            <table class="leave-table">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Designation</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for employee in recent_employees %}
-                    <tr>
-                        <td>{{ employee.employee_code }}</td>
-                        <td>
-                            <div class="employee-cell">
-                                <span class="employee-name">{{ employee.full_name }}</span>
-                            </div>
-                        </td>
-                        <td>{{ employee.department }}</td>
-                        <td>{{ employee.designation }}</td>
-                        <td>
-                            <span class="status-pill status-approved">{{ employee.status }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+
+
+        <!-- Present -->
+
+        <div class="kpi-card kpi-success">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Present Today
+                </span>
+
+                <div class="kpi-icon">
+
+                    <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <div class="kpi-number">
+                {{ today_present }}
+            </div>
+
+            <div class="kpi-footer">
+
+                <span class="kpi-trend kpi-trend-up">
+
+                    {{ "%.1f"|format(
+                        today_present / total_employees * 100
+                    ) if total_employees > 0 else "0.0" }}%
+
+                </span>
+
+                Attendance rate
+
+            </div>
+
         </div>
+
+
+        <!-- Leave -->
+
+        <div class="kpi-card kpi-warning">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    On Leave
+                </span>
+
+                <div class="kpi-icon">
+
+                    <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            d="M4 5h16v15H4z"
+                        />
+
+                        <path d="M8 3v4M16 3v4"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <div class="kpi-number">
+                {{ on_leave }}
+            </div>
+
+            <div class="kpi-footer">
+
+                <span class="kpi-trend kpi-trend-away">
+                    Away
+                </span>
+
+                Employees on leave
+
+            </div>
+
+        </div>
+
+
+        <!-- Absent -->
+
+        <div class="kpi-card kpi-danger">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Absent Today
+                </span>
+
+                <div class="kpi-icon">
+
+                    <svg
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <circle cx="12" cy="12" r="9"/>
+                        <line x1="8" y1="8" x2="16" y2="16"/>
+                        <line x1="16" y1="8" x2="8" y2="16"/>
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <div class="kpi-number">
+                {{ absent_today }}
+            </div>
+
+            <div class="kpi-footer">
+
+                <span class="kpi-trend kpi-trend-missing">
+                    Attention
+                </span>
+
+                Attendance missing
+
+            </div>
+
+        </div>
+
+
     </div>
 
-    <div class="leave-card-modern mt-4">
 
-    <div class="leave-header">
-        <h3>
-            Pending Registration Requests
-            <span class="badge bg-warning text-dark">
-                {{ pending_requests }}
-            </span>
-        </h3>
-    </div>
+    <!-- =====================================================
+         RECENT EMPLOYEES + QUICK ACTIONS
+    ====================================================== -->
 
-    {% if pending_users %}
+    <div class="dashboard-main-grid">
 
-    <div class="table-wrapper">
 
-        <table class="leave-table">
+        <!-- Recent Employees -->
 
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th width="220">Action</th>
-                </tr>
-            </thead>
+        <section class="dashboard-panel">
 
-            <tbody>
+            <div class="panel-header">
 
-            {% for user in pending_users %}
+                <div class="panel-heading">
 
-            <tr>
+                    <h3>
+                        Recent Employees
+                    </h3>
 
-                <td>{{ user.username }}</td>
+                    <p>
+                        Most recently added employee records.
+                    </p>
 
-                <td>{{ user.email }}</td>
+                </div>
 
-                <td>{{ user.role }}</td>
 
-                <td>
-                    <span class="status-pill status-pending">
-                        {{ user.status }}
+                <a
+                    href="{{ url_for('employee.employees') }}"
+                    class="panel-link"
+                >
+                    View all employees →
+                </a>
+
+            </div>
+
+
+            <div class="panel-body">
+
+                {% if recent_employees %}
+
+                    <div class="dashboard-table-wrapper">
+
+                        <table class="dashboard-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Employee
+                                    </th>
+
+                                    <th>
+                                        Code
+                                    </th>
+
+                                    <th>
+                                        Department
+                                    </th>
+
+                                    <th>
+                                        Designation
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for employee in recent_employees %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="employee-mini">
+
+                                                <div class="employee-mini-avatar">
+
+                                                    {{
+                                                        employee.full_name[:1]|upper
+                                                        if employee.full_name
+                                                        else 'E'
+                                                    }}
+
+                                                </div>
+
+
+                                                <div class="employee-mini-name">
+
+                                                    <strong>
+                                                        {{ employee.full_name }}
+                                                    </strong>
+
+                                                    <span>
+                                                        {{ employee.email }}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="code-badge">
+
+                                                {{ employee.employee_code or '—' }}
+
+                                            </span>
+
+                                        </td>
+
+
+                            <td>
+                                {% if employee.department %}
+                                    {{ employee.department.name }}
+                                {% else %}
+                                    Not Assigned
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if employee.designation %}
+                                    {{ employee.designation.name }}
+                                {% else %}
+                                    Not Assigned
+                                {% endif %}
+                            </td>
+
+
+                                        <td>
+
+                                            {% if employee.status == "Active" %}
+
+                                                <span class="status-badge status-active">
+
+                                                    <span class="status-dot"></span>
+
+                                                    Active
+
+                                                </span>
+
+                                            {% elif employee.status == "Inactive" %}
+
+                                                <span class="status-badge status-inactive">
+
+                                                    <span class="status-dot"></span>
+
+                                                    Inactive
+
+                                                </span>
+
+                                            {% elif employee.status == "Resigned" %}
+
+                                                <span class="status-badge status-resigned">
+
+                                                    <span class="status-dot"></span>
+
+                                                    Resigned
+
+                                                </span>
+
+                                            {% elif employee.status == "Terminated" %}
+
+                                                <span class="status-badge status-terminated">
+
+                                                    <span class="status-dot"></span>
+
+                                                    Terminated
+
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="status-badge status-inactive">
+
+                                                    <span class="status-dot"></span>
+
+                                                    {{ employee.status or 'Unknown' }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="dashboard-empty">
+
+                        <div class="dashboard-empty-icon">
+
+                            <svg
+                                width="19"
+                                height="19"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                            >
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 21a8 8 0 0 1 16 0"/>
+                            </svg>
+
+                        </div>
+
+                        <strong>
+                            No employee records yet
+                        </strong>
+
+                        <span>
+                            Add an employee to start building your workforce.
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- Quick Actions -->
+
+        <section class="dashboard-panel">
+
+            <div class="panel-header">
+
+                <div class="panel-heading">
+
+                    <h3>
+                        Quick Actions
+                    </h3>
+
+                    <p>
+                        Frequently used HR functions.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <a
+                    href="{{ url_for('employee.add_employee') }}"
+                    class="quick-action"
+                >
+
+                    <div class="quick-action-icon">
+
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M3 21a6 6 0 0 1 12 0"/>
+                            <path d="M19 8v6M16 11h6"/>
+                        </svg>
+
+                    </div>
+
+                    <div class="quick-action-content">
+
+                        <strong>
+                            Add Employee
+                        </strong>
+
+                        <span>
+                            Create a new employee record
+                        </span>
+
+                    </div>
+
+                    <span class="quick-action-arrow">
+                        →
                     </span>
-                </td>
 
-                <td>
-
-                    <a href="{{ url_for('admin.approve_user', user_id=user.id) }}"
-                       class="btn btn-success btn-sm">
-                        Approve
-                    </a>
-
-                    <a href="{{ url_for('admin.reject_user', user_id=user.id) }}"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Reject this employee?')">
-                        Reject
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    {% else %}
-
-    <div class="alert alert-success mb-0">
-        No pending registration requests.
-    </div>
-
-    {% endif %}
-
-</div>
+                </a>
 
 
-<!-- Today's Attendance -->
-<div class="leave-card-modern mt-4">
+                <a
+                    href="{{ url_for('employee.employees') }}"
+                    class="quick-action"
+                >
 
-    <div class="leave-header">
-        <h3>Today's Attendance</h3>
-    </div>
+                    <div class="quick-action-icon">
 
-    <div class="table-wrapper">
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M3 21a6 6 0 0 1 12 0"/>
+                            <path d="M17 8h4M19 6v4"/>
+                        </svg>
 
-        <table class="leave-table">
+                    </div>
 
-            <thead>
+                    <div class="quick-action-content">
 
-                <tr>
-                    <th>Employee</th>
-                    <th>Status</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
-                    <th>Action</th>
-                </tr>
+                        <strong>
+                            Employee Directory
+                        </strong>
 
-            </thead>
+                        <span>
+                            View and manage all employees
+                        </span>
 
-            <tbody>
+                    </div>
 
-            {% for record in today_records %}
+                    <span class="quick-action-arrow">
+                        →
+                    </span>
 
-                <tr>
+                </a>
 
-                    <td>{{ record.employee.full_name }}</td>
 
-                    <td>{{ record.status }}</td>
+                <a
+                    href="{{ url_for('admin.pending_users') }}"
+                    class="quick-action"
+                >
 
-                    <td>
+                    <div class="quick-action-icon">
 
-                        {% if record.check_in %}
-                            {{ record.check_in.strftime("%I:%M %p") }}
-                        {% else %}
-                            --
-                        {% endif %}
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                        </svg>
 
-                    </td>
+                    </div>
 
-                    <td>
+                    <div class="quick-action-content">
 
-                        {% if record.check_out %}
-                            {{ record.check_out.strftime("%I:%M %p") }}
-                        {% else %}
-                            --
-                        {% endif %}
+                        <strong>
+                            Pending Requests
+                        </strong>
 
-                    </td>
+                        <span>
+                            Review employee registrations
+                        </span>
 
-                    <td>
+                    </div>
 
-                        {% if record.check_out %}
+                    <span class="quick-action-arrow">
+                        →
+                    </span>
 
-                            <a href="{{ url_for('admin.reopen_attendance', id=record.id) }}"
-                               class="btn btn-warning btn-sm"
-                               onclick="return confirm('Reopen this attendance?')">
+                </a>
 
-                                Reopen Checkout
 
-                            </a>
+            </div>
 
-                        {% else %}
+        </section>
 
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
 
     </div>
 
-</div>
 
-    <div class="text-center mt-3">
-        <a href="/employees" class="btn btn-primary btn-lg">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem;">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <!-- =====================================================
+         PENDING REGISTRATION REQUESTS
+    ====================================================== -->
+
+    <section class="dashboard-panel dashboard-full-panel">
+
+        <div class="panel-header">
+
+            <div class="panel-heading">
+
+                <h3>
+                    Pending Registration Requests
+
+                    <span class="pending-count">
+                        {{ pending_requests }}
+                    </span>
+
+                </h3>
+
+                <p>
+                    Employee accounts waiting for administrator approval.
+                </p>
+
+            </div>
+
+
+            {% if pending_requests > 0 %}
+
+                <a
+                    href="{{ url_for('admin.pending_users') }}"
+                    class="panel-link"
+                >
+                    Review all →
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        {% if pending_users %}
+
+            <div class="dashboard-table-wrapper">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for user in pending_users %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="employee-mini">
+
+                                        <div class="employee-mini-avatar">
+
+                                            {{
+                                                user.username[:1]|upper
+                                                if user.username
+                                                else 'U'
+                                            }}
+
+                                        </div>
+
+
+                                        <div class="employee-mini-name">
+
+                                            <strong>
+                                                {{ user.username }}
+                                            </strong>
+
+                                            <span>
+                                                Registration request
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    {{ user.email }}
+                                </td>
+
+
+                                <td>
+                                    {{ user.role.name if user.role else 'Employee' }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="status-badge status-pending">
+
+                                        <span class="status-dot"></span>
+
+                                        {{ user.status }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="pending-actions">
+
+                                        <a
+                                            href="{{ url_for('admin.approve_user', user_id=user.id) }}"
+                                            class="dashboard-small-btn dashboard-approve"
+                                        >
+
+                                            <svg
+                                                width="11"
+                                                height="11"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+
+                                            Approve
+
+                                        </a>
+
+
+                                        <a
+                                            href="{{ url_for('admin.reject_user', user_id=user.id) }}"
+                                            class="dashboard-small-btn dashboard-reject"
+                                            onclick="return confirm('Reject this employee registration?')"
+                                        >
+
+                                            <svg
+                                                width="11"
+                                                height="11"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                                <line x1="6" y1="6" x2="18" y2="18"/>
+                                            </svg>
+
+                                            Reject
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="dashboard-empty">
+
+                <div class="dashboard-empty-icon">
+
+                    <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                    >
+                        <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+
+                </div>
+
+                <strong>
+                    All registration requests are handled
+                </strong>
+
+                <span>
+                    There are currently no pending employee registrations.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         TODAY'S ATTENDANCE
+    ====================================================== -->
+
+    <section class="dashboard-panel dashboard-full-panel">
+
+        <div class="panel-header">
+
+            <div class="panel-heading">
+
+                <h3>
+                    Today's Attendance
+                </h3>
+
+                <p>
+                    Live attendance status for today's working day.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if today_records %}
+
+            <div class="dashboard-table-wrapper">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Employee
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Check In
+                            </th>
+
+                            <th>
+                                Check Out
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in today_records %}
+
+                            <tr>
+
+
+                                <!-- Employee -->
+
+                                <td>
+
+                                    <div class="employee-mini">
+
+                                        <div class="employee-mini-avatar">
+
+                                            {{
+                                                record.employee.full_name[:1]|upper
+                                                if record.employee
+                                                and record.employee.full_name
+                                                else 'E'
+                                            }}
+
+                                        </div>
+
+                                        <div class="employee-mini-name">
+
+                                            <strong>
+                                                {{ record.employee.full_name
+                                                   if record.employee
+                                                   else 'Unknown Employee' }}
+                                            </strong>
+
+                                            <span>
+                                                {{
+                                                    record.employee.employee_code
+                                                    if record.employee
+                                                    else '—'
+                                                }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Status -->
+
+                                <td>
+
+                                    {% if record.status == "Present" %}
+
+                                        <span class="attendance-status attendance-present">
+
+                                            <span class="status-dot"></span>
+
+                                            Present
+
+                                        </span>
+
+                                    {% elif record.status == "Absent" %}
+
+                                        <span class="attendance-status attendance-absent">
+
+                                            <span class="status-dot"></span>
+
+                                            Absent
+
+                                        </span>
+
+                                    {% elif record.status == "Leave" %}
+
+                                        <span class="attendance-status attendance-leave">
+
+                                            <span class="status-dot"></span>
+
+                                            Leave
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="attendance-status attendance-absent">
+
+                                            <span class="status-dot"></span>
+
+                                            {{ record.status or 'Unknown' }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Check In -->
+
+                                <td>
+
+                                    {% if record.check_in %}
+
+                                        <span class="attendance-time">
+
+                                            {{ record.check_in.strftime("%I:%M %p") }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="attendance-time">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Check Out -->
+
+                                <td>
+
+                                    {% if record.check_out %}
+
+                                        <span class="attendance-time">
+
+                                            {{ record.check_out.strftime("%I:%M %p") }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="attendance-time">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Action -->
+
+                                <td>
+
+                                    {% if record.check_out %}
+
+                                        <a
+                                            href="{{ url_for('admin.reopen_attendance', id=record.id) }}"
+                                            class="reopen-btn"
+                                            onclick="return confirm('Reopen this attendance record?')"
+                                        >
+
+                                            <svg
+                                                width="11"
+                                                height="11"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <polyline points="1 4 1 10 7 10"/>
+                                                <path d="M3.51 15a9 9 0 1 0 .49-6"/>
+                                            </svg>
+
+                                            Reopen
+
+                                        </a>
+
+                                    {% else %}
+
+                                        <span class="active-label">
+
+                                            <span class="status-dot"></span>
+
+                                            Active
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="dashboard-empty">
+
+                <div class="dashboard-empty-icon">
+
+                    <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                    >
+                        <rect x="3" y="4" width="18" height="17" rx="2"/>
+                        <path d="M8 2v4M16 2v4M3 10h18"/>
+                    </svg>
+
+                </div>
+
+                <strong>
+                    No attendance records today
+                </strong>
+
+                <span>
+                    Attendance data will appear here as employees check in.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER ACTION
+    ====================================================== -->
+
+    <div class="dashboard-footer-action">
+
+        <a
+            href="{{ url_for('employee.employees') }}"
+            class="view-employees-btn"
+        >
+
+            <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
                 <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                <path d="M3 21a6 6 0 0 1 12 0"/>
+                <path d="M16 11a4 4 0 0 1 5 4"/>
             </svg>
-            View Employees List
+
+            View Employee Directory
+
         </a>
+
     </div>
+
 
 </div>
 

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Permission | PeopleDesk HR
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+
+        <h3 class="fw-bold mb-1">
+            Create Permission
+        </h3>
+
+        <p class="text-muted mb-0">
+            Add a permission that can be assigned to roles.
+        </p>
+
+    </div>
+
+
+    <div class="card border-0">
+
+        <div class="card-body p-4">
+
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_permission') }}"
+            >
+
+                <div class="mb-4">
+
+                    <label
+                        class="form-label fw-semibold"
+                        for="name"
+                    >
+                        Permission Name
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        placeholder="e.g. employee.view"
+                        required
+                    >
+
+                    <div class="form-text">
+                        Use a clear permission name such as
+                        employee.view or payroll.generate.
+                    </div>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label
+                        class="form-label fw-semibold"
+                        for="description"
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Describe what this permission allows..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Create Permission
+                    </button>
+
+                    <a
+                        href="{{ url_for('admin.permissions') }}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

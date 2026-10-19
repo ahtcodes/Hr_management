@@ -132,7 +132,7 @@ Expense Management — PeopleDesk HR
 
                             <td>
 
-                                {% if current_user.has_role("Super Admin") %}
+                                {% if current_user.has_any_role("Super Admin",) %}
 
                                     {% if item.status == "Pending" %}
 

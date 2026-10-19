@@ -8,6 +8,7 @@ from flask import (
     abort,
     send_from_directory
 )
+from models.role import Role
 from flask import current_app
 from flask_login import current_user, login_required
 from models.employee import Employee
@@ -18,11 +19,14 @@ from models.shift import Shift
 from extensions import db, bcrypt
 from datetime import datetime, date, timedelta
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import text
 import os
 from uuid import uuid4
 from werkzeug.utils import secure_filename
 from models.document import Document
 from extensions import db
+from models.employee import Employee, Department, Designation
+
 
 employee = Blueprint("employee", __name__)
 
@@ -34,7 +38,7 @@ employee = Blueprint("employee", __name__)
 @login_required
 def employee_dashboard():
 
-    if not current_user.has_role("employee"):
+    if not current_user.has_any_role("employee","HR Manager"):
         abort(403)
 
     employee_data = current_user.employee
@@ -148,11 +152,43 @@ def employee_attendance():
 @login_required
 def employees():
 
-    if not current_user.has_role("Super Admin"):
-      abort(403)
-    
+    # Super Admin / HR Manager / Department Manager
+    if not current_user.has_any_role(
+        "Super Admin",
+        "HR Manager",
+        "Department Manager"
+    ):
+        abort(403)
 
-    all_employees = Employee.query.all()
+    # ==========================
+    # Super Admin + HR Manager
+    # ==========================
+
+    if current_user.has_any_role(
+        "Super Admin",
+        "HR Manager"
+    ):
+        all_employees = Employee.query.all()
+
+    # ==========================
+    # Department Manager
+    # ==========================
+
+    else:
+
+        manager_employee = current_user.employee
+
+        if not manager_employee:
+            abort(403)
+
+        department_id = manager_employee.department_id
+
+        if not department_id:
+            abort(403)
+
+        all_employees = Employee.query.filter_by(
+            department_id=department_id
+        ).all()
 
     return render_template(
         "employees.html",
@@ -166,22 +202,79 @@ def employees():
 @login_required
 def edit_employee(id):
 
-    if not current_user.has_role("Super Admin"):
-       abort(403)
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
     employee = Employee.query.get_or_404(id)
+
+    # ==========================
+    # Dropdown Data
+    # ==========================
+
     shifts = Shift.query.all()
+
+    departments = Department.query.order_by(
+        Department.name
+    ).all()
+
+    designations = Designation.query.order_by(
+        Designation.name
+    ).all()
+
+    # ==========================
+    # POST
+    # ==========================
 
     if request.method == "POST":
 
-        employee.employee_code = request.form.get("employee_code")
-        employee.shift_id = int(request.form.get("shift_id"))
+        # ==========================
+        # Basic Information
+        # ==========================
+
         employee.full_name = request.form.get("full_name")
         employee.email = request.form.get("email")
         employee.phone = request.form.get("phone")
-        employee.department = request.form.get("department")
-        employee.designation = request.form.get("designation")
 
+        # ==========================
+        # Department
+        # ==========================
+
+        department_id = request.form.get("department_id")
+
+        employee.department_id = (
+            int(department_id)
+            if department_id
+            else None
+        )
+
+        # ==========================
+        # Designation
+        # ==========================
+
+        designation_id = request.form.get("designation_id")
+
+        employee.designation_id = (
+            int(designation_id)
+            if designation_id
+            else None
+        )
+
+        # ==========================
+        # Shift
+        # ==========================
+
+        shift_id = request.form.get("shift_id")
+
+        employee.shift_id = (
+            int(shift_id)
+            if shift_id
+            else None
+        )
+
+        # ==========================
         # Joining Date
+        # ==========================
+
         joining_date_str = request.form.get("joining_date")
 
         if joining_date_str:
@@ -189,9 +282,16 @@ def edit_employee(id):
                 joining_date_str,
                 "%Y-%m-%d"
             ).date()
+        else:
+            employee.joining_date = None
 
+        # ==========================
         # Resignation Date
-        resignation_date_str = request.form.get("resignation_date")
+        # ==========================
+
+        resignation_date_str = request.form.get(
+            "resignation_date"
+        )
 
         if resignation_date_str:
             employee.resignation_date = datetime.strptime(
@@ -201,18 +301,50 @@ def edit_employee(id):
         else:
             employee.resignation_date = None
 
-        # Employment
-        employee.employment_type = request.form.get("employment_type")
-        employee.location = request.form.get("location")
+        # ==========================
+        # Employment Information
+        # ==========================
 
+        employee.employment_type = request.form.get(
+            "employment_type"
+        )
+
+        employee.location = request.form.get(
+            "location"
+        )
+
+        # ==========================
         # Salary
-        employee.basic_salary = float(request.form.get("basic_salary"))
-        employee.overtime_rate = float(request.form.get("overtime_rate"))
+        # ==========================
 
+        basic_salary = request.form.get("basic_salary")
+        overtime_rate = request.form.get("overtime_rate")
+
+        employee.basic_salary = (
+            float(basic_salary)
+            if basic_salary
+            else 0
+        )
+
+        employee.overtime_rate = (
+            float(overtime_rate)
+            if overtime_rate
+            else 0
+        )
+
+        # ==========================
         # Status
-        employee.status = request.form.get("status", "Active")
+        # ==========================
 
+        employee.status = request.form.get(
+            "status",
+            "Active"
+        )
+
+        # ==========================
         # Emergency Contact
+        # ==========================
+
         employee.emergency_contact_name = request.form.get(
             "emergency_contact_name"
         )
@@ -225,49 +357,364 @@ def edit_employee(id):
             "emergency_contact_phone"
         )
 
-        db.session.commit()
+        # ==========================
+        # Save
+        # ==========================
 
-        flash("Employee updated successfully!", "success")
+        try:
 
-        return redirect(url_for("employee.employees"))
+            db.session.commit()
+
+            flash(
+                "Employee updated successfully!",
+                "success"
+            )
+
+            return redirect(
+                url_for("employee.employees")
+            )
+
+        except Exception as e:
+
+            db.session.rollback()
+
+            flash(
+                f"Error updating employee: {str(e)}",
+                "danger"
+            )
+
+    # ==========================
+    # Render
+    # ==========================
 
     return render_template(
         "edit_employee.html",
         employee=employee,
-        shifts=shifts
+        shifts=shifts,
+        departments=departments,
+        designations=designations
     )
-
-
 # ==========================
-# Delete Employee (Admin Only)
+# Delete Employee
 # ==========================
-@employee.route("/delete_employee/<int:id>")
+@employee.route("/delete_employee/<int:id>", methods=["POST"])
 @login_required
 def delete_employee(id):
 
-    if not current_user.has_role("Super Admin"):
-       abort(403)
-
+    if not current_user.has_any_role(
+        "Super Admin",
+        "Admin",
+        "HR Manager"
+    ):
+        abort(403)
 
     employee = Employee.query.get_or_404(id)
 
     try:
 
-        Attendance.query.filter_by(employee_id=id).delete()
-        Leave.query.filter_by(employee_id=id).delete()
-        User.query.filter_by(employee_id=id).delete()
+        # =====================================================
+        # 1. Find User linked with this Employee
+        # =====================================================
+
+        users = User.query.filter_by(
+            employee_id=id
+        ).all()
+
+        user_ids = [
+            user.id
+            for user in users
+        ]
+
+
+        # =====================================================
+        # 2. Delete Messages + Conversations
+        # =====================================================
+
+        conversation_ids = []
+
+        for user_id in user_ids:
+
+            rows = db.session.execute(
+                text("""
+                    SELECT id
+                    FROM conversations
+                    WHERE user1_id = :user_id
+                       OR user2_id = :user_id
+                """),
+                {
+                    "user_id": user_id
+                }
+            ).scalars().all()
+
+            conversation_ids.extend(rows)
+
+
+        # Remove duplicate conversation IDs
+        conversation_ids = list(set(conversation_ids))
+
+
+        # -----------------------------------------------------
+        # Delete messages belonging to conversations
+        # -----------------------------------------------------
+
+        for conversation_id in conversation_ids:
+
+            db.session.execute(
+                text("""
+                    DELETE FROM messages
+                    WHERE conversation_id = :conversation_id
+                """),
+                {
+                    "conversation_id": conversation_id
+                }
+            )
+
+
+        # -----------------------------------------------------
+        # Delete messages where employee user is sender/receiver
+        # -----------------------------------------------------
+
+        for user_id in user_ids:
+
+            db.session.execute(
+                text("""
+                    DELETE FROM messages
+                    WHERE sender_id = :user_id
+                       OR receiver_id = :user_id
+                """),
+                {
+                    "user_id": user_id
+                }
+            )
+
+
+        db.session.flush()
+
+
+        # -----------------------------------------------------
+        # Delete conversations
+        # -----------------------------------------------------
+
+        for conversation_id in conversation_ids:
+
+            db.session.execute(
+                text("""
+                    DELETE FROM conversations
+                    WHERE id = :conversation_id
+                """),
+                {
+                    "conversation_id": conversation_id
+                }
+            )
+
+
+        db.session.flush()
+
+
+        # =====================================================
+        # 3. Delete Asset Assignments
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM asset_assignments
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 4. Delete Attendance
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM attendance
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 5. Delete Documents
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM documents
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 6. Delete Evaluations
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM evaluations
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 7. Delete Expenses
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM expenses
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 8. Delete Goals
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM goals
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 9. Delete KPIs
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM kpis
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 10. Delete Leaves
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM leaves
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 11. Delete Manager Feedback
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM manager_feedback
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        # =====================================================
+        # 12. Delete Payrolls
+        # =====================================================
+
+        db.session.execute(
+            text("""
+                DELETE FROM payrolls
+                WHERE employee_id = :employee_id
+            """),
+            {
+                "employee_id": id
+            }
+        )
+
+
+        db.session.flush()
+
+
+        # =====================================================
+        # 13. Delete User Account
+        # =====================================================
+
+        for user in users:
+
+            db.session.delete(user)
+
+        db.session.flush()
+
+
+        # =====================================================
+        # 14. Delete Employee
+        # =====================================================
 
         db.session.delete(employee)
+
+        db.session.flush()
+
+
+        # =====================================================
+        # 15. Commit
+        # =====================================================
+
         db.session.commit()
 
-        flash("Employee and all related records deleted successfully!", "success")
+
+        flash(
+            "Employee and all related records deleted successfully!",
+            "success"
+        )
+
 
     except Exception as e:
+
         db.session.rollback()
-        flash(f"Error: {str(e)}", "danger")
 
-    return redirect(url_for("employee.employees"))
+        current_app.logger.exception(
+            "Employee deletion failed. Employee ID: %s",
+            id
+        )
 
+        flash(
+            f"Employee delete nahi hua: {str(e)}",
+            "danger"
+        )
+
+
+    return redirect(
+        url_for("employee.employees")
+    )
 
 # ==========================
 # Add Employee (Admin Only)
@@ -276,114 +723,478 @@ def delete_employee(id):
 @login_required
 def add_employee():
 
-    if not current_user.has_role("Super Admin"):
-      abort(403)
+    if not current_user.has_any_role(
+        "Super Admin",
+        "HR Manager"
+    ):
+        abort(403)
+
+    # ==========================
+    # Dropdown Data
+    # ==========================
+
     shifts = Shift.query.all()
 
-    if request.method == "POST":
-        # ==========================
-        # File Upload
-        # ==========================
+    departments = Department.query.order_by(
+        Department.name
+    ).all()
 
-        profile_photo = request.files.get("profile_photo")
-        cnic_file = request.files.get("cnic_file")
-        cv_file = request.files.get("cv_file")
-        certificate_file = request.files.get("certificate_file")
+    designations = Designation.query.order_by(
+        Designation.name
+    ).all()
+
+    # ==========================
+    # Generate Next Employee Code
+    # ==========================
+
+    last_employee = Employee.query.order_by(
+        Employee.id.desc()
+    ).first()
+
+    if last_employee and last_employee.employee_code:
+
+        try:
+
+            last_number = int(
+                last_employee.employee_code.replace(
+                    "EMP",
+                    ""
+                )
+            )
+
+            next_employee_code = (
+                f"EMP{last_number + 1:04d}"
+            )
+
+        except ValueError:
+
+            next_employee_code = "EMP0001"
+
+    else:
+
+        next_employee_code = "EMP0001"
+
+
+    # ==========================
+    # POST
+    # ==========================
+
+    if request.method == "POST":
+
+        profile_photo = request.files.get(
+            "profile_photo"
+        )
+
+        cnic_file = request.files.get(
+            "cnic_file"
+        )
+
+        cv_file = request.files.get(
+            "cv_file"
+        )
+
+        certificate_file = request.files.get(
+            "certificate_file"
+        )
 
         profile_photo_name = None
         cnic_name = None
         cv_name = None
         certificate_name = None
 
-        resignation_date = request.form.get("resignation_date")
 
-        if resignation_date:
-            resignation_date = datetime.strptime(
-                resignation_date,
-                "%Y-%m-%d"
-            ).date()
-        else:
-            resignation_date = None
+        # ==========================
+        # Resignation Date
+        # ==========================
 
-        new_employee = Employee(
-            profile_photo=profile_photo_name,
-            cnic_file=cnic_name,
-            cv_file=cv_name,
-            certificate_file=certificate_name,
-            employee_code=request.form.get("employee_code"),
-            full_name=request.form.get("full_name"),
-            email=request.form.get("email"),
-            phone=request.form.get("phone"),
-            department=request.form.get("department"),
-            designation=request.form.get("designation"),
-            joining_date=datetime.strptime(
-                request.form.get("joining_date"),
-                "%Y-%m-%d"
-            ).date(),
-            resignation_date=resignation_date,
-            basic_salary=float(request.form.get("basic_salary")),
-            overtime_rate=float(request.form.get("overtime_rate")),
-            shift_id=int(request.form.get("shift_id")),
-            employment_type=request.form.get("employment_type"),
-            location=request.form.get("location"),
-            status=request.form.get("status", "Active"),
-            emergency_contact_name=request.form.get("emergency_contact_name"),
-            emergency_contact_relation=request.form.get("emergency_contact_relation"),
-            emergency_contact_phone=request.form.get("emergency_contact_phone")
+        resignation_date_str = request.form.get(
+            "resignation_date"
         )
 
+        if resignation_date_str:
+
+            resignation_date = datetime.strptime(
+                resignation_date_str,
+                "%Y-%m-%d"
+            ).date()
+
+        else:
+
+            resignation_date = None
+
+
         try:
+
+            # ==========================
+            # Get Foreign Key IDs
+            # ==========================
+
+            department_id = request.form.get(
+                "department_id"
+            )
+
+            designation_id = request.form.get(
+                "designation_id"
+            )
+
+            shift_id = request.form.get(
+                "shift_id"
+            )
+
+
+            # ==========================
+            # Validate Department
+            # ==========================
+
+            department = None
+
+            if department_id:
+
+                department = Department.query.get(
+                    int(department_id)
+                )
+
+                if not department:
+
+                    flash(
+                        "Selected department does not exist.",
+                        "danger"
+                    )
+
+                    return render_template(
+                        "add_employee.html",
+                        shifts=shifts,
+                        departments=departments,
+                        designations=designations,
+                        next_employee_code=next_employee_code
+                    )
+
+
+            # ==========================
+            # Validate Designation
+            # ==========================
+
+            designation = None
+
+            if designation_id:
+
+                designation = Designation.query.get(
+                    int(designation_id)
+                )
+
+                if not designation:
+
+                    flash(
+                        "Selected designation does not exist.",
+                        "danger"
+                    )
+
+                    return render_template(
+                        "add_employee.html",
+                        shifts=shifts,
+                        departments=departments,
+                        designations=designations,
+                        next_employee_code=next_employee_code
+                    )
+
+
+            # ==========================
+            # Validate Shift
+            # ==========================
+
+            shift = None
+
+            if shift_id:
+
+                shift = Shift.query.get(
+                    int(shift_id)
+                )
+
+                if not shift:
+
+                    flash(
+                        "Selected shift does not exist.",
+                        "danger"
+                    )
+
+                    return render_template(
+                        "add_employee.html",
+                        shifts=shifts,
+                        departments=departments,
+                        designations=designations,
+                        next_employee_code=next_employee_code
+                    )
+
+
+            # ==========================
+            # Create Employee
+            # ==========================
+
+            new_employee = Employee(
+
+                profile_photo=profile_photo_name,
+                cnic_file=cnic_name,
+                cv_file=cv_name,
+                certificate_file=certificate_name,
+
+                employee_code=next_employee_code,
+
+                full_name=request.form.get(
+                    "full_name"
+                ),
+
+                email=request.form.get(
+                    "email"
+                ),
+
+                phone=request.form.get(
+                    "phone"
+                ),
+
+                # IMPORTANT:
+                # Foreign Key IDs use honge
+                department_id=(
+                    int(department_id)
+                    if department_id
+                    else None
+                ),
+
+                designation_id=(
+                    int(designation_id)
+                    if designation_id
+                    else None
+                ),
+
+                joining_date=datetime.strptime(
+                    request.form.get(
+                        "joining_date"
+                    ),
+                    "%Y-%m-%d"
+                ).date(),
+
+                resignation_date=resignation_date,
+
+                basic_salary=float(
+                    request.form.get(
+                        "basic_salary"
+                    ) or 0
+                ),
+
+                overtime_rate=float(
+                    request.form.get(
+                        "overtime_rate"
+                    ) or 0
+                ),
+
+                shift_id=(
+                    int(shift_id)
+                    if shift_id
+                    else None
+                ),
+
+                employment_type=request.form.get(
+                    "employment_type"
+                ),
+
+                location=request.form.get(
+                    "location"
+                ),
+
+                status=request.form.get(
+                    "status",
+                    "Active"
+                ),
+
+                emergency_contact_name=request.form.get(
+                    "emergency_contact_name"
+                ),
+
+                emergency_contact_relation=request.form.get(
+                    "emergency_contact_relation"
+                ),
+
+                emergency_contact_phone=request.form.get(
+                    "emergency_contact_phone"
+                )
+            )
+
+
+            # ==========================
+            # Save Employee
+            # ==========================
+
             db.session.add(new_employee)
-            db.session.commit()
+
+            # Employee ID generate karne ke liye flush
+            db.session.flush()
+
+
+            # ==========================
+            # Find Employee Role
+            # ==========================
+
+            employee_role = Role.query.filter_by(
+                name="Employee"
+            ).first()
+
+            if employee_role is None:
+
+                db.session.rollback()
+
+                flash(
+                    "Employee role does not exist in database.",
+                    "danger"
+                )
+
+                return render_template(
+                    "add_employee.html",
+                    shifts=shifts,
+                    departments=departments,
+                    designations=designations,
+                    next_employee_code=next_employee_code
+                )
+
+
+            # ==========================
+            # Create Attendance
+            # ==========================
 
             attendance = Attendance(
+
                 employee_id=new_employee.id,
+
                 status="Absent",
+
                 check_in=None,
+
                 check_out=None,
-                shift_start=new_employee.shift.start_time if new_employee.shift else None,
-                shift_end=new_employee.shift.end_time if new_employee.shift else None,
+
+                shift_id=new_employee.shift_id,
+
+                shift_start=(
+                    new_employee.shift.start_time
+                    if new_employee.shift
+                    else None
+                ),
+
+                shift_end=(
+                    new_employee.shift.end_time
+                    if new_employee.shift
+                    else None
+                ),
+
                 working_hours=0,
+
                 overtime_hours=0,
+
                 overtime_pay=0,
+
                 date=date.today()
             )
 
             db.session.add(attendance)
 
-            hashed_password = bcrypt.generate_password_hash(
-                "employee123"
-            ).decode("utf-8")
+
+            # ==========================
+            # Default Password
+            # ==========================
+
+            hashed_password = (
+                bcrypt
+                .generate_password_hash(
+                    "employee123"
+                )
+                .decode("utf-8")
+            )
+
+
+            # ==========================
+            # Create User
+            # ==========================
 
             user = User(
+
                 username=new_employee.email,
+
                 email=new_employee.email,
+
                 password=hashed_password,
-                role="employee",
-                employee_id=new_employee.id
+
+                # Role object
+                role=employee_role,
+
+                employee_id=new_employee.id,
+
+                status="approved"
             )
 
             db.session.add(user)
+
+
+            # ==========================
+            # Commit
+            # ==========================
+
             db.session.commit()
 
+
             flash(
-                "Employee added successfully! Default Password: employee123",
+                f"Employee added successfully! "
+                f"Employee Code: "
+                f"{new_employee.employee_code} "
+                f"| Default Password: employee123",
                 "success"
             )
 
-            return redirect(url_for("employee.employees"))
 
-        except IntegrityError:
+            return redirect(
+                url_for(
+                    "employee.employees"
+                )
+            )
+
+
+        except IntegrityError as e:
+
             db.session.rollback()
+
+            print(
+                "DATABASE ERROR:",
+                e.orig
+            )
+
             flash(
-                "Employee Code or Email already exists!",
+                f"Database error: {e.orig}",
                 "danger"
             )
 
+
+        except Exception as e:
+
+            db.session.rollback()
+
+            current_app.logger.exception(
+                "Employee creation failed"
+            )
+
+            flash(
+                f"Employee creation failed: {str(e)}",
+                "danger"
+            )
+
+
+    # ==========================
+    # GET
+    # ==========================
+
     return render_template(
         "add_employee.html",
-        shifts=shifts
+        shifts=shifts,
+        departments=departments,
+        designations=designations,
+        next_employee_code=next_employee_code
     )
+
 @employee.route("/employee/today_attendance")
 @login_required
 def today_attendance():
@@ -714,3 +1525,404 @@ def view_document(id):
 
     # DOC/DOCX browser normally directly preview nahi karta
     abort(415)
+
+    # =========================================
+# Employee Profile - Update Profile Photo
+# =========================================
+
+@employee.route("/employee/profile", methods=["GET", "POST"])
+@login_required
+def employee_profile():
+
+    employee_data = current_user.employee
+
+    if not employee_data:
+        abort(404)
+
+    if request.method == "POST":
+
+        profile_photo = request.files.get("profile_photo")
+
+        if not profile_photo or not profile_photo.filename:
+            flash(
+                "Please select a profile picture.",
+                "warning"
+            )
+
+            return redirect(
+                url_for("employee.employee_profile")
+            )
+
+        # =========================================
+        # Allowed Extensions
+        # =========================================
+
+        allowed_extensions = {
+            "jpg",
+            "jpeg",
+            "png",
+            "webp"
+        }
+
+        filename = secure_filename(
+            profile_photo.filename
+        )
+
+        extension = (
+            filename.rsplit(".", 1)[1].lower()
+            if "." in filename
+            else ""
+        )
+
+        if extension not in allowed_extensions:
+
+            flash(
+                "Only JPG, JPEG, PNG and WEBP images are allowed.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("employee.employee_profile")
+            )
+
+        # =========================================
+        # Upload Directory
+        # =========================================
+
+        upload_folder = os.path.join(
+            current_app.root_path,
+            "static",
+            "uploads",
+            "profile_photos"
+        )
+
+        os.makedirs(
+            upload_folder,
+            exist_ok=True
+        )
+
+        # =========================================
+        # Unique Filename
+        # =========================================
+
+        new_filename = (
+            f"employee_{employee_data.id}_"
+            f"{uuid4().hex}.{extension}"
+        )
+
+        file_path = os.path.join(
+            upload_folder,
+            new_filename
+        )
+
+        # =========================================
+        # Delete Previous Photo
+        # =========================================
+
+        if employee_data.profile_photo:
+
+            old_photo = os.path.join(
+                current_app.root_path,
+                "static",
+                employee_data.profile_photo
+            )
+
+            if os.path.exists(old_photo):
+
+                try:
+                    os.remove(old_photo)
+                except OSError:
+                    pass
+
+        # =========================================
+        # Save New Photo
+        # =========================================
+
+        profile_photo.save(file_path)
+
+        # Database mein relative path save hoga
+        employee_data.profile_photo = (
+            f"uploads/profile_photos/{new_filename}"
+        )
+
+        db.session.commit()
+
+        flash(
+            "Profile picture updated successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for("employee.employee_profile")
+        )
+
+    return render_template(
+        "employee/profile.html",
+        employee=employee_data
+    )
+@employee.route("/department/dashboard")
+@login_required
+def department_dashboard():
+
+    print("========== DEPARTMENT DASHBOARD ==========")
+    print("User ID:", current_user.id)
+    print("Username:", current_user.username)
+    print(
+        "Role:",
+        current_user.role.name if current_user.role else None
+    )
+    print("Role ID:", current_user.role_id)
+    print("Employee ID:", current_user.employee_id)
+
+    # Department Manager check
+    if not current_user.has_role("Department Manager"):
+        print("❌ ROLE CHECK FAILED")
+        abort(403)
+
+    manager_employee = current_user.employee
+
+    print("Manager Employee:", manager_employee)
+
+    if not manager_employee:
+        print("❌ EMPLOYEE NOT FOUND")
+        abort(403)
+
+    department_id = manager_employee.department_id
+
+    print("Department ID:", department_id)
+    print(
+        "Department:",
+        manager_employee.department.name
+        if manager_employee.department
+        else None
+    )
+
+    if not department_id:
+        print("❌ DEPARTMENT ID NOT FOUND")
+        abort(403)
+
+    # Department employees
+    department_employees = Employee.query.filter_by(
+        department_id=department_id
+    ).all()
+
+    print(
+        "Department Employees:",
+        [
+            (e.id, e.full_name)
+            for e in department_employees
+        ]
+    )
+
+    employee_ids = [
+        emp.id for emp in department_employees
+    ]
+
+    total_employees = len(department_employees)
+
+    # Today's attendance
+    today_attendance = Attendance.query.filter(
+        Attendance.employee_id.in_(employee_ids),
+        Attendance.date == date.today()
+    ).all()
+
+    present_today = sum(
+        1
+        for attendance in today_attendance
+        if attendance.status == "Present"
+    )
+
+    # Today's approved leaves
+    today = date.today()
+
+    today_leaves = Leave.query.filter(
+        Leave.employee_id.in_(employee_ids),
+        Leave.status.in_(["Approved", "approved"]),
+        Leave.start_date <= today,
+        Leave.end_date >= today
+    ).all()
+
+    on_leave_today = len(today_leaves)
+
+    absent_today = max(
+        total_employees - present_today - on_leave_today,
+        0
+    )
+
+    print("Total Employees:", total_employees)
+    print("Present Today:", present_today)
+    print("On Leave Today:", on_leave_today)
+    print("Absent Today:", absent_today)
+    print("========== DASHBOARD SUCCESS ==========")
+
+    return render_template(
+        "department/dashboard.html",
+        department=manager_employee.department,
+        department_employees=department_employees,
+        total_employees=total_employees,
+        present_today=present_today,
+        absent_today=absent_today,
+        on_leave_today=on_leave_today
+    )
+@employee.route("/department/employees")
+@login_required
+def department_employees():
+
+    if not current_user.has_role("Department Manager"):
+        abort(403)
+
+    manager_employee = current_user.employee
+
+    if not manager_employee:
+        abort(403)
+
+    department_id = manager_employee.department_id
+
+    if not department_id:
+        abort(403)
+
+    employees = Employee.query.filter_by(
+        department_id=department_id
+    ).all()
+
+    return render_template(
+        "department/employees.html",
+        employees=employees,
+        department=manager_employee.department
+    )
+
+@employee.route("/department/attendance")
+@login_required
+def department_attendance():
+
+    if not current_user.has_role("Department Manager"):
+        abort(403)
+
+    manager_employee = current_user.employee
+
+    if not manager_employee:
+        abort(403)
+
+    department_id = manager_employee.department_id
+
+    if not department_id:
+        abort(403)
+
+    # Sirf manager ke department ke employees
+    employees = Employee.query.filter_by(
+        department_id=department_id
+    ).all()
+
+    employee_ids = [employee.id for employee in employees]
+
+    # Sirf un employees ki attendance
+    attendance = Attendance.query.filter(
+        Attendance.employee_id.in_(employee_ids)
+    ).order_by(
+        Attendance.date.desc()
+    ).all()
+
+    return render_template(
+        "department/attendance.html",
+        attendance=attendance,
+        employees=employees,
+        department=manager_employee.department
+    )
+
+
+@employee.route("/department/leaves")
+@login_required
+def department_leaves():
+
+    if not current_user.has_role("Department Manager"):
+        abort(403)
+
+    manager_employee = current_user.employee
+
+    if not manager_employee:
+        abort(403)
+
+    department_id = manager_employee.department_id
+
+    if not department_id:
+        abort(403)
+
+    employees = Employee.query.filter_by(
+        department_id=department_id
+    ).all()
+
+    employee_ids = [e.id for e in employees]
+
+    leaves = Leave.query.filter(
+        Leave.employee_id.in_(employee_ids)
+    ).all()
+
+    return render_template(
+        "department/leaves.html",
+        leaves=leaves,
+        employees=employees,
+        department=manager_employee.department
+    )
+
+@employee.route("/department/leave/<int:id>/approve", methods=["POST"])
+@login_required
+def approve_department_leave(id):
+
+    if not current_user.has_role("Department Manager"):
+        abort(403)
+
+    manager_employee = current_user.employee
+
+    if not manager_employee:
+        abort(403)
+
+    leave = Leave.query.get_or_404(id)
+
+    # Leave employee exist karta hai?
+    if not leave.employee:
+        abort(404)
+
+    # IMPORTANT:
+    # Leave sirf manager ke department ki honi chahiye
+    if leave.employee.department_id != manager_employee.department_id:
+        abort(403)
+
+    leave.status = "Approved"
+
+    db.session.commit()
+
+    flash(
+        "Leave approved successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("employee.department_leaves")
+    )
+
+@employee.route("/department/leave/<int:leave_id>/reject", methods=["POST"])
+@login_required
+def reject_department_leave(leave_id):
+
+    if not current_user.has_role("Department Manager"):
+        abort(403)
+
+    leave = Leave.query.get_or_404(leave_id)
+
+    manager_department_id = current_user.employee.department_id
+
+    leave_employee = Employee.query.get(leave.employee_id)
+
+    # Sirf same department
+    if not leave_employee or leave_employee.department_id != manager_department_id:
+        abort(403)
+
+    leave.status = "Rejected"
+
+    db.session.commit()
+
+    flash("Leave rejected successfully.", "success")
+
+    return redirect(
+        url_for("employee.department_leaves")
+    )

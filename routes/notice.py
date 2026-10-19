@@ -52,7 +52,7 @@ def notice_list():
 @login_required
 def create_notice():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin""HR Manager"):
         abort(403)
 
     if request.method == "POST":
@@ -111,7 +111,7 @@ def create_notice():
 @login_required
 def delete_notice(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     notice_data = Notice.query.get_or_404(id)

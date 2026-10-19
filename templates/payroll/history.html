@@ -1,4 +1,3 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}
@@ -25,7 +24,7 @@ Salary History — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin","HR Manager") %}
         <div>
             <a href="{{ url_for('payroll.generate_payroll') }}"
                class="btn btn-primary">
@@ -417,7 +416,7 @@ Salary History — PeopleDesk HR
 
                                     <!-- Delete -->
 
-                                    {% if current_user.has_role("Super Admin") %}
+                                    {% if current_user.has_any_role("Super Admin","HR Manager") %}
 
                                     <form method="POST"
                                           action="{{ url_for(
@@ -473,7 +472,7 @@ Salary History — PeopleDesk HR
                 </p>
 
 
-                {% if current_user.has_role("Super Admin") %}
+                {% if current_user.has_any_role("Super Admin","HR Manager") %}
 
                     <a href="{{ url_for('payroll.generate_payroll') }}"
                        class="btn btn-primary">
@@ -529,4 +528,4 @@ Salary History — PeopleDesk HR
 </style>
 
 {% endblock %}
-```
+

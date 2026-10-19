@@ -131,11 +131,11 @@ def login():
 
             db.session.commit()
 
-        # ==========================
+        # =========================
         # Role Based Redirect
-        # ==========================
+        # =========================
 
-        if user.has_role("Super Admin"):
+        if user.has_any_role("Super Admin","HR Manager"):
 
             return redirect(
                 url_for("admin.dashboard")

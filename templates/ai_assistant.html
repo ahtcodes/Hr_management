@@ -1,0 +1,2639 @@
+{% extends "base.html" %}
+
+{% block title %}
+PeopleDesk AI
+{% endblock %}
+
+{% block page_title %}
+PeopleDesk AI
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PEOPLE DESK AI
+========================================================= */
+
+.ai-page {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
+
+/* =========================================================
+   AI HEADER
+========================================================= */
+
+.ai-header-card {
+    background: linear-gradient(135deg, #0f172a, #172554);
+    border-radius: 18px;
+    padding: 24px 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+}
+
+.ai-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.ai-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ai-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: rgba(59, 130, 246, 0.18);
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #60a5fa;
+}
+
+.ai-header-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.ai-header-subtitle {
+    margin: 5px 0 0;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.ai-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #cbd5e1;
+}
+
+.ai-status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+}
+
+/* =========================================================
+   CHAT CARD
+========================================================= */
+
+.ai-chat-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+}
+
+/* =========================================================
+   CHAT AREA
+========================================================= */
+
+.ai-messages {
+    height: 570px;
+    overflow-y: auto;
+    padding: 28px;
+    background: #f8fafc;
+    scroll-behavior: smooth;
+}
+
+.ai-messages::-webkit-scrollbar {
+    width: 7px;
+}
+
+.ai-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ai-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+/* =========================================================
+   WELCOME
+========================================================= */
+
+.ai-welcome {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-welcome-inner {
+    max-width: 720px;
+    text-align: center;
+}
+
+.ai-welcome-icon {
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
+    background: #dbeafe;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 38px;
+}
+
+.ai-welcome h2 {
+    font-size: 27px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.ai-welcome p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+/* =========================================================
+   SUGGESTIONS
+========================================================= */
+
+.ai-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.ai-suggestion {
+    border: 1px solid #dbe3ee;
+    background: #fff;
+    color: #334155;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ai-suggestion:hover {
+    border-color: #60a5fa;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.ai-message {
+    display: flex;
+    margin-bottom: 22px;
+    animation: messageIn 0.2s ease;
+}
+
+@keyframes messageIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ai-message.user {
+    justify-content: flex-end;
+}
+
+.ai-message.assistant {
+    justify-content: flex-start;
+}
+
+.ai-message-content {
+    max-width: 78%;
+}
+
+.ai-message.user .ai-message-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.ai-message-bubble {
+    padding: 13px 16px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.7;
+    word-wrap: break-word;
+}
+
+.ai-message.user .ai-message-bubble {
+    background: #2563eb;
+    color: #fff;
+    border-bottom-right-radius: 5px;
+}
+
+.ai-message.assistant .ai-message-bubble {
+    background: #fff;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 5px;
+}
+
+/* =========================================================
+   MESSAGE HEADER
+========================================================= */
+
+.ai-message-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.ai-message.user .ai-message-meta {
+    justify-content: flex-end;
+}
+
+.ai-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ai-avatar.user {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.ai-avatar.bot {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+/* =========================================================
+   AI RESPONSE FORMATTING
+========================================================= */
+
+.ai-response {
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.ai-response p {
+    margin: 0 0 10px;
+}
+
+.ai-response p:last-child {
+    margin-bottom: 0;
+}
+
+.ai-response strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.ai-response ul,
+.ai-response ol {
+    margin: 8px 0 12px;
+    padding-left: 22px;
+}
+
+.ai-response li {
+    margin-bottom: 5px;
+}
+
+.ai-response h1,
+.ai-response h2,
+.ai-response h3,
+.ai-response h4 {
+    color: #0f172a;
+    font-weight: 700;
+    margin: 14px 0 8px;
+}
+
+.ai-response h1 {
+    font-size: 20px;
+}
+
+.ai-response h2 {
+    font-size: 18px;
+}
+
+.ai-response h3 {
+    font-size: 16px;
+}
+
+.ai-response h4 {
+    font-size: 15px;
+}
+
+.ai-response code {
+    background: #f1f5f9;
+    color: #be123c;
+    padding: 2px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.ai-response pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 14px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 12px 0;
+}
+
+.ai-response pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.ai-response blockquote {
+    border-left: 4px solid #60a5fa;
+    padding-left: 12px;
+    margin: 10px 0;
+    color: #64748b;
+}
+
+/* =========================================================
+   SPEAKER BUTTON
+========================================================= */
+
+.ai-speak-btn {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 15px;
+    margin-top: 7px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ai-speak-btn:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.ai-speak-btn.speaking {
+    color: #2563eb;
+}
+
+/* =========================================================
+   TYPING
+========================================================= */
+
+.ai-typing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.ai-typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.ai-typing-dots span {
+    width: 6px;
+    height: 6px;
+    background: #64748b;
+    border-radius: 50%;
+    animation: typing 1.2s infinite;
+}
+
+.ai-typing-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.ai-typing-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+
+/* =========================================================
+   INPUT AREA
+========================================================= */
+
+.ai-input-area {
+    border-top: 1px solid #e2e8f0;
+    background: #fff;
+    padding: 16px;
+}
+
+.ai-input-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ai-textarea-wrap {
+    flex: 1;
+    position: relative;
+}
+
+#messageInput {
+    width: 100%;
+    min-height: 48px;
+    max-height: 130px;
+    resize: none;
+    border: 1px solid #dbe3ee;
+    border-radius: 12px;
+    padding: 13px 45px 13px 14px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#messageInput:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+#messageInput:disabled {
+    background: #f8fafc;
+}
+
+/* =========================================================
+   VOICE LANGUAGE
+========================================================= */
+
+.voice-language {
+    height: 42px;
+    min-width: 112px;
+    border: 1px solid #dbe3ee;
+    border-radius: 10px;
+    padding: 0 10px;
+    color: #334155;
+    background: #fff;
+    font-size: 13px;
+    outline: none;
+}
+
+.voice-language:focus {
+    border-color: #60a5fa;
+}
+
+/* =========================================================
+   VOICE BUTTON
+========================================================= */
+
+.voice-btn,
+.send-btn,
+.clear-btn {
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.voice-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 11px;
+    background: #f1f5f9;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.voice-btn:hover {
+    background: #e2e8f0;
+}
+
+.voice-btn.listening {
+    background: #fee2e2;
+    color: #dc2626;
+    animation: micPulse 1.2s infinite;
+}
+
+@keyframes micPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+}
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+.send-btn {
+    width: 48px;
+    height: 44px;
+    min-width: 48px;
+    border-radius: 11px;
+    background: #2563eb;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.send-btn:hover {
+    background: #1d4ed8;
+}
+
+.send-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   CLEAR BUTTON
+========================================================= */
+
+.ai-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ai-hint {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.clear-btn {
+    background: transparent;
+    color: #64748b;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 7px;
+}
+
+.clear-btn:hover {
+    background: #f1f5f9;
+    color: #dc2626;
+}
+
+/* =========================================================
+   VOICE STATUS
+========================================================= */
+
+.voice-status {
+    min-height: 20px;
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.voice-status.active {
+    color: #dc2626;
+}
+
+.voice-status.speaking {
+    color: #2563eb;
+}
+
+/* =========================================================
+   FLOATING AI BUTTON
+========================================================= */
+
+.ai-floating-button {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+    cursor: pointer;
+    z-index: 2000;
+    transition: 0.2s;
+}
+
+.ai-floating-button:hover {
+    transform: translateY(-3px);
+    background: #1d4ed8;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .ai-page {
+        padding: 0 10px 20px;
+    }
+
+    .ai-header-card {
+        padding: 18px;
+    }
+
+    .ai-header-content {
+        align-items: flex-start;
+    }
+
+    .ai-header-title {
+        font-size: 20px;
+    }
+
+    .ai-header-subtitle {
+        font-size: 12px;
+    }
+
+    .ai-status {
+        display: none;
+    }
+
+    .ai-messages {
+        height: 500px;
+        padding: 18px;
+    }
+
+    .ai-message-content {
+        max-width: 90%;
+    }
+
+    .ai-input-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .voice-language {
+        order: 1;
+    }
+
+    .ai-textarea-wrap {
+        order: 2;
+        flex-basis: 100%;
+    }
+
+    .voice-btn {
+        order: 3;
+    }
+
+    .send-btn {
+        order: 4;
+    }
+
+    .ai-bottom-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="ai-page">
+
+    <!-- =====================================================
+         AI HEADER
+    ====================================================== -->
+
+    <div class="ai-header-card">
+
+        <div class="ai-header-content">
+
+            <div class="ai-header-left">
+
+                <div class="ai-logo">
+                    <i class="bi bi-robot"></i>
+                </div>
+
+                <div>
+
+                    <h2 class="ai-header-title">
+                        PeopleDesk AI
+                    </h2>
+
+                    <p class="ai-header-subtitle">
+                        Your intelligent HR assistant
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="ai-status">
+
+                <span class="ai-status-dot"></span>
+
+                AI Online
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CHAT
+    ====================================================== -->
+
+    <div class="ai-chat-card">
+
+        <div
+            id="messagesContainer"
+            class="ai-messages"
+        >
+
+            <!-- =================================================
+                 WELCOME
+            ================================================== -->
+
+            <div
+                id="welcomeMessage"
+                class="ai-welcome"
+            >
+
+                <div class="ai-welcome-inner">
+
+                    <div class="ai-welcome-icon">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <h2>
+                        How can I help you?
+                    </h2>
+
+                    <p>
+                        Ask me anything about PeopleDesk HR,
+                        employees, attendance, leaves, payroll,
+                        departments, roles, reports, or HR processes.
+                    </p>
+
+
+                    <div class="ai-suggestions">
+
+                        <button
+                            type="button"
+                            class="ai-suggestion"
+                            onclick="useSuggestion('How many employees are in the system?')"
+                        >
+                            Employees overview
+                        </button>
+
+                        <button
+                            type="button"
+                            class="ai-suggestion"
+                            onclick="useSuggestion('Show me the active employees.')"
+                        >
+                            Active employees
+                        </button>
+
+                        <button
+                            type="button"
+                            class="ai-suggestion"
+                            onclick="useSuggestion('Explain the attendance system.')"
+                        >
+                            Attendance
+                        </button>
+
+                        <button
+                            type="button"
+                            class="ai-suggestion"
+                            onclick="useSuggestion('Explain how leave management works.')"
+                        >
+                            Leave management
+                        </button>
+
+                        <button
+                            type="button"
+                            class="ai-suggestion"
+                            onclick="useSuggestion('Explain payroll and salary management.')"
+                        >
+                            Payroll
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             INPUT
+        ================================================== -->
+
+        <div class="ai-input-area">
+
+            <div class="ai-input-toolbar">
+
+                <!-- LANGUAGE -->
+
+                <select
+                    id="voiceLanguage"
+                    class="voice-language"
+                    title="Voice language"
+                >
+
+                    <option value="en-US">
+                        English
+                    </option>
+
+                    <option value="ur-PK">
+                        Urdu
+                    </option>
+
+                </select>
+
+
+                <!-- TEXT -->
+
+                <div class="ai-textarea-wrap">
+
+                    <textarea
+                        id="messageInput"
+                        placeholder="Ask PeopleDesk AI anything..."
+                        maxlength="4000"
+                        rows="1"
+                    ></textarea>
+
+                </div>
+
+
+                <!-- MIC -->
+
+                <button
+                    type="button"
+                    id="voiceButton"
+                    class="voice-btn"
+                    title="Speak"
+                    aria-label="Start voice input"
+                >
+
+                    <i class="bi bi-mic-fill"></i>
+
+                </button>
+
+
+                <!-- SEND -->
+
+                <button
+                    type="button"
+                    id="sendButton"
+                    class="send-btn"
+                    title="Send"
+                    aria-label="Send message"
+                >
+
+                    <i class="bi bi-send-fill"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- VOICE STATUS -->
+
+            <div
+                id="voiceStatus"
+                class="voice-status"
+            ></div>
+
+
+            <!-- BOTTOM -->
+
+            <div class="ai-bottom-bar">
+
+                <div class="ai-hint">
+
+                    Enter = Send &nbsp; • &nbsp;
+                    Shift + Enter = New line &nbsp; • &nbsp;
+                    🎤 = Voice
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="clearChatButton"
+                    class="clear-btn"
+                >
+
+                    <i class="bi bi-trash3"></i>
+
+                    Clear Chat
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FLOATING AI BUTTON
+========================================================= -->
+
+<button
+    type="button"
+    class="ai-floating-button"
+    onclick="focusAIInput()"
+    title="Ask PeopleDesk AI"
+>
+
+    <i class="bi bi-robot"></i>
+
+</button>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let recognition = null;
+
+let isListening = false;
+
+let isSpeaking = false;
+
+let lastAIMessage = "";
+
+let currentUtterance = null;
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const voiceButton =
+    document.getElementById("voiceButton");
+
+const voiceLanguage =
+    document.getElementById("voiceLanguage");
+
+const voiceStatus =
+    document.getElementById("voiceStatus");
+
+const messagesContainer =
+    document.getElementById("messagesContainer");
+
+const welcomeMessage =
+    document.getElementById("welcomeMessage");
+
+const clearChatButton =
+    document.getElementById("clearChatButton");
+
+
+/* =========================================================
+   INITIALIZE VOICE RECOGNITION
+========================================================= */
+
+function initializeSpeechRecognition() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if (!SpeechRecognition) {
+
+        voiceButton.disabled = true;
+
+        voiceButton.title =
+            "Voice recognition is not supported by this browser.";
+
+        voiceStatus.textContent =
+            "Voice input is not supported in this browser. Please use Google Chrome.";
+
+        return;
+
+    }
+
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+    recognition.maxAlternatives = 1;
+
+
+    recognition.onstart = function () {
+
+        isListening = true;
+
+        voiceButton.classList.add("listening");
+
+        voiceButton.innerHTML =
+            '<i class="bi bi-stop-fill"></i>';
+
+        voiceButton.title =
+            "Stop listening";
+
+        voiceStatus.textContent =
+            "Listening... speak now";
+
+        voiceStatus.classList.add("active");
+
+    };
+
+
+    recognition.onresult = function(event) {
+
+        const transcript =
+            event.results[0][0].transcript;
+
+        messageInput.value =
+            transcript;
+
+        autoResizeTextarea();
+
+
+        /*
+         * Automatically send voice message
+         */
+
+        setTimeout(function() {
+
+            sendMessage();
+
+        }, 200);
+
+    };
+
+
+    recognition.onerror = function(event) {
+
+        console.error(
+            "Speech recognition error:",
+            event.error
+        );
+
+
+        let errorMessage =
+            "Voice input error.";
+
+
+        if (event.error === "not-allowed") {
+
+            errorMessage =
+                "Microphone permission denied. Please allow microphone access.";
+
+        }
+
+        else if (event.error === "no-speech") {
+
+            errorMessage =
+                "No speech detected. Please try again.";
+
+        }
+
+        else if (event.error === "network") {
+
+            errorMessage =
+                "Voice recognition network error.";
+
+        }
+
+
+        voiceStatus.textContent =
+            errorMessage;
+
+        voiceStatus.classList.remove("active");
+
+    };
+
+
+    recognition.onend = function() {
+
+        isListening = false;
+
+        voiceButton.classList.remove("listening");
+
+        voiceButton.innerHTML =
+            '<i class="bi bi-mic-fill"></i>';
+
+        voiceButton.title =
+            "Speak";
+
+    };
+
+}
+
+
+/* =========================================================
+   START / STOP VOICE
+========================================================= */
+
+function toggleVoice() {
+
+    if (!recognition) {
+
+        alert(
+            "Voice recognition is not supported. Please use Google Chrome."
+        );
+
+        return;
+
+    }
+
+
+    if (isListening) {
+
+        recognition.stop();
+
+        voiceStatus.textContent = "";
+
+        voiceStatus.classList.remove("active");
+
+        return;
+
+    }
+
+
+    recognition.lang =
+        voiceLanguage.value;
+
+
+    try {
+
+        recognition.start();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =========================================================
+   TEXT TO SPEECH
+========================================================= */
+
+function speakAIResponse(text) {
+
+    if (!("speechSynthesis" in window)) {
+
+        console.warn(
+            "Speech synthesis is not supported."
+        );
+
+        return;
+
+    }
+
+
+    if (!text) {
+
+        return;
+
+    }
+
+
+    /*
+     * Stop previous speech
+     */
+
+    window.speechSynthesis.cancel();
+
+
+    currentUtterance =
+        new SpeechSynthesisUtterance(
+            cleanTextForSpeech(text)
+        );
+
+
+    /*
+     * Language
+     */
+
+    currentUtterance.lang =
+        voiceLanguage.value;
+
+
+    currentUtterance.rate =
+        0.95;
+
+    currentUtterance.pitch =
+        1;
+
+    currentUtterance.volume =
+        1;
+
+
+    /*
+     * Try to find suitable voice
+     */
+
+    const voices =
+        window.speechSynthesis.getVoices();
+
+
+    let selectedVoice = null;
+
+
+    if (voiceLanguage.value === "ur-PK") {
+
+        selectedVoice =
+            voices.find(
+                voice =>
+                    voice.lang
+                        .toLowerCase()
+                        .startsWith("ur")
+            );
+
+    }
+
+    else {
+
+        selectedVoice =
+            voices.find(
+                voice =>
+                    voice.lang
+                        .toLowerCase()
+                        .startsWith("en")
+            );
+
+    }
+
+
+    if (selectedVoice) {
+
+        currentUtterance.voice =
+            selectedVoice;
+
+    }
+
+
+    currentUtterance.onstart =
+        function() {
+
+            isSpeaking = true;
+
+            voiceStatus.textContent =
+                "AI is speaking...";
+
+            voiceStatus.classList.add(
+                "speaking"
+            );
+
+        };
+
+
+    currentUtterance.onend =
+        function() {
+
+            isSpeaking = false;
+
+            voiceStatus.textContent = "";
+
+            voiceStatus.classList.remove(
+                "speaking"
+            );
+
+        };
+
+
+    currentUtterance.onerror =
+        function(error) {
+
+            console.error(
+                "Speech synthesis error:",
+                error
+            );
+
+            isSpeaking = false;
+
+            voiceStatus.textContent = "";
+
+            voiceStatus.classList.remove(
+                "speaking"
+            );
+
+        };
+
+
+    window.speechSynthesis.speak(
+        currentUtterance
+    );
+
+}
+
+
+/* =========================================================
+   CLEAN TEXT FOR SPEECH
+========================================================= */
+
+function cleanTextForSpeech(text) {
+
+    let clean =
+        String(text);
+
+
+    /*
+     * Remove markdown headings
+     */
+
+    clean =
+        clean.replace(
+            /^#{1,6}\s*/gm,
+            ""
+        );
+
+
+    /*
+     * Remove markdown bold
+     */
+
+    clean =
+        clean.replace(
+            /\*\*(.*?)\*\*/g,
+            "$1"
+        );
+
+
+    /*
+     * Remove markdown italic
+     */
+
+    clean =
+        clean.replace(
+            /\*(.*?)\*/g,
+            "$1"
+        );
+
+
+    /*
+     * Remove inline code
+     */
+
+    clean =
+        clean.replace(
+            /`(.*?)`/g,
+            "$1"
+        );
+
+
+    /*
+     * Convert bullets to natural pauses
+     */
+
+    clean =
+        clean.replace(
+            /^\s*[-*+]\s+/gm,
+            ". "
+        );
+
+
+    /*
+     * Remove table separators
+     */
+
+    clean =
+        clean.replace(
+            /^\s*\|.*\|\s*$/gm,
+            ""
+        );
+
+
+    /*
+     * Remove excessive spaces
+     */
+
+    clean =
+        clean.replace(
+            /\n{2,}/g,
+            ". "
+        );
+
+
+    clean =
+        clean.replace(
+            /\s{2,}/g,
+            " "
+        );
+
+
+    return clean.trim();
+
+}
+
+
+/* =========================================================
+   STOP SPEAKING
+========================================================= */
+
+function stopSpeaking() {
+
+    if (!("speechSynthesis" in window)) {
+
+        return;
+
+    }
+
+
+    window.speechSynthesis.cancel();
+
+    isSpeaking = false;
+
+    voiceStatus.textContent = "";
+
+    voiceStatus.classList.remove(
+        "speaking"
+    );
+
+}
+
+
+/* =========================================================
+   SPEAKER BUTTON
+========================================================= */
+
+function toggleSpeaking() {
+
+    if (!lastAIMessage) {
+
+        return;
+
+    }
+
+
+    if (isSpeaking) {
+
+        stopSpeaking();
+
+        return;
+
+    }
+
+
+    speakAIResponse(
+        lastAIMessage
+    );
+
+}
+
+
+/* =========================================================
+   LOAD SPEECH VOICES
+========================================================= */
+
+if ("speechSynthesis" in window) {
+
+    window.speechSynthesis.onvoiceschanged =
+        function() {
+
+            window.speechSynthesis
+                .getVoices();
+
+        };
+
+}
+
+
+/* =========================================================
+   MARKDOWN FORMATTER
+========================================================= */
+
+function formatAIResponse(text) {
+
+    if (!text) {
+
+        return "";
+
+    }
+
+
+    let value =
+        String(text);
+
+
+    /*
+     * Escape HTML first
+     */
+
+    value =
+        escapeHtml(value);
+
+
+    /*
+     * Code blocks
+     */
+
+    value =
+        value.replace(
+            /```([\s\S]*?)```/g,
+            function(match, code) {
+
+                return (
+                    '<pre><code>' +
+                    code.trim() +
+                    '</code></pre>'
+                );
+
+            }
+        );
+
+
+    /*
+     * Inline code
+     */
+
+    value =
+        value.replace(
+            /`([^`]+)`/g,
+            "<code>$1</code>"
+        );
+
+
+    /*
+     * Bold
+     */
+
+    value =
+        value.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+
+    /*
+     * Italic
+     */
+
+    value =
+        value.replace(
+            /(?<!\*)\*([^*]+)\*(?!\*)/g,
+            "<em>$1</em>"
+        );
+
+
+    /*
+     * Headings
+     */
+
+    value =
+        value.replace(
+            /^######\s+(.+)$/gm,
+            "<h4>$1</h4>"
+        );
+
+    value =
+        value.replace(
+            /^#####\s+(.+)$/gm,
+            "<h4>$1</h4>"
+        );
+
+    value =
+        value.replace(
+            /^####\s+(.+)$/gm,
+            "<h4>$1</h4>"
+        );
+
+    value =
+        value.replace(
+            /^###\s+(.+)$/gm,
+            "<h3>$1</h3>"
+        );
+
+    value =
+        value.replace(
+            /^##\s+(.+)$/gm,
+            "<h2>$1</h2>"
+        );
+
+    value =
+        value.replace(
+            /^#\s+(.+)$/gm,
+            "<h1>$1</h1>"
+        );
+
+
+    /*
+     * Blockquote
+     */
+
+    value =
+        value.replace(
+            /^&gt;\s?(.*)$/gm,
+            "<blockquote>$1</blockquote>"
+        );
+
+
+    /*
+     * Ordered lists
+     */
+
+    value =
+        value.replace(
+            /(?:^|\n)((?:\d+\.\s+.+(?:\n|$))+)/g,
+            function(match, block) {
+
+                const items =
+                    block
+                        .trim()
+                        .split(/\n/)
+                        .map(function(line) {
+
+                            return line
+                                .replace(
+                                    /^\d+\.\s+/,
+                                    ""
+                                )
+                                .trim();
+
+                        })
+                        .filter(Boolean);
+
+
+                if (!items.length) {
+
+                    return match;
+
+                }
+
+
+                return (
+                    "\n<ol>" +
+                    items
+                        .map(
+                            item =>
+                                "<li>" +
+                                item +
+                                "</li>"
+                        )
+                        .join("") +
+                    "</ol>\n"
+                );
+
+            }
+        );
+
+
+    /*
+     * Unordered lists
+     */
+
+    value =
+        value.replace(
+            /(?:^|\n)((?:[-*+]\s+.+(?:\n|$))+)/g,
+            function(match, block) {
+
+                const items =
+                    block
+                        .trim()
+                        .split(/\n/)
+                        .map(function(line) {
+
+                            return line
+                                .replace(
+                                    /^[-*+]\s+/,
+                                    ""
+                                )
+                                .trim();
+
+                        })
+                        .filter(Boolean);
+
+
+                if (!items.length) {
+
+                    return match;
+
+                }
+
+
+                return (
+                    "\n<ul>" +
+                    items
+                        .map(
+                            item =>
+                                "<li>" +
+                                item +
+                                "</li>"
+                        )
+                        .join("") +
+                    "</ul>\n"
+                );
+
+            }
+        );
+
+
+    /*
+     * Horizontal line
+     */
+
+    value =
+        value.replace(
+            /^---+$/gm,
+            ""
+        );
+
+
+    /*
+     * New lines
+     */
+
+    const blocks =
+        value
+            .split(/\n{2,}/);
+
+
+    value =
+        blocks
+            .map(function(block) {
+
+                block =
+                    block.trim();
+
+
+                if (!block) {
+
+                    return "";
+
+                }
+
+
+                if (
+                    block.startsWith("<h1>") ||
+                    block.startsWith("<h2>") ||
+                    block.startsWith("<h3>") ||
+                    block.startsWith("<h4>") ||
+                    block.startsWith("<ul>") ||
+                    block.startsWith("<ol>") ||
+                    block.startsWith("<pre>") ||
+                    block.startsWith("<blockquote>")
+                ) {
+
+                    return block;
+
+                }
+
+
+                return (
+                    "<p>" +
+                    block.replace(
+                        /\n/g,
+                        "<br>"
+                    ) +
+                    "</p>"
+                );
+
+            })
+            .join("");
+
+
+    return value;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   ADD USER MESSAGE
+========================================================= */
+
+function addUserMessage(message) {
+
+    hideWelcome();
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-message user";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "ai-message-content";
+
+
+    const meta =
+        document.createElement("div");
+
+    meta.className =
+        "ai-message-meta";
+
+
+    meta.innerHTML = `
+        <span>You</span>
+        <div class="ai-avatar user">
+            <i class="bi bi-person-fill"></i>
+        </div>
+    `;
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "ai-message-bubble";
+
+
+    bubble.textContent =
+        message;
+
+
+    content.appendChild(meta);
+
+    content.appendChild(bubble);
+
+    wrapper.appendChild(content);
+
+    messagesContainer.appendChild(wrapper);
+
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================================
+   ADD AI MESSAGE
+========================================================= */
+
+function addAIMessage(message) {
+
+    hideWelcome();
+
+
+    lastAIMessage =
+        String(message);
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-message assistant";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "ai-message-content";
+
+
+    const meta =
+        document.createElement("div");
+
+    meta.className =
+        "ai-message-meta";
+
+
+    meta.innerHTML = `
+        <div class="ai-avatar bot">
+            <i class="bi bi-robot"></i>
+        </div>
+        <span>PeopleDesk AI</span>
+    `;
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "ai-message-bubble";
+
+
+    const response =
+        document.createElement("div");
+
+    response.className =
+        "ai-response";
+
+
+    response.innerHTML =
+        formatAIResponse(message);
+
+
+    bubble.appendChild(response);
+
+
+    /*
+     * Speaker button
+     */
+
+    const speakerButton =
+        document.createElement("button");
+
+    speakerButton.type =
+        "button";
+
+    speakerButton.className =
+        "ai-speak-btn";
+
+    speakerButton.title =
+        "Read answer aloud";
+
+    speakerButton.innerHTML =
+        '<i class="bi bi-volume-up-fill"></i>';
+
+
+    speakerButton.addEventListener(
+        "click",
+        function() {
+
+            toggleSpeaking();
+
+        }
+    );
+
+
+    bubble.appendChild(
+        speakerButton
+    );
+
+
+    content.appendChild(meta);
+
+    content.appendChild(bubble);
+
+    wrapper.appendChild(content);
+
+    messagesContainer.appendChild(wrapper);
+
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================================
+   TYPING MESSAGE
+========================================================= */
+
+function showTyping() {
+
+    hideWelcome();
+
+
+    removeTyping();
+
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.id =
+        "typingMessage";
+
+    wrapper.className =
+        "ai-message assistant";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "ai-message-content";
+
+
+    const meta =
+        document.createElement("div");
+
+    meta.className =
+        "ai-message-meta";
+
+
+    meta.innerHTML = `
+        <div class="ai-avatar bot">
+            <i class="bi bi-robot"></i>
+        </div>
+        <span>PeopleDesk AI</span>
+    `;
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "ai-message-bubble";
+
+
+    bubble.innerHTML = `
+        <div class="ai-typing">
+
+            <div class="ai-typing-dots">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            Thinking...
+
+        </div>
+    `;
+
+
+    content.appendChild(meta);
+
+    content.appendChild(bubble);
+
+    wrapper.appendChild(content);
+
+    messagesContainer.appendChild(wrapper);
+
+
+    scrollToBottom();
+
+}
+
+
+/* =========================================================
+   REMOVE TYPING
+========================================================= */
+
+function removeTyping() {
+
+    const typing =
+        document.getElementById(
+            "typingMessage"
+        );
+
+
+    if (typing) {
+
+        typing.remove();
+
+    }
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+async function sendMessage(customMessage = null) {
+
+    let message =
+        customMessage !== null
+            ? customMessage
+            : messageInput.value.trim();
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    if (message.length > 4000) {
+
+        alert(
+            "Message cannot be longer than 4000 characters."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Stop current voice
+     */
+
+    stopSpeaking();
+
+
+    /*
+     * Add user message
+     */
+
+    addUserMessage(message);
+
+
+    /*
+     * Clear input
+     */
+
+    messageInput.value = "";
+
+    autoResizeTextarea();
+
+
+    /*
+     * Disable send
+     */
+
+    sendButton.disabled = true;
+
+    messageInput.disabled = true;
+
+
+    /*
+     * Show typing
+     */
+
+    showTyping();
+
+
+    try {
+
+        const response =
+            await fetch(
+                "{{ url_for('ai_assistant.chat') }}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: message
+                    })
+                }
+            );
+
+
+        let data;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        }
+
+        catch (jsonError) {
+
+            throw new Error(
+                "Invalid server response."
+            );
+
+        }
+
+
+        removeTyping();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                data.message ||
+                "Something went wrong."
+            );
+
+        }
+
+
+        if (!data.message) {
+
+            throw new Error(
+                "AI returned an empty response."
+            );
+
+        }
+
+
+        /*
+         * Add AI answer
+         */
+
+        addAIMessage(
+            data.message
+        );
+
+
+        /*
+         * Automatically speak answer
+         */
+
+        setTimeout(
+            function() {
+
+                speakAIResponse(
+                    data.message
+                );
+
+            },
+            150
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "AI Chat Error:",
+            error
+        );
+
+
+        removeTyping();
+
+
+        addAIMessage(
+            "Sorry, I could not process your request right now. Please try again."
+        );
+
+
+        console.error(error);
+
+    }
+
+    finally {
+
+        sendButton.disabled = false;
+
+        messageInput.disabled = false;
+
+        messageInput.focus();
+
+    }
+
+}
+
+
+/* =========================================================
+   SUGGESTION
+========================================================= */
+
+function useSuggestion(text) {
+
+    messageInput.value =
+        text;
+
+    autoResizeTextarea();
+
+    messageInput.focus();
+
+    sendMessage();
+
+}
+
+
+/* =========================================================
+   HIDE WELCOME
+========================================================= */
+
+function hideWelcome() {
+
+    if (welcomeMessage) {
+
+        welcomeMessage.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   SHOW WELCOME
+========================================================= */
+
+function showWelcome() {
+
+    if (welcomeMessage) {
+
+        welcomeMessage.style.display =
+            "flex";
+
+    }
+
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+function scrollToBottom() {
+
+    setTimeout(
+        function() {
+
+            messagesContainer.scrollTop =
+                messagesContainer.scrollHeight;
+
+        },
+        50
+    );
+
+}
+
+
+/* =========================================================
+   TEXTAREA AUTO RESIZE
+========================================================= */
+
+function autoResizeTextarea() {
+
+    messageInput.style.height =
+        "auto";
+
+
+    const height =
+        Math.min(
+            messageInput.scrollHeight,
+            130
+        );
+
+
+    messageInput.style.height =
+        height + "px";
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+messageInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+messageInput.addEventListener(
+    "input",
+    function() {
+
+        autoResizeTextarea();
+
+    }
+);
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+sendButton.addEventListener(
+    "click",
+    function() {
+
+        sendMessage();
+
+    }
+);
+
+
+/* =========================================================
+   VOICE BUTTON
+========================================================= */
+
+voiceButton.addEventListener(
+    "click",
+    function() {
+
+        toggleVoice();
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR CHAT
+========================================================= */
+
+clearChatButton.addEventListener(
+    "click",
+    async function() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to clear the AI chat?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        stopSpeaking();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "{{ url_for('ai_assistant.clear_chat') }}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Could not clear chat."
+                );
+
+            }
+
+
+            /*
+             * Remove all messages
+             */
+
+            messagesContainer
+                .querySelectorAll(
+                    ".ai-message"
+                )
+                .forEach(
+                    element =>
+                        element.remove()
+                );
+
+
+            /*
+             * Show welcome again
+             */
+
+            showWelcome();
+
+
+            lastAIMessage = "";
+
+
+            voiceStatus.textContent = "";
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Clear chat error:",
+                error
+            );
+
+            alert(
+                "Could not clear the chat."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FOCUS AI INPUT
+========================================================= */
+
+function focusAIInput() {
+
+    messageInput.focus();
+
+    messageInput.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        initializeSpeechRecognition();
+
+        messageInput.focus();
+
+    }
+);
+
+</script>
+
+{% endblock %}

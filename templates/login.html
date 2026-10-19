@@ -1,107 +1,1583 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in — PeopleDesk HR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login — PeopleDesk HR</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* =========================================================
+           PEOPLE DESK — PREMIUM LOGIN
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b1220;
+            font-family: var(--font-body);
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .premium-login {
+            min-height: 100vh;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 58% 42%;
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(37, 99, 235, .16),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    rgba(14, 165, 233, .10),
+                    transparent 26%
+                ),
+                #0b1220;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+
+        /* =========================================================
+           BACKGROUND GRID
+        ========================================================= */
+
+        .premium-login::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 42px 42px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    rgba(0,0,0,.9),
+                    transparent 90%
+                );
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           LEFT SIDE
+        ========================================================= */
+
+        .premium-left {
+            position: relative;
+            z-index: 2;
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            padding: 44px 70px 38px;
+        }
+
+
+        /* =========================================================
+           BRAND
+        ========================================================= */
+
+        .premium-brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .premium-logo {
+            width: 47px;
+            height: 47px;
+
+            border-radius: 13px;
+
+            background: linear-gradient(
+                145deg,
+                #3b82f6,
+                #1d4ed8
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow:
+                0 10px 30px rgba(37,99,235,.30);
+
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 800;
+
+            letter-spacing: -.5px;
+        }
+
+        .premium-brand-name {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .premium-brand-sub {
+            margin-top: 2px;
+
+            color: #7f8da4;
+
+            font-size: 9px;
+            font-weight: 600;
+
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           MAIN BRAND CONTENT
+        ========================================================= */
+
+        .premium-main-copy {
+            max-width: 700px;
+            margin-top: 40px;
+        }
+
+        .premium-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 7px 10px;
+
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 7px;
+
+            background: rgba(255,255,255,.025);
+
+            color: #9eabc0;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .premium-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px rgba(34,197,94,.08);
+        }
+
+        .premium-main-copy h1 {
+            margin: 22px 0 0;
+
+            font-family: var(--font-heading);
+
+            font-size: clamp(
+                42px,
+                5.4vw,
+                75px
+            );
+
+            line-height: 1.02;
+
+            letter-spacing: -3px;
+
+            font-weight: 700;
+
+            color: #ffffff;
+        }
+
+        .premium-main-copy h1 span {
+            color: #6ea8ff;
+        }
+
+        .premium-main-copy p {
+            max-width: 600px;
+
+            margin: 24px 0 0;
+
+            color: #8491a8;
+
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+
+        /* =========================================================
+           METRICS
+        ========================================================= */
+
+        .premium-metrics {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 10px;
+
+            max-width: 620px;
+
+            margin-top: 38px;
+        }
+
+        .premium-metric {
+            padding: 15px;
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.045),
+                    rgba(255,255,255,.015)
+                );
+
+            backdrop-filter: blur(5px);
+        }
+
+        .premium-metric-number {
+            color: #fff;
+
+            font-family: var(--font-heading);
+
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .premium-metric-label {
+            margin-top: 5px;
+
+            color: #77859c;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+
+        /* =========================================================
+           MODULES
+        ========================================================= */
+
+        .premium-modules {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+
+            margin-top: 24px;
+        }
+
+        .premium-module {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 8px 11px;
+
+            border-radius: 7px;
+
+            background: rgba(255,255,255,.035);
+
+            border: 1px solid rgba(255,255,255,.06);
+
+            color: #9aa7bb;
+
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .premium-module svg {
+            color: #6ea8ff;
+        }
+
+
+        /* =========================================================
+           LEFT FOOTER
+        ========================================================= */
+
+        .premium-left-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            color: #57657b;
+
+            font-size: 9px;
+        }
+
+
+        /* =========================================================
+           RIGHT SIDE
+        ========================================================= */
+
+        .premium-right {
+            position: relative;
+            z-index: 5;
+
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 35px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #f7f9fc 0%,
+                    #eef2f7 100%
+                );
+        }
+
+
+        /* =========================================================
+           LOGIN PANEL
+        ========================================================= */
+
+        .login-panel {
+            width: 100%;
+            max-width: 455px;
+
+            background: #ffffff;
+
+            border: 1px solid #e4e8ee;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 30px 70px rgba(15,23,42,.11),
+                0 5px 20px rgba(15,23,42,.05);
+
+            padding: 34px;
+
+            color: #172033;
+        }
+
+
+        /* =========================================================
+           PANEL TOP
+        ========================================================= */
+
+        .login-panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 30px;
+        }
+
+        .login-panel-brand {
+            display: none;
+        }
+
+        .secure-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #667085;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .secure-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #16a34a;
+
+            box-shadow:
+                0 0 0 4px rgba(22,163,74,.08);
+        }
+
+
+        /* =========================================================
+           HEADING
+        ========================================================= */
+
+        .login-heading {
+            margin-bottom: 28px;
+        }
+
+        .login-heading small {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #8792a4;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .login-heading h2 {
+            margin: 0;
+
+            color: #111827;
+
+            font-family: var(--font-heading);
+
+            font-size: 30px;
+            font-weight: 700;
+
+            letter-spacing: -1.1px;
+        }
+
+        .login-heading p {
+            margin: 8px 0 0;
+
+            color: #7b8492;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           ALERTS
+        ========================================================= */
+
+        .login-alerts {
+            margin-bottom: 17px;
+        }
+
+        .login-alerts .alert {
+            border-radius: 9px;
+
+            font-size: 11px;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .premium-form {
+            display: flex;
+            flex-direction: column;
+            gap: 19px;
+        }
+
+        .premium-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .premium-field label {
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .premium-input-wrap {
+            position: relative;
+        }
+
+        .premium-input {
+            width: 100%;
+            height: 49px;
+
+            padding: 0 43px 0 13px;
+
+            border: 1px solid #d8dde6;
+            border-radius: 9px;
+
+            color: #172033;
+            background: #ffffff;
+
+            outline: none;
+
+            font-family: var(--font-body);
+            font-size: 12px;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+        }
+
+        .premium-input::placeholder {
+            color: #a1a9b6;
+        }
+
+        .premium-input:hover {
+            border-color: #c5cbd5;
+        }
+
+        .premium-input:focus {
+            border-color: #31588f;
+
+            box-shadow:
+                0 0 0 3px rgba(49,88,143,.09);
+        }
+
+        .premium-input-icon {
+            position: absolute;
+
+            right: 13px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #98a2b3;
+
+            pointer-events: none;
+        }
+
+
+        /* password */
+
+        .premium-password-toggle {
+            position: absolute;
+
+            right: 7px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 33px;
+            height: 33px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #8792a4;
+
+            cursor: pointer;
+        }
+
+        .premium-password-toggle:hover {
+            background: #f1f4f7;
+            color: #344054;
+        }
+
+
+        /* =========================================================
+           OPTIONS
+        ========================================================= */
+
+        .premium-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: -1px;
+        }
+
+        .premium-remember {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #7b8492;
+
+            font-size: 10px;
+        }
+
+        .premium-remember input {
+            width: 14px;
+            height: 14px;
+            accent-color: #243b67;
+        }
+
+        .premium-forgot {
+            color: #31588f;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .premium-forgot:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           BUTTON
+        ========================================================= */
+
+        .premium-signin {
+            width: 100%;
+            height: 49px;
+
+            margin-top: 2px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #1e3155;
+            color: #ffffff;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background .2s ease,
+                box-shadow .2s ease,
+                transform .2s ease;
+        }
+
+        .premium-signin:hover {
+            background: #182a4a;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 9px 20px rgba(30,49,85,.14);
+        }
+
+        .premium-signin:disabled {
+            opacity: .65;
+            cursor: wait;
+            transform: none;
+        }
+
+
+        /* =========================================================
+           LOGIN HELP
+        ========================================================= */
+
+        .login-help {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+
+            margin-top: 20px;
+            padding: 12px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e8ecf1;
+            border-radius: 9px;
+
+            color: #7b8492;
+
+            font-size: 9px;
+            line-height: 1.65;
+        }
+
+        .login-help svg {
+            min-width: 14px;
+            margin-top: 1px;
+            color: #31588f;
+        }
+
+        .login-help strong {
+            color: #4b5563;
+        }
+
+
+        /* =========================================================
+           DIVIDER
+        ========================================================= */
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            margin: 23px 0 17px;
+
+            color: #a0a8b5;
+
+            font-size: 8px;
+            font-weight: 700;
+
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+
+            flex: 1;
+
+            height: 1px;
+
+            background: #e8ebef;
+        }
+
+
+        /* =========================================================
+           REGISTER BOX
+        ========================================================= */
+
+        .register-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 13px 14px;
+
+            border: 1px solid #e2e7ed;
+
+            border-radius: 10px;
+
+            background: #fbfcfd;
+        }
+
+        .register-copy strong {
+            display: block;
+
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .register-copy span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #98a2b3;
+
+            font-size: 9px;
+        }
+
+        .register-btn {
+            white-space: nowrap;
+
+            padding: 8px 11px;
+
+            border: 1px solid #d6dce5;
+            border-radius: 7px;
+
+            background: #ffffff;
+            color: #31588f;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .register-btn:hover {
+            background: #f3f5f8;
+            color: #243b67;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .login-footer {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 24px;
+
+            color: #a1a9b6;
+
+            font-size: 8px;
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .premium-login {
+                display: block;
+
+                background: #f1f4f8;
+            }
+
+            .premium-left {
+                display: none;
+            }
+
+            .premium-right {
+                min-height: 100vh;
+
+                padding: 25px 18px;
+
+                background:
+                    radial-gradient(
+                        circle at 30% 5%,
+                        rgba(37,99,235,.08),
+                        transparent 30%
+                    ),
+                    #f1f4f8;
+            }
+
+            .login-panel-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                margin-bottom: 25px;
+            }
+
+            .login-panel-brand-mark {
+                width: 38px;
+                height: 38px;
+
+                border-radius: 9px;
+
+                background: #1e3155;
+                color: #fff;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                font-size: 11px;
+                font-weight: 800;
+            }
+
+            .login-panel-brand-name {
+                color: #172033;
+                font-family: var(--font-heading);
+                font-size: 13px;
+                font-weight: 700;
+            }
+        }
+
+
+        @media (max-width: 520px) {
+
+            .premium-right {
+                padding: 14px;
+            }
+
+            .login-panel {
+                padding: 24px 18px;
+
+                border-radius: 14px;
+            }
+
+            .login-heading h2 {
+                font-size: 27px;
+            }
+
+            .login-footer {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .register-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .register-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+
 </head>
-<body class="auth-body">
 
-<div class="auth-card-modern">
-    <div class="auth-head-modern">
-        <div class="auth-icon-circle">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-        </div>
-        <h1>Welcome Back</h1>
-        <p>Sign in to PeopleDesk HR</p>
-    </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category if category != 'message' else 'danger' }}" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<body>
+
+
+<div class="premium-login">
+
+
+    <!-- =====================================================
+         LEFT
+    ====================================================== -->
+
+    <section class="premium-left">
+
+
+        <div>
+
+            <!-- BRAND -->
+
+            <div class="premium-brand">
+
+                <div class="premium-logo">
+                    PD
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
-    <form class="auth-form-modern" action="/login" method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <div class="input-wrapper">
-                <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required autocomplete="username">
+                <div>
+
+                    <div class="premium-brand-name">
+                        PeopleDesk HR
+                    </div>
+
+                    <div class="premium-brand-sub">
+                        Human Resource Management
+                    </div>
+
+                </div>
+
             </div>
+
+
+            <!-- COPY -->
+
+            <div class="premium-main-copy">
+
+                <div class="premium-eyebrow">
+
+                    <span class="premium-eyebrow-dot"></span>
+
+                    HR OPERATIONS PLATFORM
+
+                </div>
+
+
+                <h1>
+
+                    Everything your
+                    <span>people</span>
+                    need.
+
+                </h1>
+
+
+                <p>
+
+                    PeopleDesk brings employee management,
+                    attendance, leave, payroll and workforce
+                    operations into one organized workspace.
+
+                </p>
+
+
+                <!-- METRICS -->
+
+                <div class="premium-metrics">
+
+                    <div class="premium-metric">
+
+                        <div class="premium-metric-number">
+                            01
+                        </div>
+
+                        <div class="premium-metric-label">
+                            Employee Hub
+                        </div>
+
+                    </div>
+
+
+                    <div class="premium-metric">
+
+                        <div class="premium-metric-number">
+                            24/7
+                        </div>
+
+                        <div class="premium-metric-label">
+                            Workforce Access
+                        </div>
+
+                    </div>
+
+
+                    <div class="premium-metric">
+
+                        <div class="premium-metric-number">
+                            360°
+                        </div>
+
+                        <div class="premium-metric-label">
+                            HR Visibility
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MODULES -->
+
+                <div class="premium-modules">
+
+                    <div class="premium-module">
+
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 21a8 8 0 0 1 16 0"/>
+                        </svg>
+
+                        Employees
+
+                    </div>
+
+
+                    <div class="premium-module">
+
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <rect x="3" y="4" width="18" height="17" rx="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18"/>
+                        </svg>
+
+                        Attendance
+
+                    </div>
+
+
+                    <div class="premium-module">
+
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path d="M12 1v22"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+
+                        Payroll
+
+                    </div>
+
+
+                    <div class="premium-module">
+
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z"/>
+                        </svg>
+
+                        Permissions
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label for="passwordField">Password</label>
-            <div class="input-wrapper">
-                <input type="password" name="password" id="passwordField" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-                <button type="button" class="toggle-password" id="togglePassword" aria-label="Show password">
-                    <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg id="eyeOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                        <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
-                        <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
-                        <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
-                        <line x1="2" y1="2" x2="22" y2="22"/>
-                    </svg>
+
+        <!-- FOOTER -->
+
+        <div class="premium-left-footer">
+
+            <span>
+                PeopleDesk HRMS
+            </span>
+
+            <span>
+                Secure workplace access
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT
+    ====================================================== -->
+
+    <section class="premium-right">
+
+
+        <div class="login-panel">
+
+
+            <!-- Mobile Brand -->
+
+            <div class="login-panel-brand">
+
+                <div class="login-panel-brand-mark">
+                    PD
+                </div>
+
+                <div class="login-panel-brand-name">
+                    PeopleDesk HR
+                </div>
+
+            </div>
+
+
+            <!-- Top -->
+
+            <div class="login-panel-top">
+
+                <div class="secure-status">
+
+                    <span class="secure-dot"></span>
+
+                    Secure Login
+
+                </div>
+
+            </div>
+
+
+            <!-- Heading -->
+
+            <div class="login-heading">
+
+                <small>
+                    Welcome back
+                </small>
+
+                <h2>
+                    Sign in to your account
+                </h2>
+
+                <p>
+                    Enter your credentials to continue to the
+                    PeopleDesk HR workspace.
+                </p>
+
+            </div>
+
+
+            <!-- Flash Messages -->
+
+            <div class="login-alerts">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+
+                    {% if messages %}
+
+                        {% for category, message in messages %}
+
+                            <div
+                                class="alert alert-{{ category }} alert-dismissible fade show"
+                                role="alert"
+                            >
+
+                                {{ message }}
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                method="POST"
+                action="{{ url_for('auth.login') }}"
+                class="premium-form"
+                id="premiumLoginForm"
+            >
+
+
+                <!-- Username -->
+
+                <div class="premium-field">
+
+                    <label for="username">
+                        Username or Email
+                    </label>
+
+                    <div class="premium-input-wrap">
+
+                        <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            class="premium-input"
+                            placeholder="Enter username or email"
+                            autocomplete="username"
+                            required
+                        >
+
+                        <span class="premium-input-icon">
+
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 21a8 8 0 0 1 16 0"/>
+                            </svg>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="premium-field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="premium-input-wrap">
+
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="premium-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="premium-password-toggle"
+                            id="premiumPasswordToggle"
+                            aria-label="Show password"
+                        >
+
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+
+                                <path
+                                    d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                />
+
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Options -->
+
+                <div class="premium-options">
+
+                    <label class="premium-remember">
+
+                        <input
+                            type="checkbox"
+                            name="remember"
+                        >
+
+                        Remember me
+
+                    </label>
+
+
+                    <a
+                        href="{{ url_for('auth.forgot_password') }}"
+                        class="premium-forgot"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- Button -->
+
+                <button
+                    type="submit"
+                    class="premium-signin"
+                    id="premiumSignIn"
+                >
+
+                    Sign in to PeopleDesk
+
                 </button>
+
+            </form>
+
+
+            <!-- Help -->
+
+            <div class="login-help">
+
+                <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+
+                    <path
+                        d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z"
+                    />
+
+                    <path
+                        d="M9 12l2 2 4-4"
+                    />
+
+                </svg>
+
+                <div>
+
+                    <strong>
+                        Role-based access is enabled.
+                    </strong>
+
+                    Your account automatically opens
+                    the dashboard and features assigned
+                    to your role.
+
+                </div>
+
             </div>
+
+
+            <!-- Divider -->
+
+            <div class="login-divider">
+                Employee registration
+            </div>
+
+
+            <!-- Register -->
+
+            <div class="register-card">
+
+                <div class="register-copy">
+
+                    <strong>
+                        Don't have an account?
+                    </strong>
+
+                    <span>
+                        Register as an employee and wait for approval.
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="register-btn"
+                >
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <!-- Footer -->
+
+            <div class="login-footer">
+
+                <span>
+                    © PeopleDesk HR
+                </span>
+
+                <span>
+                    Human Resource Management System
+                </span>
+
+            </div>
+
         </div>
 
-        <button type="submit" class="btn-auth-modern">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem;">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                <polyline points="10 17 15 12 10 7"/>
-                <line x1="15" y1="12" x2="3" y2="12"/>
-            </svg>
-            Sign In
-        </button>
-        <a href="{{ url_for('auth.forgot_password') }}">
-        Forgot Password?
-        </a>
-    </form>
+    </section>
 
-    <div class="auth-footer-modern">
-        <a href="/register">Admin: Create New User</a>
-    </div>
 </div>
 
-<script>
-(function() {
-    // ================================
-    // Password Visibility Toggle
-    // ================================
-    const toggleBtn = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('passwordField');
-    const eyeIcon = document.getElementById('eyeIcon');
-    const eyeOffIcon = document.getElementById('eyeOffIcon');
 
-    if (toggleBtn && passwordInput) {
-        let passwordVisible = false;
-        toggleBtn.addEventListener('click', function() {
-            passwordVisible = !passwordVisible;
-            passwordInput.type = passwordVisible ? 'text' : 'password';
-            eyeIcon.style.display = passwordVisible ? 'none' : 'block';
-            eyeOffIcon.style.display = passwordVisible ? 'block' : 'none';
-            toggleBtn.setAttribute('aria-label', passwordVisible ? 'Hide password' : 'Show password');
-        });
+<script>
+
+    /* =====================================================
+       PASSWORD VISIBILITY
+    ===================================================== */
+
+    const premiumPassword =
+        document.getElementById("password");
+
+    const premiumPasswordToggle =
+        document.getElementById("premiumPasswordToggle");
+
+
+    if (
+        premiumPassword &&
+        premiumPasswordToggle
+    ) {
+
+        premiumPasswordToggle.addEventListener(
+            "click",
+            function () {
+
+                const visible =
+                    premiumPassword.type === "text";
+
+                premiumPassword.type =
+                    visible
+                        ? "password"
+                        : "text";
+
+                premiumPasswordToggle.setAttribute(
+                    "aria-label",
+                    visible
+                        ? "Show password"
+                        : "Hide password"
+                );
+
+            }
+        );
+
     }
-})();
+
+
+    /* =====================================================
+       LOGIN SUBMIT
+    ===================================================== */
+
+    const premiumLoginForm =
+        document.getElementById("premiumLoginForm");
+
+    const premiumSignIn =
+        document.getElementById("premiumSignIn");
+
+
+    if (
+        premiumLoginForm &&
+        premiumSignIn
+    ) {
+
+        premiumLoginForm.addEventListener(
+            "submit",
+            function () {
+
+                premiumSignIn.disabled = true;
+
+                premiumSignIn.textContent =
+                    "Signing in...";
+
+            }
+        );
+
+    }
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
-

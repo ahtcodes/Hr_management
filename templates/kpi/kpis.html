@@ -21,7 +21,7 @@ KPI Tracking — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin")
+        {% if current_user.has_any_role("Super Admin","HR Manager")
               or current_user.has_role("Department Manager") %}
 
         <a href="{{ url_for('kpi.create_kpi') }}"
@@ -76,7 +76,7 @@ KPI Tracking — PeopleDesk HR
 
                             <th>#</th>
 
-                            {% if current_user.has_role("Super Admin")
+                            {% if current_user.has_any_role("Super Admin","HR Manager")
                                   or current_user.has_role("Department Manager") %}
 
                             <th>Employee</th>
@@ -131,7 +131,7 @@ KPI Tracking — PeopleDesk HR
                             </td>
 
 
-                            {% if current_user.has_role("Super Admin")
+                            {{% if current_user.has_any_role("Super Admin", "HR Manager") %}
                                   or current_user.has_role("Department Manager") %}
 
                             <td>
@@ -273,7 +273,7 @@ KPI Tracking — PeopleDesk HR
                                 </a>
 
 
-                                {% if current_user.has_role("Super Admin") %}
+                                {% if current_user.has_any_role("Super Admin","hr Manager") %}
 
                                 <form method="POST"
                                       action="{{ url_for(

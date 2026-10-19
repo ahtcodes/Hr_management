@@ -17,7 +17,7 @@ Notices & Announcements — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin","HR Manager") %}
         <a href="{{ url_for('notice.create_notice') }}"
            class="btn btn-primary">
             + Create Notice
@@ -87,7 +87,7 @@ Notices & Announcements — PeopleDesk HR
                 </div>
 
 
-                {% if current_user.has_role("Super Admin") %}
+                {% if current_user.has_any_role("Super Admin""HR Manager") %}
 
                 <div class="card-footer bg-white border-0">
 
@@ -130,7 +130,7 @@ Notices & Announcements — PeopleDesk HR
             There are currently no announcements or notices.
         </p>
 
-        {% if current_user.has_role("Super Admin") %}
+        {% if current_user.has_any_role("Super Admin""HR Manager") %}
         <a href="{{ url_for('notice.create_notice') }}"
            class="btn btn-primary">
             Create First Notice

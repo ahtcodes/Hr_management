@@ -21,7 +21,7 @@ Employee Evaluation — PeopleDesk HR
             </p>
         </div>
 
-        {% if current_user.has_role("Super Admin")
+        {% if current_user.has_any_role("Super Admin","HR Manage")
               or current_user.has_role("Department Manager") %}
 
         <a href="{{ url_for('evaluation.create_evaluation') }}"
@@ -76,7 +76,7 @@ Employee Evaluation — PeopleDesk HR
 
                             <th>#</th>
 
-                            {% if current_user.has_role("Super Admin")
+                            {% if current_user.has_any_role("Super Admin","HR Manage")
                                   or current_user.has_role("Department Manager") %}
 
                             <th>Employee</th>
@@ -112,7 +112,7 @@ Employee Evaluation — PeopleDesk HR
                             </td>
 
 
-                            {% if current_user.has_role("Super Admin")
+                            {% if current_user.has_any_role("Super Admin","HR Manage")
                                   or current_user.has_role("Department Manager") %}
 
                             <td>

@@ -14,7 +14,7 @@ leave = Blueprint("leave", __name__)
 # ==========================
 def admin_required():
     """Check if the current user has admin role."""
-    if not current_user.is_authenticated or not current_user.has_role("Super Admin"):
+    if not current_user.is_authenticated or not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)  # Forbidden
 
 
@@ -25,7 +25,7 @@ def admin_required():
 @login_required
 def apply_leave():
 
-    is_admin = current_user.has_role("Super Admin")
+    is_admin = current_user.has_any_role("Super Admin", "HR Manager")
     employees = Employee.query.all() if is_admin else []
 
     # If employee user, get their linked employee record
@@ -89,7 +89,7 @@ def apply_leave():
 @login_required
 def my_leaves():
 
-    is_admin = current_user.has_role("Super Admin")
+    is_admin = current_user.has_any_role("Super Admin", "HR Manager")
 
     if is_admin:
         # Admin sees all leaves
@@ -117,7 +117,7 @@ def my_leaves():
 def manage_leaves():
 
     # Only admin can manage leaves
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
         flash("Sirf admin hi leaves manage kar sakta hai!", "danger")
         return redirect(url_for("leave.my_leaves"))
@@ -142,7 +142,7 @@ def manage_leaves():
 def approve_leave(id):
 
     # Only Super Admin can approve leaves
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         flash("Sirf admin hi leave approve kar sakta hai!", "danger")
         return redirect(url_for("leave.manage_leaves"))
 
@@ -211,7 +211,7 @@ def approve_leave(id):
 def reject_leave(id):
 
     # Only admin can reject leaves
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
            abort(403)
     flash("Sirf admin hi leave reject kar sakta hai!", "danger")
     return redirect(url_for("leave.my_leaves"))
@@ -269,7 +269,7 @@ def reject_leave(id):
 @login_required
 def leave_history():
 
-    is_admin = current_user.has_role("Super Admin")
+    is_admin = current_user.has_any_role("Super Admin", "HR Manager")
 
     if is_admin:
         # Admin can see all leave history
@@ -314,7 +314,7 @@ def leave_balance():
         "Sick": 8
     }
 
-    is_admin = current_user.has_role("Super Admin")
+    is_admin = current_user.has_any_role("Super Admin", "HR Manager")
 
     # ==========================
     # Admin

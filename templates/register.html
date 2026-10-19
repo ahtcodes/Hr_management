@@ -1,126 +1,2159 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Create Account — PeopleDesk HR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* =========================================================
+           PEOPLE DESK — REGISTER / LOGIN FAMILY DESIGN
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: #0b1220;
+            font-family: var(--font-body);
+        }
+
+
+        /* =========================================================
+           PAGE SHELL
+        ========================================================= */
+
+        .pd-auth-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 58% 42%;
+
+            background:
+                radial-gradient(
+                    circle at 12% 15%,
+                    rgba(37, 99, 235, .16),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 85% 85%,
+                    rgba(14, 165, 233, .10),
+                    transparent 25%
+                ),
+                #0b1220;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .pd-auth-page::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 42px 42px;
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           LEFT SIDE — SAME AS LOGIN
+        ========================================================= */
+
+        .pd-auth-left {
+            min-height: 100vh;
+
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            padding: 44px 70px 38px;
+        }
+
+
+        /* =========================================================
+           BRAND
+        ========================================================= */
+
+        .pd-brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .pd-brand-logo {
+            width: 47px;
+            height: 47px;
+
+            border-radius: 13px;
+
+            background: linear-gradient(
+                145deg,
+                #3b82f6,
+                #1d4ed8
+            );
+
+            color: #fff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 800;
+
+            box-shadow:
+                0 10px 30px rgba(37,99,235,.30);
+        }
+
+        .pd-brand-name {
+            color: #fff;
+
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .pd-brand-sub {
+            margin-top: 2px;
+
+            color: #7f8da4;
+
+            font-size: 9px;
+            font-weight: 600;
+
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           LEFT CONTENT
+        ========================================================= */
+
+        .pd-auth-copy {
+            max-width: 690px;
+        }
+
+        .pd-auth-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 10px;
+
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 7px;
+
+            background: rgba(255,255,255,.025);
+
+            color: #9eabc0;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .pd-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #3b82f6;
+
+            box-shadow:
+                0 0 0 4px rgba(59,130,246,.10);
+        }
+
+
+        .pd-auth-copy h1 {
+            margin: 22px 0 0;
+
+            color: #fff;
+
+            font-family: var(--font-heading);
+
+            font-size: clamp(
+                42px,
+                5.3vw,
+                74px
+            );
+
+            line-height: 1.02;
+
+            letter-spacing: -3px;
+
+            font-weight: 700;
+        }
+
+        .pd-auth-copy h1 span {
+            color: #6ea8ff;
+        }
+
+        .pd-auth-copy > p {
+            max-width: 600px;
+
+            margin: 24px 0 0;
+
+            color: #8491a8;
+
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+
+        /* =========================================================
+           LEFT INFORMATION CARDS
+        ========================================================= */
+
+        .pd-register-highlights {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 10px;
+
+            max-width: 640px;
+
+            margin-top: 38px;
+        }
+
+        .pd-highlight {
+            min-height: 108px;
+
+            padding: 15px;
+
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.045),
+                    rgba(255,255,255,.015)
+                );
+        }
+
+        .pd-highlight-number {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 7px;
+
+            background: rgba(59,130,246,.12);
+            color: #7db0ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .pd-highlight-title {
+            margin-top: 12px;
+
+            color: #fff;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pd-highlight-text {
+            margin-top: 4px;
+
+            color: #718098;
+
+            font-size: 8px;
+            line-height: 1.55;
+        }
+
+
+        /* =========================================================
+           LEFT FOOTER
+        ========================================================= */
+
+        .pd-auth-footer-left {
+            display: flex;
+            justify-content: space-between;
+
+            color: #57657b;
+
+            font-size: 9px;
+        }
+
+
+        /* =========================================================
+           RIGHT SIDE
+        ========================================================= */
+
+        .pd-auth-right {
+            min-height: 100vh;
+
+            position: relative;
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 32px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #f7f9fc 0%,
+                    #eef2f7 100%
+                );
+        }
+
+
+        /* =========================================================
+           REGISTER PANEL
+        ========================================================= */
+
+        .pd-auth-card {
+            width: 100%;
+            max-width: 475px;
+
+            background: #fff;
+
+            border: 1px solid #e4e8ee;
+
+            border-radius: 18px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 30px 70px rgba(15,23,42,.11),
+                0 5px 20px rgba(15,23,42,.05);
+
+            color: #172033;
+        }
+
+
+        /* =========================================================
+           CARD TOP
+        ========================================================= */
+
+        .pd-auth-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 24px;
+        }
+
+        .pd-mobile-brand {
+            display: none;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .pd-mobile-logo {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 9px;
+
+            background: #1e3155;
+            color: #fff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .pd-mobile-name {
+            color: #172033;
+
+            font-family: var(--font-heading);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .pd-secure-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: #667085;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .pd-secure-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            box-shadow:
+                0 0 0 4px rgba(37,99,235,.08);
+        }
+
+
+        /* =========================================================
+           HEADING
+        ========================================================= */
+
+        .pd-register-heading {
+            margin-bottom: 22px;
+        }
+
+        .pd-register-heading small {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #8792a4;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .pd-register-heading h2 {
+            margin: 0;
+
+            color: #111827;
+
+            font-family: var(--font-heading);
+
+            font-size: 28px;
+            line-height: 1.15;
+
+            font-weight: 700;
+
+            letter-spacing: -1px;
+        }
+
+        .pd-register-heading p {
+            margin: 8px 0 0;
+
+            color: #7b8492;
+
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+
+        /* =========================================================
+           FLASH
+        ========================================================= */
+
+        .pd-register-alerts {
+            margin-bottom: 16px;
+        }
+
+        .pd-register-alerts .alert {
+            margin-bottom: 8px;
+            border-radius: 9px;
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .pd-register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+
+        /* Section */
+
+        .pd-form-section {
+            padding-top: 17px;
+
+            border-top: 1px solid #eef0f3;
+        }
+
+        .pd-form-section:first-child {
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .pd-form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            margin-bottom: 14px;
+        }
+
+        .pd-section-index {
+            width: 27px;
+            height: 27px;
+
+            border-radius: 7px;
+
+            background: #eef3fa;
+            color: #31588f;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 8px;
+            font-weight: 800;
+        }
+
+        .pd-section-title-text strong {
+            display: block;
+
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pd-section-title-text span {
+            display: block;
+
+            margin-top: 2px;
+
+            color: #98a2b3;
+
+            font-size: 8px;
+        }
+
+
+        /* =========================================================
+           FIELDS
+        ========================================================= */
+
+        .pd-field {
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+
+            margin-bottom: 13px;
+        }
+
+        .pd-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .pd-field label {
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pd-field label span {
+            color: #dc2626;
+        }
+
+        .pd-input-wrap {
+            position: relative;
+        }
+
+        .pd-input {
+            width: 100%;
+            height: 47px;
+
+            padding: 0 42px 0 40px;
+
+            border:
+                1px solid #d8dde6;
+
+            border-radius: 9px;
+
+            background: #fff;
+            color: #172033;
+
+            font-family: var(--font-body);
+            font-size: 11px;
+
+            outline: none;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .pd-input::placeholder {
+            color: #a1a9b6;
+        }
+
+        .pd-input:hover {
+            border-color: #c5cbd5;
+        }
+
+        .pd-input:focus {
+            border-color: #31588f;
+
+            box-shadow:
+                0 0 0 3px rgba(49,88,143,.08);
+        }
+
+        .pd-input-icon {
+            position: absolute;
+
+            top: 50%;
+            left: 13px;
+
+            transform: translateY(-50%);
+
+            color: #98a2b3;
+
+            display: flex;
+
+            pointer-events: none;
+        }
+
+        .pd-input-help {
+            color: #98a2b3;
+
+            font-size: 8px;
+            line-height: 1.4;
+        }
+
+
+        /* =========================================================
+           PASSWORD
+        ========================================================= */
+
+        .pd-password-toggle {
+            position: absolute;
+
+            top: 50%;
+            right: 7px;
+
+            transform: translateY(-50%);
+
+            width: 31px;
+            height: 31px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #8a94a4;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+        .pd-password-toggle:hover {
+            background: #f1f4f7;
+            color: #344054;
+        }
+
+
+        /* =========================================================
+           PASSWORD STRENGTH
+        ========================================================= */
+
+        .pd-strength {
+            margin-top: 7px;
+        }
+
+        .pd-strength-bars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pd-strength-bars span {
+            flex: 1;
+
+            height: 3px;
+
+            border-radius: 999px;
+
+            background: #e6e9ee;
+
+            transition:
+                background .2s ease;
+        }
+
+        .pd-strength-text {
+            margin-top: 5px;
+
+            color: #98a2b3;
+
+            font-size: 8px;
+        }
+
+        .pd-strength-text strong {
+            color: #7b8492;
+        }
+
+
+        /* =========================================================
+           APPROVAL CARD
+        ========================================================= */
+
+        .pd-approval-card {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 10px;
+
+            padding: 12px;
+
+            border:
+                1px solid #dce5f2;
+
+            border-radius: 10px;
+
+            background: #f7faff;
+        }
+
+        .pd-approval-icon {
+            width: 31px;
+            height: 31px;
+
+            min-width: 31px;
+
+            border-radius: 8px;
+
+            background: #e6eef9;
+            color: #31588f;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pd-approval-body {
+            flex: 1;
+        }
+
+        .pd-approval-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 7px;
+        }
+
+        .pd-approval-head strong {
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pd-approval-badge {
+            padding: 4px 6px;
+
+            border-radius: 999px;
+
+            background: #fff7ed;
+            color: #b45309;
+
+            font-size: 7px;
+            font-weight: 800;
+        }
+
+        .pd-approval-body p {
+            margin: 5px 0 10px;
+
+            color: #7b8492;
+
+            font-size: 8px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           APPROVAL FLOW
+        ========================================================= */
+
+        .pd-approval-flow {
+            display: flex;
+            align-items: center;
+
+            gap: 5px;
+        }
+
+        .pd-flow-step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            color: #98a2b3;
+
+            font-size: 7px;
+            font-weight: 700;
+        }
+
+        .pd-flow-step span {
+            width: 18px;
+            height: 18px;
+
+            border-radius: 50%;
+
+            background: #e9edf2;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 7px;
+        }
+
+        .pd-flow-step.active {
+            color: #31588f;
+        }
+
+        .pd-flow-step.active span {
+            background: #31588f;
+            color: #ffffff;
+        }
+
+        .pd-flow-arrow {
+            color: #b1b8c2;
+            font-size: 9px;
+        }
+
+
+        /* =========================================================
+           SUBMIT
+        ========================================================= */
+
+        .pd-register-submit {
+            width: 100%;
+            height: 48px;
+
+            margin-top: 14px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #1e3155;
+            color: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background .2s ease,
+                box-shadow .2s ease,
+                transform .2s ease;
+        }
+
+        .pd-register-submit:hover {
+            background: #182a4a;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 8px 18px rgba(30,49,85,.13);
+        }
+
+        .pd-register-submit:disabled {
+            opacity: .65;
+            cursor: wait;
+            transform: none;
+        }
+
+
+        /* =========================================================
+           NOTE
+        ========================================================= */
+
+        .pd-register-note {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 8px;
+
+            margin-top: 12px;
+
+            padding: 10px 11px;
+
+            background: #fafbfc;
+
+            border:
+                1px solid #e6e9ee;
+
+            border-radius: 8px;
+
+            color: #7b8492;
+
+            font-size: 8px;
+
+            line-height: 1.6;
+        }
+
+        .pd-register-note svg {
+            min-width: 13px;
+            margin-top: 1px;
+            color: #31588f;
+        }
+
+        .pd-register-note strong {
+            color: #4b5563;
+        }
+
+
+        /* =========================================================
+           LOGIN LINK
+        ========================================================= */
+
+        .pd-auth-divider {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            margin: 20px 0 14px;
+
+            color: #a0a8b5;
+
+            font-size: 8px;
+            font-weight: 700;
+
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .pd-auth-divider::before,
+        .pd-auth-divider::after {
+            content: "";
+
+            flex: 1;
+
+            height: 1px;
+
+            background: #e8ebef;
+        }
+
+
+        .pd-existing-account {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding: 12px 13px;
+
+            border:
+                1px solid #e2e7ed;
+
+            border-radius: 9px;
+
+            background: #fbfcfd;
+        }
+
+        .pd-existing-copy strong {
+            display: block;
+
+            color: #344054;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pd-existing-copy span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #98a2b3;
+
+            font-size: 8px;
+        }
+
+        .pd-login-btn {
+            white-space: nowrap;
+
+            padding: 8px 11px;
+
+            border:
+                1px solid #d6dce5;
+
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #31588f;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .pd-login-btn:hover {
+            background: #f3f5f8;
+            color: #243b67;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .pd-auth-footer-right {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 20px;
+
+            color: #a1a9b6;
+
+            font-size: 8px;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .pd-auth-page {
+                display: block;
+
+                background: #f1f4f8;
+            }
+
+            .pd-auth-left {
+                display: none;
+            }
+
+            .pd-auth-right {
+                min-height: 100vh;
+
+                padding: 25px 18px;
+
+                background:
+                    radial-gradient(
+                        circle at 30% 5%,
+                        rgba(37,99,235,.08),
+                        transparent 30%
+                    ),
+                    #f1f4f8;
+            }
+
+            .pd-mobile-brand {
+                display: flex;
+            }
+        }
+
+
+        @media (max-width: 520px) {
+
+            .pd-auth-right {
+                padding: 14px;
+            }
+
+            .pd-auth-card {
+                padding: 22px 18px;
+
+                border-radius: 14px;
+            }
+
+            .pd-register-heading h2 {
+                font-size: 25px;
+            }
+
+            .pd-register-highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .pd-auth-footer-right {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .pd-existing-account {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pd-login-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .pd-approval-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
 </head>
-<body class="auth-body">
 
-<div class="auth-card-modern">
-    <div class="auth-head-modern">
-        <div class="auth-icon-circle">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-        </div>
-        <h1>Create Account</h1>
-        <p>Register for PeopleDesk HR</p>
-    </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category if category != 'message' else 'danger' }}" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<body>
+
+
+<div class="pd-auth-page">
+
+
+    <!-- =====================================================
+         LEFT SIDE
+    ====================================================== -->
+
+    <section class="pd-auth-left">
+
+
+        <div>
+
+
+            <!-- BRAND -->
+
+            <div class="pd-brand">
+
+                <div class="pd-brand-logo">
+                    PD
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
-    <div class="alert alert-warning" role="alert">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        Only admin can create new users. You must be logged in as admin.
-    </div>
+                <div>
 
-    <form class="auth-form-modern" action="/register" method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <div class="input-wrapper">
-                <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required>
+                    <div class="pd-brand-name">
+                        PeopleDesk HR
+                    </div>
+
+                    <div class="pd-brand-sub">
+                        Human Resource Management
+                    </div>
+
+                </div>
+
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <div class="input-wrapper">
-                <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+
+            <!-- MAIN COPY -->
+
+            <div class="pd-auth-copy">
+
+                <div class="pd-auth-eyebrow">
+
+                    <span class="pd-eyebrow-dot"></span>
+
+                    EMPLOYEE ONBOARDING
+
+                </div>
+
+
+                <h1>
+
+                    Build your
+                    <span>employee profile.</span>
+
+                </h1>
+
+
+                <p>
+
+                    Create your PeopleDesk account and become part
+                    of your organization's centralized HR workspace.
+                    Your account is reviewed and approved by the
+                    administrator before access is enabled.
+
+                </p>
+
+
+                <!-- HIGHLIGHTS -->
+
+                <div class="pd-register-highlights">
+
+
+                    <div class="pd-highlight">
+
+                        <div class="pd-highlight-number">
+                            01
+                        </div>
+
+                        <div class="pd-highlight-title">
+                            Simple registration
+                        </div>
+
+                        <div class="pd-highlight-text">
+                            Create your account with only the
+                            information required to get started.
+                        </div>
+
+                    </div>
+
+
+                    <div class="pd-highlight">
+
+                        <div class="pd-highlight-number">
+                            02
+                        </div>
+
+                        <div class="pd-highlight-title">
+                            Admin review
+                        </div>
+
+                        <div class="pd-highlight-text">
+                            Every employee registration is
+                            reviewed before access is activated.
+                        </div>
+
+                    </div>
+
+
+                    <div class="pd-highlight">
+
+                        <div class="pd-highlight-number">
+                            03
+                        </div>
+
+                        <div class="pd-highlight-title">
+                            Secure workspace
+                        </div>
+
+                        <div class="pd-highlight-text">
+                            Access is controlled through your
+                            assigned HR role and permissions.
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="form-group">
-            <label for="passwordField">Password</label>
-            <div class="input-wrapper">
-                <input type="password" name="password" id="passwordField" class="form-control" placeholder="Create a password" required>
-                <button type="button" class="toggle-password" id="togglePassword" aria-label="Show password">
-                    <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg id="eyeOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                        <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
-                        <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
-                        <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
-                        <line x1="2" y1="2" x2="22" y2="22"/>
-                    </svg>
-                </button>
+
+        <!-- LEFT FOOTER -->
+
+        <div class="pd-auth-footer-left">
+
+            <span>
+                PeopleDesk HRMS
+            </span>
+
+            <span>
+                Employee self-registration
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT SIDE
+    ====================================================== -->
+
+    <section class="pd-auth-right">
+
+
+        <div class="pd-auth-card">
+
+
+            <!-- MOBILE BRAND -->
+
+            <div class="pd-mobile-brand">
+
+                <div class="pd-mobile-logo">
+                    PD
+                </div>
+
+                <div class="pd-mobile-name">
+                    PeopleDesk HR
+                </div>
+
             </div>
+
+
+            <!-- TOP -->
+
+            <div class="pd-auth-card-top">
+
+                <div class="pd-secure-label">
+
+                    <span class="pd-secure-dot"></span>
+
+                    Employee Registration
+
+                </div>
+
+            </div>
+
+
+            <!-- HEADING -->
+
+            <div class="pd-register-heading">
+
+                <small>
+                    Create your account
+                </small>
+
+                <h2>
+                    Join the workspace
+                </h2>
+
+                <p>
+                    Complete the information below to create your
+                    employee account.
+                </p>
+
+            </div>
+
+
+            <!-- FLASH -->
+
+            <div class="pd-register-alerts">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+
+                    {% if messages %}
+
+                        {% for category, message in messages %}
+
+                            <div
+                                class="alert alert-{{ category }} alert-dismissible fade show"
+                                role="alert"
+                            >
+
+                                {{ message }}
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                method="POST"
+                action="{{ url_for('auth.register') }}"
+                class="pd-register-form"
+                id="pdRegisterForm"
+            >
+
+
+                <!-- =================================================
+                     SECTION 01
+                ================================================== -->
+
+                <div class="pd-form-section">
+
+
+                    <div class="pd-form-section-title">
+
+                        <div class="pd-section-index">
+                            01
+                        </div>
+
+                        <div class="pd-section-title-text">
+
+                            <strong>
+                                Account details
+                            </strong>
+
+                            <span>
+                                Your login identity
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- USERNAME -->
+
+                    <div class="pd-field">
+
+                        <label for="username">
+
+                            Username
+                            <span>*</span>
+
+                        </label>
+
+
+                        <div class="pd-input-wrap">
+
+                            <span class="pd-input-icon">
+
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                >
+
+                                    <circle
+                                        cx="12"
+                                        cy="8"
+                                        r="4"
+                                    />
+
+                                    <path
+                                        d="M4 21a8 8 0 0 1 16 0"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+
+                            <input
+                                type="text"
+                                name="username"
+                                id="username"
+                                class="pd-input"
+                                placeholder="Choose a username"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="pd-input-help">
+                            Use a unique username for your PeopleDesk account.
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="pd-field">
+
+                        <label for="email">
+
+                            Email address
+                            <span>*</span>
+
+                        </label>
+
+
+                        <div class="pd-input-wrap">
+
+                            <span class="pd-input-icon">
+
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                >
+
+                                    <rect
+                                        x="3"
+                                        y="5"
+                                        width="18"
+                                        height="14"
+                                        rx="2"
+                                    />
+
+                                    <polyline
+                                        points="3,7 12,13 21,7"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                class="pd-input"
+                                placeholder="you@company.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="pd-input-help">
+                            This email will be associated with your account.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SECTION 02
+                ================================================== -->
+
+                <div class="pd-form-section">
+
+
+                    <div class="pd-form-section-title">
+
+                        <div class="pd-section-index">
+                            02
+                        </div>
+
+                        <div class="pd-section-title-text">
+
+                            <strong>
+                                Account security
+                            </strong>
+
+                            <span>
+                                Protect your login credentials
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="pd-field">
+
+                        <label for="passwordField">
+
+                            Password
+                            <span>*</span>
+
+                        </label>
+
+
+                        <div class="pd-input-wrap">
+
+                            <span class="pd-input-icon">
+
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                >
+
+                                    <rect
+                                        x="3"
+                                        y="11"
+                                        width="18"
+                                        height="10"
+                                        rx="2"
+                                    />
+
+                                    <path
+                                        d="M7 11V7a5 5 0 0 1 10 0v4"
+                                    />
+
+                                </svg>
+
+                            </span>
+
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="passwordField"
+                                class="pd-input"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                minlength="8"
+                                required
+                            >
+
+
+                            <button
+                                type="button"
+                                class="pd-password-toggle"
+                                id="pdPasswordToggle"
+                                aria-label="Show password"
+                            >
+
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                >
+
+                                    <path
+                                        d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                                    />
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="3"
+                                    />
+
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- STRENGTH -->
+
+                        <div class="pd-strength">
+
+                            <div class="pd-strength-bars">
+
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+
+                            </div>
+
+
+                            <div class="pd-strength-text">
+
+                                Password strength:
+
+                                <strong id="pdStrengthText">
+                                    Enter password
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SECTION 03
+                ================================================== -->
+
+                <div class="pd-form-section">
+
+
+                    <div class="pd-form-section-title">
+
+                        <div class="pd-section-index">
+                            03
+                        </div>
+
+                        <div class="pd-section-title-text">
+
+                            <strong>
+                                Account approval
+                            </strong>
+
+                            <span>
+                                Review and activation process
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- APPROVAL CARD -->
+
+                    <div class="pd-approval-card">
+
+                        <div class="pd-approval-icon">
+
+                            <svg
+                                width="17"
+                                height="17"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                            >
+
+                                <path
+                                    d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z"
+                                />
+
+                                <path
+                                    d="M9 12l2 2 4-4"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <div class="pd-approval-body">
+
+                            <div class="pd-approval-head">
+
+                                <strong>
+                                    Employee account
+                                </strong>
+
+                                <span class="pd-approval-badge">
+                                    PENDING APPROVAL
+                                </span>
+
+                            </div>
+
+
+                            <p>
+
+                                Your registration creates an Employee
+                                account. A Super Admin must approve
+                                the account before you can sign in.
+
+                            </p>
+
+
+                            <div class="pd-approval-flow">
+
+                                <div class="pd-flow-step active">
+
+                                    <span>1</span>
+
+                                    Register
+
+                                </div>
+
+
+                                <div class="pd-flow-arrow">
+                                    →
+                                </div>
+
+
+                                <div class="pd-flow-step">
+
+                                    <span>2</span>
+
+                                    Review
+
+                                </div>
+
+
+                                <div class="pd-flow-arrow">
+                                    →
+                                </div>
+
+
+                                <div class="pd-flow-step">
+
+                                    <span>3</span>
+
+                                    Access
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="pd-register-submit"
+                        id="pdRegisterSubmit"
+                    >
+
+                        <span>
+                            Create Employee Account
+                        </span>
+
+                        <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+
+                            <line
+                                x1="5"
+                                y1="12"
+                                x2="19"
+                                y2="12"
+                            />
+
+                            <polyline
+                                points="12 5 19 12 12 19"
+                            />
+
+                        </svg>
+
+                    </button>
+
+
+                    <!-- NOTE -->
+
+                    <div class="pd-register-note">
+
+                        <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                        >
+
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="10"
+                            />
+
+                            <line
+                                x1="12"
+                                y1="8"
+                                x2="12"
+                                y2="12"
+                            />
+
+                            <line
+                                x1="12"
+                                y1="16"
+                                x2="12.01"
+                                y2="16"
+                            />
+
+                        </svg>
+
+
+                        <div>
+
+                            <strong>
+                                Important:
+                            </strong>
+
+                            Your account remains pending until
+                            approved by an administrator.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="pd-auth-divider">
+                Already registered
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <div class="pd-existing-account">
+
+                <div class="pd-existing-copy">
+
+                    <strong>
+                        Already have an account?
+                    </strong>
+
+                    <span>
+                        Sign in using your PeopleDesk credentials.
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="pd-login-btn"
+                >
+                    Back to Login
+                </a>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="pd-auth-footer-right">
+
+                <span>
+                    © PeopleDesk HR
+                </span>
+
+                <span>
+                    Employee self-registration
+                </span>
+
+            </div>
+
+
         </div>
 
-        <div class="form-group">
-            <label for="role">Role</label>
-            <select name="role" id="role" class="form-control" required>
-                <option value="employee">Employee</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
+    </section>
 
-        <button type="submit" class="btn-auth-modern">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem;">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Create User
-        </button>
-    </form>
-
-    <div class="auth-footer-modern">
-        <a href="/login">Back to Login</a>
-    </div>
 </div>
 
+
 <script>
-(function() {
-    // Password Visibility Toggle
-    const toggleBtn = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('passwordField');
-    const eyeIcon = document.getElementById('eyeIcon');
-    const eyeOffIcon = document.getElementById('eyeOffIcon');
 
-    if (toggleBtn && passwordInput) {
-        let passwordVisible = false;
-        toggleBtn.addEventListener('click', function() {
-            passwordVisible = !passwordVisible;
-            passwordInput.type = passwordVisible ? 'text' : 'password';
-            eyeIcon.style.display = passwordVisible ? 'none' : 'block';
-            eyeOffIcon.style.display = passwordVisible ? 'block' : 'none';
-            toggleBtn.setAttribute('aria-label', passwordVisible ? 'Hide password' : 'Show password');
-        });
+    /* =========================================================
+       PASSWORD VISIBILITY
+    ========================================================= */
+
+    const pdPassword =
+        document.getElementById("passwordField");
+
+    const pdPasswordToggle =
+        document.getElementById("pdPasswordToggle");
+
+
+    if (
+        pdPassword &&
+        pdPasswordToggle
+    ) {
+
+        pdPasswordToggle.addEventListener(
+            "click",
+            function () {
+
+                const isVisible =
+                    pdPassword.type === "text";
+
+                pdPassword.type =
+                    isVisible
+                        ? "password"
+                        : "text";
+
+                pdPasswordToggle.setAttribute(
+                    "aria-label",
+                    isVisible
+                        ? "Show password"
+                        : "Hide password"
+                );
+
+            }
+        );
+
     }
-})();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 
+
+    /* =========================================================
+       PASSWORD STRENGTH
+    ========================================================= */
+
+    const pdStrengthBars =
+        document.querySelectorAll(
+            ".pd-strength-bars span"
+        );
+
+    const pdStrengthText =
+        document.getElementById(
+            "pdStrengthText"
+        );
+
+
+    if (pdPassword) {
+
+        pdPassword.addEventListener(
+            "input",
+            function () {
+
+                const value =
+                    this.value;
+
+                let score = 0;
+
+
+                if (value.length >= 8) {
+                    score++;
+                }
+
+                if (/[A-Z]/.test(value)) {
+                    score++;
+                }
+
+                if (/[0-9]/.test(value)) {
+                    score++;
+                }
+
+                if (/[^A-Za-z0-9]/.test(value)) {
+                    score++;
+                }
+
+
+                pdStrengthBars.forEach(
+                    function (bar, index) {
+
+                        bar.style.background =
+                            index < score
+                                ? "#31588f"
+                                : "#e6e9ee";
+
+                    }
+                );
+
+
+                if (!value) {
+
+                    pdStrengthText.textContent =
+                        "Enter password";
+
+                } else if (score <= 1) {
+
+                    pdStrengthText.textContent =
+                        "Weak";
+
+                } else if (score === 2) {
+
+                    pdStrengthText.textContent =
+                        "Fair";
+
+                } else if (score === 3) {
+
+                    pdStrengthText.textContent =
+                        "Good";
+
+                } else {
+
+                    pdStrengthText.textContent =
+                        "Strong";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SUBMIT STATE
+    ========================================================= */
+
+    const pdRegisterForm =
+        document.getElementById(
+            "pdRegisterForm"
+        );
+
+    const pdRegisterSubmit =
+        document.getElementById(
+            "pdRegisterSubmit"
+        );
+
+
+    if (
+        pdRegisterForm &&
+        pdRegisterSubmit
+    ) {
+
+        pdRegisterForm.addEventListener(
+            "submit",
+            function () {
+
+                pdRegisterSubmit.disabled = true;
+
+                const submitText =
+                    pdRegisterSubmit.querySelector(
+                        "span"
+                    );
+
+                if (submitText) {
+                    submitText.textContent =
+                        "Creating account...";
+                }
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

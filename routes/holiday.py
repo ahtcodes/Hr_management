@@ -33,7 +33,7 @@ def holiday_list():
 @login_required
 def add_holiday():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     if request.method == "POST":
@@ -140,7 +140,7 @@ def add_holiday():
 @login_required
 def edit_holiday(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin""HR Manager"):
         abort(403)
 
     holiday_data = Holiday.query.get_or_404(id)
@@ -248,7 +248,7 @@ def edit_holiday(id):
 @login_required
 def delete_holiday(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin""HR Manager"):
         abort(403)
 
     holiday_data = Holiday.query.get_or_404(id)

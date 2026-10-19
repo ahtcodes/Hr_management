@@ -6,70 +6,1182 @@ Employees — PeopleDesk HR
 
 {% block content %}
 
-<div class="container">
+<style>
 
-    <div class="greeting-row">
-        <div class="greeting-text">
+    .employees-page {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 25px 20px 45px;
+    }
+
+    /* =========================================
+       HEADER
+    ========================================= */
+
+    .employees-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .employees-title h1 {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .employees-title p {
+        margin: 7px 0 0;
+        color: var(--muted-foreground);
+        font-size: 13px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+    }
+
+    .header-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 9px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .header-btn-outline {
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--foreground);
+    }
+
+    .header-btn-outline:hover {
+        background: var(--secondary);
+        color: var(--foreground);
+    }
+
+    .header-btn-primary {
+        background: var(--primary);
+        border: 1px solid var(--primary);
+        color: #fff;
+    }
+
+    .header-btn-primary:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+        color: #fff;
+    }
+
+    /* =========================================
+       SUMMARY CARDS
+    ========================================= */
+
+    .employee-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .summary-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 17px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .summary-label {
+        color: var(--muted-foreground);
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .summary-value {
+        color: var(--foreground);
+        font-family: var(--font-heading);
+        font-size: 25px;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    /* =========================================
+       TOOLBAR
+    ========================================= */
+
+    .employee-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .employee-toolbar {
+        padding: 17px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 13px;
+        flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex: 1;
+        min-width: 260px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 100%;
+        max-width: 330px;
+    }
+
+    .search-box svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-foreground);
+    }
+
+    .search-box input {
+        width: 100%;
+        height: 40px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: var(--secondary);
+        color: var(--foreground);
+        padding: 0 12px 0 35px;
+        font-size: 12px;
+        outline: none;
+    }
+
+    .search-box input:focus {
+        background: var(--card);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    .result-label {
+        color: var(--muted-foreground);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    /* =========================================
+       TABLE
+    ========================================= */
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .employees-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+    }
+
+    .employees-table thead th {
+        padding: 13px 18px;
+        background: var(--secondary);
+        color: var(--muted-foreground);
+        border-bottom: 1px solid var(--border);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .employees-table tbody td {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        color: var(--foreground);
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .employees-table tbody tr {
+        transition: background .15s ease;
+    }
+
+    .employees-table tbody tr:hover {
+        background: var(--primary-light);
+    }
+
+    .employees-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* =========================================
+       EMPLOYEE
+    ========================================= */
+
+    .employee-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 180px;
+    }
+
+    .employee-avatar {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 50%;
+        background: #e9eef7;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .employee-info strong {
+        display: block;
+        color: var(--foreground);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .employee-info span {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted-foreground);
+        font-size: 10px;
+    }
+
+    .code-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 8px;
+        border-radius: 7px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .4px;
+    }
+
+    .department-text {
+        font-weight: 600;
+    }
+
+    .designation-text {
+        color: var(--muted-foreground);
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .salary-text {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* =========================================
+       STATUS
+    ========================================= */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-active {
+        color: #15803d;
+        background: #ecfdf3;
+    }
+
+    .status-inactive {
+        color: #6b7280;
+        background: #f3f4f6;
+    }
+
+    .status-resigned {
+        color: #b45309;
+        background: #fff7ed;
+    }
+
+    .status-terminated {
+        color: #b91c1c;
+        background: #fef2f2;
+    }
+
+    /* =========================================
+       ACTIONS
+    ========================================= */
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .table-action {
+        width: 33px;
+        height: 33px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: .2s ease;
+        cursor: pointer;
+    }
+
+    .edit-action {
+        background: #fff7ed;
+        color: #c2410c;
+        border-color: #fed7aa;
+    }
+
+    .edit-action:hover {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .delete-action {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .delete-action:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .delete-form {
+        display: inline;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: var(--secondary);
+        color: var(--muted-foreground);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-state h3 {
+        margin-bottom: 5px;
+        font-size: 17px;
+    }
+
+    .empty-state p {
+        margin-bottom: 17px;
+        color: var(--muted-foreground);
+        font-size: 12px;
+    }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+
+    .table-footer {
+        padding: 13px 18px;
+        border-top: 1px solid var(--border);
+        background: #fcfcfd;
+        color: var(--muted-foreground);
+        font-size: 11px;
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 850px) {
+
+        .employee-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .employees-header {
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .header-btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .employees-page {
+            padding: 18px 12px 35px;
+        }
+
+        .employees-title h1 {
+            font-size: 24px;
+        }
+
+        .employee-toolbar {
+            align-items: stretch;
+        }
+
+        .toolbar-left {
+            min-width: 100%;
+        }
+
+        .search-box {
+            max-width: none;
+        }
+    }
+
+</style>
+
+
+<div class="employees-page">
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="employees-header">
+
+        <div class="employees-title">
+
             <h1>Employees</h1>
-            <p class="greeting-sub">Manage your workforce — {{ employees|length }} employee(s) on record.</p>
+
+            <p>
+                Manage your workforce and employee records.
+                {{ employees|length }} employee(s) on record.
+            </p>
+
         </div>
-        <div>
-            <a href="/admin/dashboard" class="btn btn-outline-primary me-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
-                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+
+
+        <div class="header-actions">
+
+            <a
+                href="{{ url_for('admin.dashboard') }}"
+                class="header-btn header-btn-outline"
+            >
+
+                <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
                 </svg>
+
                 Dashboard
+
             </a>
-            <a href="/add_employee" class="btn btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+
+
+            <a
+                href="{{ url_for('employee.add_employee') }}"
+                class="header-btn header-btn-primary"
+            >
+
+                <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
+
                 Add Employee
+
             </a>
+
         </div>
+
     </div>
 
-    <div class="content-card">
-        <div class="table-wrapper">
-            <table class="leave-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Salary</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for employee in employees %}
-                    <tr>
-                        <td>{{ employee.id }}</td>
-                        <td><span class="status-pill status-approved">{{ employee.employee_code }}</span></td>
-                        <td>
-                            <div class="employee-cell">
-                                <span class="employee-name">{{ employee.full_name }}</span>
-                            </div>
-                        </td>
-                        <td>{{ employee.department }}</td>
-                        <td>Rs. {{ "%.2f"|format(employee.basic_salary) }}</td>
-                        <td>
-                            <a href="/edit_employee/{{ employee.id }}" class="btn btn-primary btn-sm" style="background:var(--warning);border:none;color:var(--foreground);">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </a>
-                            <a href="/delete_employee/{{ employee.id }}" class="btn btn-sm" style="background:var(--destructive);border:none;color:white;" onclick="return confirm('Are you sure you want to delete this employee?')">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+    <!-- =========================================
+         SUMMARY
+    ========================================== -->
+
+    <div class="employee-summary-grid">
+
+        <div class="summary-box">
+
+            <div class="summary-label">
+                TOTAL EMPLOYEES
+            </div>
+
+            <div class="summary-value">
+                {{ employees|length }}
+            </div>
+
         </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-label">
+                ACTIVE RECORDS
+            </div>
+
+            <div class="summary-value" id="activeCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-label">
+                DISPLAYED
+            </div>
+
+            <div class="summary-value" id="displayedCount">
+                {{ employees|length }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         EMPLOYEE TABLE
+    ========================================== -->
+
+    <div class="employee-card">
+
+
+        <!-- Toolbar -->
+
+        <div class="employee-toolbar">
+
+            <div class="toolbar-left">
+
+                <div class="search-box">
+
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="11" cy="11" r="8"/>
+                        <line
+                            x1="21"
+                            y1="21"
+                            x2="16.65"
+                            y2="16.65"
+                        />
+                    </svg>
+
+                    <input
+                        type="text"
+                        id="employeeSearch"
+                        placeholder="Search by name, code, department..."
+                    >
+
+                </div>
+
+
+                <span class="result-label">
+
+                    Showing
+
+                    <strong id="resultCount">
+                        {{ employees|length }}
+                    </strong>
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <div class="table-container">
+
+            {% if employees %}
+
+            <table
+                class="employees-table"
+                id="employeesTable"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>Employee</th>
+                        <th>Employee Code</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for employee in employees %}
+
+                    <tr
+                        class="employee-row"
+                        data-search="
+                            {{ employee.full_name|lower }}
+                            {{ employee.employee_code|lower }}
+                            {{ employee.department.name|lower if employee.department else '' }}
+                            {{ employee.designation.name|lower if employee.designation else '' }}
+                            {{ employee.email|lower }}
+                        "
+                    >
+
+                        <!-- Employee -->
+
+                        <td>
+
+                            <div class="employee-profile">
+
+                                <div class="employee-avatar">
+
+                                    {{
+                                        employee.full_name[:1]|upper
+                                        if employee.full_name
+                                        else 'E'
+                                    }}
+
+                                </div>
+
+
+                                <div class="employee-info">
+
+                                    <strong>
+                                        {{ employee.full_name }}
+                                    </strong>
+
+                                    <span>
+                                        {{ employee.email }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Code -->
+
+                        <td>
+
+                            <span class="code-pill">
+
+                                {{
+                                    employee.employee_code
+                                    or 'Not Assigned'
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Department -->
+
+                        <td>
+
+                            <div class="department-text">
+
+                                {{
+                                    employee.department.name
+                                    if employee.department
+                                    else 'Not Assigned'
+                                }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Designation -->
+
+                        <td>
+
+                            <div class="designation-text">
+
+                                {{
+                                    employee.designation.name
+                                    if employee.designation
+                                    else 'Not Assigned'
+                                }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Salary -->
+
+                        <td>
+
+                            <span class="salary-text">
+
+                                Rs.
+
+                                {{
+                                    "%.2f"|format(
+                                        employee.basic_salary or 0
+                                    )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if employee.status == "Active" %}
+
+                                <span class="status-badge status-active">
+
+                                    <span class="status-dot"></span>
+
+                                    Active
+
+                                </span>
+
+
+                            {% elif employee.status == "Inactive" %}
+
+                                <span class="status-badge status-inactive">
+
+                                    <span class="status-dot"></span>
+
+                                    Inactive
+
+                                </span>
+
+
+                            {% elif employee.status == "Resigned" %}
+
+                                <span class="status-badge status-resigned">
+
+                                    <span class="status-dot"></span>
+
+                                    Resigned
+
+                                </span>
+
+
+                            {% elif employee.status == "Terminated" %}
+
+                                <span class="status-badge status-terminated">
+
+                                    <span class="status-dot"></span>
+
+                                    Terminated
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="status-badge status-inactive">
+
+                                    <span class="status-dot"></span>
+
+                                    {{ employee.status or 'Unknown' }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="action-group">
+
+
+                                <!-- EDIT -->
+
+                                <a
+                                    href="{{ url_for('employee.edit_employee', id=employee.id) }}"
+                                    class="table-action edit-action"
+                                    title="Edit Employee"
+                                >
+
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+
+                                        <path
+                                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                                        />
+
+                                        <path
+                                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1-1-4 9.5-9.5z"
+                                        />
+
+                                    </svg>
+
+                                </a>
+
+
+                                <!-- DELETE -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('employee.delete_employee', id=employee.id) }}"
+                                    class="delete-form"
+                                    onsubmit="return confirm('Are you sure you want to delete this employee?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="table-action delete-action"
+                                        title="Delete Employee"
+                                    >
+
+                                        <svg
+                                            width="14"
+                                            height="14"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+
+                                            <polyline
+                                                points="3 6 5 6 21 6"
+                                            />
+
+                                            <path
+                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+                                            />
+
+                                            <line
+                                                x1="10"
+                                                y1="11"
+                                                x2="10"
+                                                y2="17"
+                                            />
+
+                                            <line
+                                                x1="14"
+                                                y1="11"
+                                                x2="14"
+                                                y2="17"
+                                            />
+
+                                            <path
+                                                d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"
+                                            />
+
+                                        </svg>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            {% else %}
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+
+                    <svg
+                        width="26"
+                        height="26"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+
+                        <circle cx="12" cy="8" r="4"/>
+
+                        <path
+                            d="M4 21a8 8 0 0 1 16 0"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <h3>
+                    No Employees Found
+                </h3>
+
+
+                <p>
+                    There are currently no employees in the system.
+                </p>
+
+
+                <a
+                    href="{{ url_for('employee.add_employee') }}"
+                    class="header-btn header-btn-primary"
+                >
+                    + Add Employee
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        {% if employees %}
+
+        <div class="table-footer">
+
+            Employee directory •
+
+            <span id="footerCount">
+                {{ employees|length }}
+            </span>
+
+            employee(s) displayed
+
+        </div>
+
+        {% endif %}
+
     </div>
 
 </div>
+
+
+<script>
+
+    const searchInput =
+        document.getElementById("employeeSearch");
+
+    const rows =
+        document.querySelectorAll(".employee-row");
+
+    const resultCount =
+        document.getElementById("resultCount");
+
+    const displayedCount =
+        document.getElementById("displayedCount");
+
+    const footerCount =
+        document.getElementById("footerCount");
+
+
+    function updateEmployeeCount() {
+
+        let visible = 0;
+
+        rows.forEach(function(row) {
+
+            if (row.style.display !== "none") {
+                visible++;
+            }
+
+        });
+
+
+        if (resultCount) {
+            resultCount.textContent = visible;
+        }
+
+
+        if (displayedCount) {
+            displayedCount.textContent = visible;
+        }
+
+
+        if (footerCount) {
+            footerCount.textContent = visible;
+        }
+
+    }
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function() {
+
+                const searchValue =
+                    this.value.toLowerCase().trim();
+
+
+                rows.forEach(function(row) {
+
+                    const searchableText =
+                        row.dataset.search.toLowerCase();
+
+
+                    if (
+                        searchValue === "" ||
+                        searchableText.includes(searchValue)
+                    ) {
+
+                        row.style.display = "";
+
+                    } else {
+
+                        row.style.display = "none";
+
+                    }
+
+                });
+
+
+                updateEmployeeCount();
+
+            }
+        );
+
+    }
+
+
+    // Active employee count
+
+    const activeCount =
+        document.getElementById("activeCount");
+
+
+    if (activeCount) {
+
+        let active = 0;
+
+
+        rows.forEach(function(row) {
+
+            const status =
+                row.querySelector(".status-badge");
+
+
+            if (
+                status &&
+                status.textContent
+                    .trim()
+                    .toLowerCase()
+                    .includes("active")
+            ) {
+
+                active++;
+
+            }
+
+        });
+
+
+        activeCount.textContent = active;
+
+    }
+
+</script>
 
 {% endblock %}

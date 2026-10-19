@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}
+Department Manager Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Department Manager Dashboard</h2>
+
+    <h5 class="mt-3">
+        Department: {{ department.name }}
+    </h5>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Total Employees</h6>
+                <h2>{{ total_employees }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Present Today</h6>
+                <h2>{{ present_today }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Absent Today</h6>
+                <h2>{{ absent_today }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>On Leave</h6>
+                <h2>{{ on_leave_today }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card mt-4 p-3">
+
+        <h5>Department Employees</h5>
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Employee Code</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for emp in department_employees %}
+
+                <tr>
+                    <td>{{ emp.full_name }}</td>
+                    <td>{{ emp.employee_code }}</td>
+                    <td>{{ emp.status }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

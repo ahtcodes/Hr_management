@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Messages | HRMS</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f8;
+
+            height: 100vh;
+
+            overflow: hidden;
+        }
+
+
+        .chat-container {
+
+            display: flex;
+
+            height: 100vh;
+
+            background: white;
+        }
+
+
+        /* =================================
+           SIDEBAR
+        ================================= */
+
+        .sidebar {
+
+            width: 350px;
+
+            border-right:
+                1px solid #e2e5e9;
+
+            background: white;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        /* Header */
+
+        .sidebar-header {
+
+            padding: 22px;
+
+            border-bottom:
+                1px solid #e2e5e9;
+        }
+
+
+        .sidebar-header h2 {
+
+            font-size: 22px;
+
+            color: #1f2937;
+
+            margin-bottom: 5px;
+        }
+
+
+        .sidebar-header p {
+
+            font-size: 13px;
+
+            color: #7b8490;
+        }
+
+
+        /* Search */
+
+        .search-box {
+
+            padding: 15px;
+
+            border-bottom:
+                1px solid #e2e5e9;
+        }
+
+
+        .search-box input {
+
+            width: 100%;
+
+            padding: 11px 14px;
+
+            border:
+                1px solid #d8dde3;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+
+        .search-box input:focus {
+
+            border-color: #2563eb;
+        }
+
+
+        /* =================================
+           SECTION TITLE
+        ================================= */
+
+        .section-title {
+
+            padding:
+                15px 18px 8px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #8a929d;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* =================================
+           CONVERSATIONS
+        ================================= */
+
+        .conversations-list {
+
+            overflow-y: auto;
+
+            max-height: 45%;
+        }
+
+
+        .conversation-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 13px 18px;
+
+            text-decoration: none;
+
+            color: #1f2937;
+
+            border-bottom:
+                1px solid #f1f2f4;
+
+            transition: 0.2s;
+        }
+
+
+        .conversation-item:hover {
+
+            background: #f6f8fa;
+        }
+
+
+        .conversation-avatar {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-weight: bold;
+
+            flex-shrink: 0;
+        }
+
+
+        .conversation-info {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+
+        .conversation-name {
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            margin-bottom: 5px;
+        }
+
+
+        .last-message {
+
+            font-size: 12px;
+
+            color: #8a929d;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .conversation-time {
+
+            font-size: 10px;
+
+            color: #9aa1aa;
+
+            align-self: flex-start;
+        }
+
+
+        /* =================================
+           NEW CHAT USERS
+        ================================= */
+
+        .users-list {
+
+            flex: 1;
+
+            overflow-y: auto;
+        }
+
+
+        .user-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 18px;
+
+            text-decoration: none;
+
+            color: #1f2937;
+
+            border-bottom:
+                1px solid #f1f2f4;
+
+            transition: 0.2s;
+        }
+
+
+        .user-item:hover {
+
+            background: #f6f8fa;
+        }
+
+
+        .user-avatar {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 50%;
+
+            background: #64748b;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-weight: bold;
+
+            flex-shrink: 0;
+        }
+
+
+        .user-info {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+
+        .user-name {
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            margin-bottom: 4px;
+        }
+
+
+        .user-email {
+
+            font-size: 11px;
+
+            color: #8a929d;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .chat-button {
+
+            background: #eef2ff;
+
+            color: #2563eb;
+
+            padding: 6px 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+
+        /* =================================
+           RIGHT SIDE
+        ================================= */
+
+        .chat-area {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            background: #f8fafc;
+        }
+
+
+        .empty-chat {
+
+            flex: 1;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+        }
+
+
+        .empty-content {
+
+            max-width: 420px;
+        }
+
+
+        .chat-icon {
+
+            width: 80px;
+
+            height: 80px;
+
+            margin:
+                0 auto 20px;
+
+            border-radius: 50%;
+
+            background: #e8eefc;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 35px;
+        }
+
+
+        .empty-content h1 {
+
+            font-size: 25px;
+
+            color: #1f2937;
+
+            margin-bottom: 10px;
+        }
+
+
+        .empty-content p {
+
+            color: #7b8490;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =================================
+           SCROLLBAR
+        ================================= */
+
+        .conversations-list::-webkit-scrollbar,
+        .users-list::-webkit-scrollbar {
+
+            width: 6px;
+        }
+
+
+        .conversations-list::-webkit-scrollbar-thumb,
+        .users-list::-webkit-scrollbar-thumb {
+
+            background: #cbd1d8;
+
+            border-radius: 10px;
+        }
+
+
+        /* =================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+
+                width: 100%;
+            }
+
+            .chat-area {
+
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="chat-container">
+
+
+    <!-- =================================
+         LEFT SIDEBAR
+    ================================= -->
+
+    <div class="sidebar">
+
+
+        <!-- Header -->
+
+        <div class="sidebar-header">
+
+            <h2>
+                Messages
+            </h2>
+
+            <p>
+                Your conversations
+            </p>
+
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="userSearch"
+                placeholder="Search employees..."
+                onkeyup="searchUsers()"
+            >
+
+        </div>
+
+
+        <!-- =================================
+             EXISTING CONVERSATIONS
+        ================================= -->
+
+        <div class="section-title">
+
+            Recent Chats
+
+        </div>
+
+
+        <div class="conversations-list">
+
+
+            {% if conversations %}
+
+
+                {% for conversation in conversations %}
+
+
+                    {% if conversation.user1_id == current_user.id %}
+
+                        {% set other_user = conversation.user2 %}
+
+                    {% else %}
+
+                        {% set other_user = conversation.user1 %}
+
+                    {% endif %}
+
+
+                    <a
+                        href="{{ url_for(
+                            'chat.conversation',
+                            conversation_id=conversation.id
+                        ) }}"
+                        class="conversation-item"
+                    >
+
+
+                        <div class="conversation-avatar">
+
+                            {{ other_user.username[0]|upper }}
+
+                        </div>
+
+
+                        <div class="conversation-info">
+
+                            <div class="conversation-name">
+
+                                {{ other_user.username }}
+
+                            </div>
+
+
+                            <div class="last-message">
+
+                                Open conversation
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="conversation-time">
+
+                            {{ conversation.created_at.strftime("%I:%M %p") }}
+
+                        </div>
+
+
+                    </a>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div
+                    style="
+                        padding: 20px;
+                        text-align: center;
+                        color: #8a929d;
+                        font-size: 13px;
+                    "
+                >
+
+                    No conversations yet.
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- =================================
+             NEW CHAT
+        ================================= -->
+
+        <div class="section-title">
+
+            Start New Chat
+
+        </div>
+
+
+        <div class="users-list" id="usersList">
+
+
+            {% if users %}
+
+
+                {% for user in users %}
+
+
+                    <a
+                        href="{{ url_for(
+                            'chat.start_chat',
+                            user_id=user.id
+                        ) }}"
+                        class="user-item"
+                    >
+
+
+                        <div class="user-avatar">
+
+                            {{ user.username[0]|upper }}
+
+                        </div>
+
+
+                        <div class="user-info">
+
+                            <div class="user-name">
+
+                                {{ user.username }}
+
+                            </div>
+
+
+                            <div class="user-email">
+
+                                {{ user.email or "Employee" }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="chat-button">
+
+                            Chat
+
+                        </div>
+
+
+                    </a>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div
+                    style="
+                        padding: 20px;
+                        text-align: center;
+                        color: #8a929d;
+                        font-size: 13px;
+                    "
+                >
+
+                    No employees found.
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =================================
+         RIGHT CHAT AREA
+    ================================= -->
+
+    <div class="chat-area">
+
+
+        <div class="empty-chat">
+
+
+            <div class="empty-content">
+
+
+                <div class="chat-icon">
+
+                    💬
+
+                </div>
+
+
+                <h1>
+
+                    Welcome to Messages
+
+                </h1>
+
+
+                <p>
+
+                    Select a conversation from the left
+                    side or start a new chat with an employee.
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+function searchUsers() {
+
+    const input =
+        document
+            .getElementById("userSearch")
+            .value
+            .toLowerCase();
+
+
+    const users =
+        document.querySelectorAll(
+            ".user-item"
+        );
+
+
+    const conversations =
+        document.querySelectorAll(
+            ".conversation-item"
+        );
+
+
+    users.forEach(function(user) {
+
+        const name =
+            user
+                .querySelector(".user-name")
+                .textContent
+                .toLowerCase();
+
+
+        const email =
+            user
+                .querySelector(".user-email")
+                .textContent
+                .toLowerCase();
+
+
+        if (
+            name.includes(input) ||
+            email.includes(input)
+        ) {
+
+            user.style.display = "flex";
+
+        } else {
+
+            user.style.display = "none";
+
+        }
+
+    });
+
+
+    conversations.forEach(function(conversation) {
+
+        const name =
+            conversation
+                .querySelector(".conversation-name")
+                .textContent
+                .toLowerCase();
+
+
+        if (name.includes(input)) {
+
+            conversation.style.display = "flex";
+
+        } else {
+
+            conversation.style.display = "none";
+
+        }
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>

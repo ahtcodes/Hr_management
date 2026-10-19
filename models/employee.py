@@ -1,13 +1,102 @@
 from extensions import db
 
 
+# ============================================================
+# Department Model
+# ============================================================
+
+class Department(db.Model):
+
+    __tablename__ = "departments"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.String(100),
+        unique=True,
+        nullable=False
+    )
+
+    description = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="Active"
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
+    employees = db.relationship(
+        "Employee",
+        back_populates="department"
+    )
+
+
+# ============================================================
+# Designation Model
+# ============================================================
+
+class Designation(db.Model):
+
+    __tablename__ = "designations"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.String(100),
+        unique=True,
+        nullable=False
+    )
+
+    description = db.Column(
+        db.String(255),
+        nullable=True
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="Active"
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
+    employees = db.relationship(
+        "Employee",
+        back_populates="designation"
+    )
+
+
+# ============================================================
+# Employee Model
+# ============================================================
+
 class Employee(db.Model):
 
     __tablename__ = "employees"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
+    # ========================================================
     # Documents
+    # ========================================================
 
     profile_photo = db.Column(
         db.String(255),
@@ -29,33 +118,29 @@ class Employee(db.Model):
         nullable=True
     )
 
-    # Emergency Contact
-
-    emergency_contact_name = db.Column(
-        db.String(100),
-        nullable=True
-    )
-
-    emergency_contact_relation = db.Column(
-        db.String(50),
-        nullable=True
-    )
-
-    emergency_contact_phone = db.Column(
-        db.String(20),
-        nullable=True
-    )
+    # ========================================================
+    # Employee Code
+    # ========================================================
 
     employee_code = db.Column(
         db.String(20),
         unique=True,
         nullable=False
     )
+
+    # ========================================================
+    # Biometric
+    # ========================================================
+
     biometric_id = db.Column(
-    db.String(50),
-    unique=True,
-    nullable=True
+        db.String(50),
+        unique=True,
+        nullable=True
     )
+
+    # ========================================================
+    # Basic Information
+    # ========================================================
 
     full_name = db.Column(
         db.String(100),
@@ -73,24 +158,70 @@ class Employee(db.Model):
         nullable=False
     )
 
-    department = db.Column(
-        db.String(100),
-        nullable=False
+    # ========================================================
+    # Department Foreign Key
+    # ========================================================
+
+    department_id = db.Column(
+        db.Integer,
+        db.ForeignKey("departments.id"),
+        nullable=True
     )
 
-    designation = db.Column(
-        db.String(100),
-        nullable=False
+    department = db.relationship(
+        "Department",
+        back_populates="employees"
     )
+
+    # ========================================================
+    # Designation Foreign Key
+    # ========================================================
+
+    designation_id = db.Column(
+        db.Integer,
+        db.ForeignKey("designations.id"),
+        nullable=True
+    )
+
+    designation = db.relationship(
+        "Designation",
+        back_populates="employees"
+    )
+
+    # ========================================================
+    # Employment Information
+    # ========================================================
 
     joining_date = db.Column(
         db.Date,
         nullable=False
     )
+
     resignation_date = db.Column(
-    db.Date,
-    nullable=True
+        db.Date,
+        nullable=True
     )
+
+    employment_type = db.Column(
+        db.String(20),
+        nullable=False,
+        default="Full Time"
+    )
+
+    location = db.Column(
+        db.String(100),
+        nullable=False,
+        default="Faisalabad"
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="Active"
+    )
+
+    # ========================================================
+    # Salary
+    # ========================================================
 
     basic_salary = db.Column(
         db.Float,
@@ -102,49 +233,9 @@ class Employee(db.Model):
         nullable=False
     )
 
-    
-    employment_type = db.Column(
-    db.String(20),
-    nullable=False,
-    default="Full Time"
-    )
-
-    location = db.Column(
-    db.String(100),
-    nullable=False,
-    default="Faisalabad"
-    )
-
-
-    status = db.Column(
-        db.String(20),
-        default="Active"
-    )
-
-
-    # Shift Foreign Key
-    shift_id = db.Column(
-        db.Integer,
-        db.ForeignKey("shifts.id")
-    )
-
-
-    # Shift Relationship
-    shift = db.relationship(
-        "Shift",
-        back_populates="employees"
-    )
-
-
-    # User Relationship
-    user = db.relationship(
-        "User",
-        back_populates="employee",
-        uselist=False
-    )
     late_deduction = db.Column(
-    db.Float,
-    default=0
+        db.Float,
+        default=0
     )
 
     absence_deduction = db.Column(
@@ -162,22 +253,50 @@ class Employee(db.Model):
         default=0
     )
 
-profile_photo = db.Column(
-    db.String(255),
-    nullable=True
-)
+    # ========================================================
+    # Shift Foreign Key
+    # ========================================================
 
-cnic_file = db.Column(
-    db.String(255),
-    nullable=True
-)
+    shift_id = db.Column(
+        db.Integer,
+        db.ForeignKey("shifts.id")
+    )
 
-cv_file = db.Column(
-    db.String(255),
-    nullable=True
-)
+    # ========================================================
+    # Shift Relationship
+    # ========================================================
 
-certificate_file = db.Column(
-    db.String(255),
-    nullable=True
+    shift = db.relationship(
+        "Shift",
+        back_populates="employees"
+    )
+
+    # ========================================================
+    # Emergency Contact
+    # ========================================================
+
+    emergency_contact_name = db.Column(
+        db.String(100),
+        nullable=True
+    )
+
+    emergency_contact_relation = db.Column(
+        db.String(50),
+        nullable=True
+    )
+
+    emergency_contact_phone = db.Column(
+        db.String(20),
+        nullable=True
+    )
+
+    # ========================================================
+    # User Relationship
+    # ========================================================
+
+    user = db.relationship(
+    "User",
+    back_populates="employee",
+    uselist=False,
+    cascade="all, delete-orphan"
 )

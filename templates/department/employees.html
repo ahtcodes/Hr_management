@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+Department Employees
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Department Employees</h2>
+
+    <p>
+        Department:
+        <strong>{{ department.name }}</strong>
+    </p>
+
+    <div class="card mt-3">
+
+        <div class="card-body">
+
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for employee in employees %}
+
+                    <tr>
+
+                        <td>
+                            {{ employee.employee_code }}
+                        </td>
+
+                        <td>
+                            {{ employee.full_name }}
+                        </td>
+
+                        <td>
+                            {{ employee.email }}
+                        </td>
+
+                        <td>
+                            {{ employee.status }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No employees found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

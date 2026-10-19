@@ -30,7 +30,7 @@ def attendance_list():
 @login_required
 def mark_attendance():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.all()
@@ -85,7 +85,7 @@ def mark_attendance():
 @login_required
 def edit_attendance(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     record = Attendance.query.get_or_404(id)
@@ -193,7 +193,7 @@ def edit_attendance(id):
 @login_required
 def delete_attendance(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     record = Attendance.query.get_or_404(id)
@@ -204,4 +204,3 @@ def delete_attendance(id):
     flash("Attendance record deleted!", "info")
 
     return redirect(url_for("attendance.attendance_list"))
-

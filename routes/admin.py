@@ -7,10 +7,13 @@ from models.user import User
 from models.activity_log import ActivityLog
 from extensions import db
 from models.login_history import LoginHistory
-from models.role import Role
+from models.role import Role, Permission
 from datetime import datetime, date, timedelta
 from models.document import Document
+
 import os
+from datetime import timezone
+from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 
 admin = Blueprint("admin", __name__)
@@ -21,7 +24,7 @@ admin = Blueprint("admin", __name__)
 @login_required
 def live_attendance():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     today = date.today()
@@ -42,7 +45,7 @@ def live_attendance():
 @login_required
 def biometric():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     return render_template(
@@ -56,7 +59,7 @@ def biometric():
 @login_required
 def biometric_sync():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     # Demo biometric ID
@@ -152,7 +155,7 @@ def biometric_sync():
 @login_required
 def attendance_reports():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     # Filters
@@ -225,7 +228,7 @@ def attendance_reports():
 @login_required
 def dashboard():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     total_employees = Employee.query.count()
@@ -283,27 +286,42 @@ def dashboard():
     )
 
 
-# =====================================
+## =====================================
 # Pending Employee Requests
 # =====================================
+
 @admin.route("/admin/pending_users")
 @login_required
 def pending_users():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
-    users = User.query.filter_by(
-        role="employee",
-        status="pending"
+    # Employee role object
+    employee_role = Role.query.filter_by(
+        name="Employee"
+    ).first()
+
+    if employee_role is None:
+        flash(
+            "Employee role does not exist.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("admin.dashboard")
+        )
+
+    # Get pending employees
+    users = User.query.filter(
+        User.role == employee_role,
+        User.status == "pending"
     ).all()
 
     return render_template(
         "admin/pending_users.html",
         users=users
     )
-
-
 # =====================================
 # Approve Employee
 # =====================================
@@ -311,31 +329,39 @@ def pending_users():
 @login_required
 def approve_user(user_id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     user = User.query.get_or_404(user_id)
 
-    # Approve account
+    # Approve user
     user.status = "approved"
 
-    # Employee profile agar nahi hai to create karo
+    # Create Employee Profile
     if user.employee is None:
 
-        # Check email se pehle employee maujood hai ya nahi
-        employee = Employee.query.filter_by(email=user.email).first()
+        employee = Employee.query.filter_by(
+            email=user.email
+        ).first()
 
         if employee:
+
             user.employee_id = employee.id
 
         else:
+
             employee = Employee(
                 employee_code=f"EMP{user.id:04}",
                 full_name=user.username,
                 email=user.email,
                 phone="Not Added",
-                department="Not Assigned",
-                designation="Employee",
+
+                # Department will be assigned manually later
+                department_id=None,
+
+                # Designation will be assigned manually later
+                designation_id=None,
+
                 joining_date=date.today(),
                 basic_salary=0,
                 overtime_rate=0,
@@ -345,16 +371,18 @@ def approve_user(user_id):
             db.session.add(employee)
             db.session.flush()
 
-            # Link user with employee
             user.employee_id = employee.id
 
     db.session.commit()
 
-    flash("Employee approved successfully.", "success")
+    flash(
+        "Employee approved successfully.",
+        "success"
+    )
 
-    return redirect(url_for("admin.pending_users"))
-
-
+    return redirect(
+        url_for("admin.pending_users")
+    )
 # =====================================
 # Reject Employee
 # =====================================
@@ -362,7 +390,7 @@ def approve_user(user_id):
 @login_required
 def reject_user(user_id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     user = User.query.get_or_404(user_id)
@@ -383,7 +411,7 @@ def reject_user(user_id):
 @login_required
 def approved_users():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     users = User.query.filter_by(
@@ -404,7 +432,7 @@ def approved_users():
 @login_required
 def rejected_users():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     users = User.query.filter_by(
@@ -424,7 +452,7 @@ def rejected_users():
 @login_required
 def shifts():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     shifts = Shift.query.all()
@@ -442,7 +470,7 @@ def shifts():
 @login_required
 def add_shift():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     if request.method == "POST":
@@ -494,7 +522,7 @@ def add_shift():
 @login_required
 def edit_shift(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     shift = Shift.query.get_or_404(id)
@@ -543,7 +571,7 @@ def edit_shift(id):
 @login_required
 def reopen_attendance(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     record = Attendance.query.get_or_404(id)
@@ -566,7 +594,7 @@ def reopen_attendance(id):
 @login_required
 def delete_shift(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     shift = Shift.query.get_or_404(id)
@@ -605,7 +633,7 @@ def allowed_document_file(filename):
 @login_required
 def documents():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     documents = Document.query.order_by(
@@ -629,7 +657,7 @@ def documents():
 @login_required
 def upload_document():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.order_by(
@@ -777,20 +805,236 @@ def upload_document():
         employees=employees
     )
 
+# =====================================
+# Role Management
+# =====================================
+
+@admin.route("/admin/roles")
+@login_required
+def roles():
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    roles = Role.query.order_by(
+        Role.id.asc()
+    ).all()
+
+    return render_template(
+        "admin/roles.html",
+        roles=roles
+    )
+
+# =====================================
+# Add Role
+# =====================================
+
+@admin.route("/admin/roles/add", methods=["GET", "POST"])
+@login_required
+def add_role():
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        description = request.form.get(
+            "description",
+            ""
+        ).strip()
+
+        # -----------------------------
+        # Validation
+        # -----------------------------
+
+        if not name:
+
+            flash(
+                "Role name is required.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("admin.add_role")
+            )
+
+        # -----------------------------
+        # Check duplicate role
+        # -----------------------------
+
+        existing_role = Role.query.filter(
+            db.func.lower(Role.name) == name.lower()
+        ).first()
+
+        if existing_role:
+
+            flash(
+                "This role already exists.",
+                "warning"
+            )
+
+            return redirect(
+                url_for("admin.add_role")
+            )
+
+        # -----------------------------
+        # Create Role
+        # -----------------------------
+
+        role = Role(
+            name=name,
+            description=description or None
+        )
+
+        db.session.add(role)
+        db.session.commit()
+
+        flash(
+            f"Role '{name}' created successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for("admin.roles")
+        )
+
+    return render_template(
+        "admin/add_role.html"
+    )
+
+
+
+# =====================================
+# Permission Management
+# =====================================
+
+@admin.route("/admin/permissions")
+@login_required
+def permissions():
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    permissions = Permission.query.order_by(
+        Permission.id.asc()
+    ).all()
+
+    return render_template(
+        "admin/permissions.html",
+        permissions=permissions
+    )
+
+# =====================================
+# Add Permission
+# =====================================
+
+@admin.route(
+    "/admin/permissions/add",
+    methods=["GET", "POST"]
+)
+@login_required
+def add_permission():
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        description = request.form.get(
+            "description",
+            ""
+        ).strip()
+
+        if not name:
+
+            flash(
+                "Permission name is required.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("admin.add_permission")
+            )
+
+        existing_permission = Permission.query.filter(
+            db.func.lower(Permission.name) == name.lower()
+        ).first()
+
+        if existing_permission:
+
+            flash(
+                "This permission already exists.",
+                "warning"
+            )
+
+            return redirect(
+                url_for("admin.add_permission")
+            )
+
+        permission = Permission(
+            name=name,
+            description=description or None
+        )
+
+        db.session.add(permission)
+        db.session.commit()
+
+        flash(
+            f"Permission '{name}' created successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for("admin.permissions")
+        )
+
+    return render_template(
+        "admin/add_permission.html"
+    )
+
+
 # ==========================
 # Activity Logs
 # ==========================
-
 @admin.route("/activity-logs")
 @login_required
 def activity_logs():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     logs = ActivityLog.query.order_by(
         ActivityLog.created_at.desc()
     ).all()
+
+    pakistan_tz = ZoneInfo("Asia/Karachi")
+
+    for log in logs:
+
+        if log.created_at:
+
+            if log.created_at.tzinfo is None:
+                utc_time = log.created_at.replace(
+                    tzinfo=timezone.utc
+                )
+            else:
+                utc_time = log.created_at.astimezone(
+                    timezone.utc
+                )
+
+            log.created_at_local = utc_time.astimezone(
+                pakistan_tz
+            )
 
     return render_template(
         "admin/activity_logs.html",
@@ -804,7 +1048,7 @@ def activity_logs():
 @login_required
 def login_history():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     histories = LoginHistory.query.order_by(
@@ -814,4 +1058,96 @@ def login_history():
     return render_template(
         "admin/login_history.html",
         histories=histories
+    )
+
+# ==========================
+# Assign Role to User
+# ==========================
+
+@admin.route(
+    "/admin/assign-role/<int:user_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+def assign_role(user_id):
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    user = User.query.get_or_404(user_id)
+
+    roles = Role.query.order_by(
+        Role.name.asc()
+    ).all()
+
+    if request.method == "POST":
+
+        role_id = request.form.get("role_id")
+
+        if not role_id:
+            flash(
+                "Please select a role.",
+                "danger"
+            )
+
+            return redirect(
+                url_for(
+                    "admin.assign_role",
+                    user_id=user.id
+                )
+            )
+
+        role = Role.query.get(
+            int(role_id)
+        )
+
+        if not role:
+            flash(
+                "Selected role not found.",
+                "danger"
+            )
+
+            return redirect(
+                url_for(
+                    "admin.assign_role",
+                    user_id=user.id
+                )
+            )
+
+        user.role = role
+
+        db.session.commit()
+
+        flash(
+            f"{user.username} is now assigned to {role.name}.",
+            "success"
+        )
+
+        return redirect(
+            url_for("admin.users")
+        )
+
+    return render_template(
+        "admin/assign_role.html",
+        user=user,
+        roles=roles
+    )
+# ==========================
+# Manage Users
+# ==========================
+
+@admin.route("/admin/users")
+@login_required
+def users():
+
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
+        abort(403)
+
+    users = User.query.order_by(
+        User.id.asc()
+    ).all()
+
+    return render_template(
+        "admin/users.html",
+        users=users
     )

@@ -16,8 +16,7 @@ Payroll Details — PeopleDesk HR
         </p>
     </div>
 
-```html
-{% if current_user.has_role("Super Admin") %}
+{% if current_user.has_any_role("Super Admin","HR Manager") %}
 
 <a href="{{ url_for('payroll.payroll_list') }}"
    class="btn btn-outline-secondary">
@@ -32,7 +31,7 @@ Payroll Details — PeopleDesk HR
 </a>
 
 {% endif %}
-```
+
 
 </div>
 

@@ -22,7 +22,7 @@ def kpi_list():
 
     # Super Admin / Manager -> all KPIs
     if (
-        current_user.has_role("Super Admin")
+        current_user.has_any_role("Super Admin", "HR Manager")
         or current_user.has_role("Department Manager")
     ):
         kpis = KPI.query.order_by(
@@ -59,7 +59,7 @@ def create_kpi():
 
     # Only Super Admin / Department Manager
     if not (
-        current_user.has_role("Super Admin")
+        current_user.has_any_role("Super Admin","HR Manager")
         or current_user.has_role("Department Manager")
     ):
         abort(403)
@@ -153,7 +153,7 @@ def update_kpi(id):
     kpi_data = KPI.query.get_or_404(id)
 
     # Employee can update achieved value
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
 
         employee = current_user.employee
 
@@ -208,7 +208,7 @@ def update_kpi(id):
 @login_required
 def delete_kpi(id):
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     kpi_data = KPI.query.get_or_404(id)

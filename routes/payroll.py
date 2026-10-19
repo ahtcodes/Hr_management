@@ -37,7 +37,7 @@ payroll = Blueprint(
 def payroll_list():
 
     # Delete Payroll
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     payrolls = Payroll.query.order_by(
@@ -70,7 +70,7 @@ def salary_history():
     #
     # ==========================================
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
 
         payrolls = Payroll.query.order_by(
             Payroll.year.desc(),
@@ -114,7 +114,7 @@ def salary_history():
 def generate_payroll():
 
     # Only Super Admin
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.all()
@@ -823,7 +823,7 @@ def view_payroll(id):
     # Super Admin
     # ==================================================
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
 
         # Super Admin can view any payroll
         pass
@@ -925,7 +925,7 @@ def view_payroll(id):
 def delete_payroll(id):
 
    # Delete Payroll
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     payroll_data = Payroll.query.get_or_404(id)
@@ -952,7 +952,7 @@ def payslip(payroll_id):
     # ==========================
 
     # Super Admin can download any payslip
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin"):
         pass
 
     else:

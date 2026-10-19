@@ -20,7 +20,7 @@ goal = Blueprint(
 @login_required
 def goal_list():
 
-    if current_user.has_role("Super Admin"):
+    if current_user.has_any_role("Super Admin", "HR Manager"):
 
         goals = Goal.query.order_by(
             Goal.created_at.desc()
@@ -53,7 +53,7 @@ def goal_list():
 @login_required
 def create_goal():
 
-    if not current_user.has_role("Super Admin"):
+    if not current_user.has_any_role("Super Admin", "HR Manager"):
         abort(403)
 
     employees = Employee.query.filter_by(
